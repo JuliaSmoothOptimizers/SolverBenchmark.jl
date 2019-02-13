@@ -14,7 +14,10 @@ function test_tables()
   df = stats[:alpha]
   cols = [:status, :f, :t, :iter]
 
-  @info("alpha result in latex format")
+  @info("alpha results in DataFrame format")
+  println(df[cols])
+
+  @info("alpha results in latex format")
   header = Dict(:status => "flag", :f => "\\(f(x)\\)", :t => "time")
   latex_tabular_results(stdout, df, cols=cols, hdr_override=header)
 end
