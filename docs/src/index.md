@@ -1,4 +1,4 @@
-# SolverBenchmark.jl
+# [SolverBenchmark.jl documentation](@id Home)
 
 This package provides general tools for benchmarking solvers, focusing on a few
 guidelines:
@@ -10,11 +10,12 @@ guidelines:
   `Dict{Symbol,DataFrame}`, where each key is a solver;
 
 Package objectives:
-- [ ] Print to latex (WIP in Optimize);
-- [ ] Print to pretty markdown table;
-- [ ] Produce performance profiles.
+- Print to latex;
+- Print to pretty markdown table;
+- Produce performance profiles.
 
 This package is developed focusing on
 [Krylov.jl](https://github.com/JuliaSmoothOptimizers/Krylov.jl) and
 [Optimize.jl](https://github.com/JuliaSmoothOptimizers/Optimize.jl), but they should be
 general enough to be used in other places.
+
