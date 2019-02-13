@@ -1,7 +1,7 @@
 using LaTeXTabulars
 
 export latex_tabular_results, safe_latex_Signed, safe_latex_AbstractString,
-       safe_latex_AbstractFloat, safe_latex_Symbol
+       safe_latex_AbstractFloat, safe_latex_Symbol, LTXformat
 
 const formats = Dict{DataType, String}(Signed => "%5d",
                                        AbstractFloat => "%7.1e",
