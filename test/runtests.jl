@@ -1,3 +1,3 @@
-using SolverBenchmark, Test
+using DataFrames, Random, SolverBenchmark, Test
 
-
+include("tables.jl")
