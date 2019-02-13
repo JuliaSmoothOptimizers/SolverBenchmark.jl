@@ -10,8 +10,8 @@ guidelines:
   `Dict{Symbol,DataFrame}`, where each key is a solver;
 
 Package objectives:
-- [ ] Print to latex (WIP in Optimize).
-- [ ] Print to pretty markdown table.
+- [ ] Print to latex (WIP in Optimize);
+- [ ] Print to pretty markdown table;
 - [ ] Produce performance profiles.
 
 This package is developed focusing on
