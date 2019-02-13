@@ -7,7 +7,7 @@ Pages = ["api.md"]
 ## Tables
 
 ```@docs
-latex_tabular
+latex_table
 ```
 
 ## Formatting
