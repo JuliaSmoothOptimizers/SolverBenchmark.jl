@@ -1,7 +1,14 @@
 # This file is essentially the same as test/tables.jl
 # Watch for differences in future releases.
 
-using DataFrames, LaTeXTabulars, Random, SolverBenchmark
+# stdlib imports
+using Random
+
+# dependencies imports
+using DataFrames, LaTeXTabulars
+
+# this package
+using SolverBenchmark
 
 function test_tables()
   Random.seed!(0)

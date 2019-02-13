@@ -1,6 +1,10 @@
 module SolverBenchmark
 
-using DataFrames, Printf
+# stdlib impots
+using Printf
+
+# dependencies imports
+using DataFrames
 
 include("latex_tables.jl")
 

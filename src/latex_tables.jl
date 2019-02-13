@@ -1,6 +1,7 @@
+# dependencies imports
 using LaTeXTabulars
 
-export latex_tabular_results, safe_latex_Signed, safe_latex_AbstractString,
+export latex_table, safe_latex_Signed, safe_latex_AbstractString,
        safe_latex_AbstractFloat, safe_latex_Symbol, LTXformat
 
 const formats = Dict{DataType, String}(Signed => "%5d",
@@ -49,25 +50,25 @@ LTXformat(x :: Missing) = "NA"
 @doc """
     LTXformat(x)
 
-Formats `x` according to its type. For types `Signed`, `AbstractFloat`,
-`AbstractString` and `Symbol`, it uses a predefined formatting string passed to
+Format `x` according to its type. For types `Signed`, `AbstractFloat`,
+`AbstractString` and `Symbol`, use a predefined formatting string passed to
 `@sprintf` and then the corresponding `safe_latex_<type>` function.
 
-For type `Missing`, it returns "NA".
+For type `Missing`, return "NA".
 """
 LTXformat
 
 """
-    latex_tabular_results(io, df, kwargs...)
+    latex_table(io, df, kwargs...)
 
-Creates a latex longtable using LaTeXTabulars of a dataframe of results, formatting
+Create a latex longtable using LaTeXTabulars of a dataframe of results, formatting
 the output for a publication-ready table.
 
 Inputs:
 - `io::IO`: where to send the table, e.g.:
 
       open("file.tex", "w") do io
-        latex_tabular_results(io, df)
+        latex_table(io, df)
       end
 
 - `df::DataFrame`: Dataframe of a solver. Each row is a problem.
@@ -78,22 +79,22 @@ Keyword arguments:
   exist in the data frame. Useful when creating tables for solvers in a loop where one
   solver has a column the other doesn't. If `false`, throws `BoundsError` in that
   situation.
-- `fmt_override::Dict{Symbol,Function}`: Overrides format for a specific columns, such as
+- `fmt_override::Dict{Symbol,Function}`: Overrides format for a specific column, such as
 
       fmt_override=Dict(:name => x->@sprintf("\\textbf{%s}", x) |> safe_latex_AbstractString)`
 
 - `hdr_override::Dict{Symbol,String}`: Overrides header names, such as
-  `hdr_override=Dict(:name => "Name")`, use LaTeX scaping when necessary.
+  `hdr_override=Dict(:name => "Name")`, where LaTeX escaping should be used if necessary.
 
 We recommend using the `safe_latex_foo` functions when overriding formats, unless
 you're sure you don't need them.
 """
-function latex_tabular_results(io :: IO, df :: DataFrame;
-                               cols :: Array{Symbol,1} = names(df),
-                               ignore_missing_cols :: Bool = false,
-                               fmt_override :: Dict{Symbol,Function} = Dict{Symbol,Function}(),
-                               hdr_override :: Dict{Symbol,String} = Dict{Symbol,String}(),
-                              )
+function latex_table(io :: IO, df :: DataFrame;
+                     cols :: Array{Symbol,1} = names(df),
+                     ignore_missing_cols :: Bool = false,
+                     fmt_override :: Dict{Symbol,Function} = Dict{Symbol,Function}(),
+                     hdr_override :: Dict{Symbol,String} = Dict{Symbol,String}(),
+                    )
   if ignore_missing_cols
     cols = filter(c->haskey(df, c), cols)
   elseif !all(haskey(df, c) for c in cols)

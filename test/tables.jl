@@ -10,16 +10,16 @@ function test_tables()
                                  :iter => rand(10:10:100, n),
                                  :irrelevant => randn(n)) for name in names)
 
-  @info("Show all table output for single solver")
+  @info "Show all table output for single solver"
   df = stats[:alpha]
   cols = [:status, :f, :t, :iter]
 
-  @info("alpha results in DataFrame format")
+  @info "alpha results in DataFrame format"
   println(df[cols])
 
-  @info("alpha results in latex format")
+  @info "alpha results in latex format"
   header = Dict(:status => "flag", :f => "\\(f(x)\\)", :t => "time")
-  latex_tabular_results(stdout, df, cols=cols, hdr_override=header)
+  latex_table(stdout, df, cols=cols, hdr_override=header)
 end
 
 test_tables()
