@@ -1,5 +1,5 @@
 # stdlib imports
-using Random
+using Random, Test
 
 # dependencies imports
 using DataFrames

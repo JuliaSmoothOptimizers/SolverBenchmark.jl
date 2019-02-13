@@ -1,5 +1,7 @@
 # Test all table output
 function test_tables()
+  example_folder = joinpath(@__DIR__, "example")
+  println(example_folder)
   Random.seed!(0)
   n = 10
   names = [:alpha, :beta, :gamma]
@@ -18,8 +20,14 @@ function test_tables()
   println(df[cols])
 
   @info "alpha results in latex format"
+  old_lines = readlines("$example_folder/alpha.tex", keep=true)
   header = Dict(:status => "flag", :f => "\\(f(x)\\)", :t => "time")
-  latex_table(stdout, df, cols=cols, hdr_override=header)
+  open("$example_folder/alpha.tex", "w") do io
+    latex_table(io, df, cols=cols, hdr_override=header)
+  end
+  new_lines = readlines("$example_folder/alpha.tex", keep=true)
+  println(join(new_lines))
+  @test old_lines == new_lines
 end
 
 test_tables()
