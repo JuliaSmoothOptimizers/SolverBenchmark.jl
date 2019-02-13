@@ -84,25 +84,9 @@ Keyword arguments:
 We recommend using the `safe_latex_foo` functions when overriding formats, unless
 you're sure you don't need them.
 """
-function latex_table(io :: IO, df :: DataFrame;
-                     cols :: Array{Symbol,1} = names(df),
-                     ignore_missing_cols :: Bool = false,
-                     fmt_override :: Dict{Symbol,Function} = Dict{Symbol,Function}(),
-                     hdr_override :: Dict{Symbol,String} = Dict{Symbol,String}(),
-                    )
-  if ignore_missing_cols
-    cols = filter(c->haskey(df, c), cols)
-  elseif !all(haskey(df, c) for c in cols)
-    missing_cols = setdiff(cols, names(df))
-    @error("There are no columns `" * join(missing_cols, ", ") * "` in dataframe")
-    throw(BoundsError)
-  end
-  string_cols = [map(haskey(fmt_override, col) ? fmt_override[col] : LTXformat, df[col]) for col in cols]
-  table = hcat(string_cols...)
-
-  header = [haskey(hdr_override, c) ? hdr_override[c] : string(c) for c in cols]
-
-  latex_tabular(io, LongTable("l" * "r"^(length(cols)-1), header),
+function latex_table(io :: IO, df :: DataFrame; kwargs...)
+  header, table = format_table(df, LTXformat; kwargs...)
+  latex_tabular(io, LongTable("l" * "r"^(length(header)-1), header),
                 [table, Rule()])
   nothing
 end

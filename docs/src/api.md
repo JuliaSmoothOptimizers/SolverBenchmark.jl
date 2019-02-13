@@ -7,6 +7,7 @@ Pages = ["api.md"]
 ## Tables
 
 ```@docs
+format_table
 latex_table
 markdown_table
 ```
