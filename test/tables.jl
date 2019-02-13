@@ -28,6 +28,16 @@ function test_tables()
   new_lines = readlines("$example_folder/alpha.tex", keep=true)
   println(join(new_lines))
   @test old_lines == new_lines
+
+  @info "alpha results in markdown format"
+  old_lines = readlines("$example_folder/alpha.md", keep=true)
+  header = Dict(:status => "flag", :f => "f(x)", :t => "time")
+  open("$example_folder/alpha.md", "w") do io
+    markdown_table(io, df, cols=cols, hdr_override=header)
+  end
+  new_lines = readlines("$example_folder/alpha.md", keep=true)
+  println(join(new_lines))
+  @test old_lines == new_lines
 end
 
 test_tables()

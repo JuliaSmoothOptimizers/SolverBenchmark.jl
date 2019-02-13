@@ -4,11 +4,6 @@ using LaTeXTabulars
 export latex_table, safe_latex_Signed, safe_latex_AbstractString,
        safe_latex_AbstractFloat, safe_latex_Symbol, LTXformat
 
-const formats = Dict{DataType, String}(Signed => "%5d",
-                                       AbstractFloat => "%7.1e",
-                                       AbstractString => "%s",
-                                       Symbol => "%s")
-
 """`safe_latex_Signed(s)`
 
 For signed integers. Encloses `s` in `\\(` and `\\)`.
