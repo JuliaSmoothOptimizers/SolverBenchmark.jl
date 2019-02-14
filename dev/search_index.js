@@ -33,6 +33,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "api/#SolverBenchmark.format_table",
+    "page": "API",
+    "title": "SolverBenchmark.format_table",
+    "category": "function",
+    "text": "format_table(df, formatter, kwargs...)\n\nFormat the data frame into a table using formatter. Used by other table functions.\n\nInputs:\n\ndf::DataFrame: Dataframe of a solver. Each row is a problem.\nformatter::Function: A function that formats its input according to its type. See LTXformat or MDformat for examples.\n\nKeyword arguments:\n\ncols::Array{Symbol}: Which columns of the df. Defaults to using all columns;\nignore_missing_cols::Bool: If true, filters out the columns in cols that don\'t exist in the data frame. Useful when creating tables for solvers in a loop where one solver has a column the other doesn\'t. If false, throws BoundsError in that situation.\nfmt_override::Dict{Symbol,Function}: Overrides format for a specific column, such as\nfmt_override=Dict(:name => x->@sprintf(\"%-10s\", x))\nhdr_override::Dict{Symbol,String}: Overrides header names, such as hdr_override=Dict(:name => \"Name\").\n\nOutputs:\n\nheader::Array{String,1}: header vector.\ntable::Array{String,2}: formatted table.\n\n\n\n\n\n"
+},
+
+{
     "location": "api/#SolverBenchmark.latex_table",
     "page": "API",
     "title": "SolverBenchmark.latex_table",
@@ -53,7 +61,7 @@ var documenterSearchIndex = {"docs": [
     "page": "API",
     "title": "Tables",
     "category": "section",
-    "text": "latex_table\nmarkdown_table"
+    "text": "format_table\nlatex_table\nmarkdown_table"
 },
 
 {
