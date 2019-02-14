@@ -6,9 +6,13 @@ using Printf
 # dependencies imports
 using DataFrames
 
+# Tables
 include("formatting.jl")
 include("latex_tables.jl")
 include("markdown_tables.jl")
 include("join.jl")
+
+# Profiles
+include("profiles.jl")
 
 end

@@ -1,16 +1,7 @@
 # Test all table output
 function test_tables()
   example_folder = joinpath(@__DIR__, "example")
-  Random.seed!(0)
-  n = 10
-  names = [:alpha, :beta, :gamma]
-  stats = Dict(name => DataFrame(:id => 1:n,
-                                 :name => [@sprintf("prob%03d", i) for i = 1:n],
-                                 :status => map(x -> x ? :success : :failure, rand(n) .< 0.75),
-                                 :f => randn(n),
-                                 :t => 1e-3 .+ rand(n) * 1000,
-                                 :iter => rand(10:10:100, n),
-                                 :irrelevant => randn(n)) for name in names)
+  stats = get_stats_data() # from data.jl
 
   @info "Show all table output for single solver"
   df = stats[:alpha]
