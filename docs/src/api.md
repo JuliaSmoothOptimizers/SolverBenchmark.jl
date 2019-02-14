@@ -13,6 +13,12 @@ latex_table
 markdown_table
 ```
 
+## Profiles
+
+```@docs
+performance_profile
+```
+
 ## Formatting
 
 ```@docs

@@ -1,4 +1,5 @@
 test/example/latex_example.*
+test/example/profile*
 
 docs/build
 docs/Manifest.toml
