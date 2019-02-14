@@ -8,6 +8,7 @@ Pages = ["api.md"]
 
 ```@docs
 format_table
+join
 latex_table
 markdown_table
 ```
