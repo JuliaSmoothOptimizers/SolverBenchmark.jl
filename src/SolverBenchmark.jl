@@ -9,5 +9,6 @@ using DataFrames
 include("formatting.jl")
 include("latex_tables.jl")
 include("markdown_tables.jl")
+include("join.jl")
 
 end
