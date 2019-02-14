@@ -41,6 +41,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "api/#Base.join",
+    "page": "API",
+    "title": "Base.join",
+    "category": "function",
+    "text": "df = join(stats, cols; kwargs...)\n\nJoin a dictionary of DataFrames given by stats. Column :id is required in all DataFrames. The resulting DataFrame will have column id and all columns cols for each solver.\n\nInputs:\n\nstats::Dict{Symbol,DataFrame}: Dictionary of DataFrames per solver. Each key is a different solver;\ncols::Array{Symbol}: Which columns of the DataFrames.\n\nKeyword arguments:\n\ninvariant_cols::Array{Symbol,1}: Invariant columns to be added, i.e., columns that don\'t change depending on the solver (such as name of problem, number of variables, etc.);\nhdr_override::Dict{Symbol,String}: Override header names.\n\nOutput:\n\ndf::DataFrame: Resulting dataframe.\n\n\n\n\n\n"
+},
+
+{
     "location": "api/#SolverBenchmark.latex_table",
     "page": "API",
     "title": "SolverBenchmark.latex_table",
@@ -61,7 +69,7 @@ var documenterSearchIndex = {"docs": [
     "page": "API",
     "title": "Tables",
     "category": "section",
-    "text": "format_table\nlatex_table\nmarkdown_table"
+    "text": "format_table\njoin\nlatex_table\nmarkdown_table"
 },
 
 {
