@@ -73,6 +73,22 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "api/#BenchmarkProfiles.performance_profile",
+    "page": "API",
+    "title": "BenchmarkProfiles.performance_profile",
+    "category": "function",
+    "text": "performance_profile(stats, cost)\n\nProduce a performance profile comparing solvers in stats using the cost function.\n\nInputs:\n\nstats::Dict{Symbol,DataFrame}: pairs of :solver => df;\ncost::Function: cost function applyed to each df. Should return a vector with the cost of solving the problem at each row;\n0 cost is not allowed;\nIf the solver did not solve the problem, return Inf or a negative number.\n\nExamples of cost functions:\n\ncost(df) = df.elapsed_time: Simple elapsed_time cost. Assumes the solver solved the problem.\ncost(df) = (df.status .!= :first_order) * Inf + df.elapsed_time: Takes into consideration the status of the solver.\n\n\n\n\n\n"
+},
+
+{
+    "location": "api/#Profiles-1",
+    "page": "API",
+    "title": "Profiles",
+    "category": "section",
+    "text": "performance_profile"
+},
+
+{
     "location": "api/#SolverBenchmark.LTXformat",
     "page": "API",
     "title": "SolverBenchmark.LTXformat",
