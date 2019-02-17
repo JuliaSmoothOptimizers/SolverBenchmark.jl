@@ -2,7 +2,7 @@
   "description": "Benchmarking tools for solvers in Julia",
   "title": "SolverBenchmark.jl",
   "upload_type": "software",
-  "license": "MPL2-0",
+  "license": "MPL-2.0",
   "creators": [
     {
       "affiliation": "Federal University of Paraná - UFPR",
