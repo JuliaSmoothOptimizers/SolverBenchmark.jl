@@ -13,10 +13,18 @@ latex_table
 markdown_table
 ```
 
+## PkgBenchmark
+
+```@docs
+bmark_results_to_dataframes
+to_gist
+```
+
 ## Profiles
 
 ```@docs
 performance_profile
+profile_solvers
 ```
 
 ## Formatting
