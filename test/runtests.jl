@@ -13,3 +13,4 @@ using SolverBenchmark
 include("data.jl")
 include("tables.jl")
 include("profiles.jl")
+include("pkgbmark.jl")
