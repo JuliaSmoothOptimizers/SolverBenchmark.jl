@@ -1,6 +1,7 @@
 import BenchmarkProfiles: performance_profile
+import Plots
 
-export performance_profile
+export performance_profile, profile_solvers
 
 """
     performance_profile(stats, cost)
@@ -22,4 +23,62 @@ function performance_profile(stats::Dict{Symbol,DataFrame}, cost::Function)
   dfs = (stats[s] for s in solvers)
   P = hcat([cost(df) for df in dfs]...)
   performance_profile(P, string.(solvers))
+end
+
+"""
+    p = profile_solvers(stats, costs, costnames)
+
+Produce performance profiles comparing `solvers` based on the data in `stats`.
+
+Inputs:
+- `stats::Dict{Symbol,DataFrame}`: a dictionary of `DataFrame`s containing the
+    benchmark results per solver (e.g., produced by `bmark_results_to_dataframes()`)
+- `costs::Vector{Function}`: a vector of functions specifying the measures to use in the profiles
+- `costnames::Vector{String}`: names to be used as titles of the profiles.
+
+Output:
+A Plots.jl plot representing a set of performance profiles comparing the solvers.
+The set contains performance profiles comparing all the solvers together on the
+measures given in `costs`.
+If there are more than two solvers, additional profiles are produced comparing the
+solvers two by two on each cost measure.
+"""
+function profile_solvers(stats::Dict{Symbol,DataFrame}, costs::Vector{<:Function}, costnames::Vector{String})
+  solvers = collect(keys(stats))
+  dfs = (stats[solver] for solver in solvers)
+  Ps = [hcat([cost(df) for df in dfs]...) for cost in costs]
+
+  nprobs = size(stats[first(solvers)], 1)
+
+  # profiles with all solvers
+  ps = [performance_profile(Ps[1], string.(solvers), title=costnames[1], legend=:bottomright)]
+  for k = 2 : length(Ps)
+    push!(ps, performance_profile(Ps[k], string.(solvers), title=costnames[k], legend=false))
+  end
+
+  nsolvers = length(solvers)
+  ncosts = length(costs)
+  if nsolvers > 2
+    npairs = 0
+    # combinations of solvers 2 by 2
+    colors = Plots.get_color_palette(:auto, Plots.plot_color(:white), nsolvers)
+    for i = 2 : nsolvers
+      for j = 1 : i-1
+        npairs += 1
+        pair = [solvers[i], solvers[j]]
+        dfs = (stats[solver] for solver in pair)
+        Ps = [hcat([cost(df) for df in dfs]...) for cost in costs]
+
+        clrs = [colors[i], colors[j]]
+        push!(ps, performance_profile(Ps[1], string.(pair), palette=clrs, legend=:bottomright))
+        for k = 2 : length(Ps)
+          push!(ps, performance_profile(Ps[k], string.(pair), palette=clrs, legend=false))
+        end
+      end
+    end
+    p = Plots.plot(ps..., layout=(1 + npairs, ncosts), size=(ncosts * 400, (1 + npairs) * 400))
+  else
+    p = Plots.plot(ps..., layout=(1, ncosts))
+  end
+  p
 end

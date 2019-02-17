@@ -15,4 +15,7 @@ include("join.jl")
 # Profiles
 include("profiles.jl")
 
+# PkgBenchmark benchmarks
+include("pkgbmark.jl")
+
 end
