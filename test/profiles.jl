@@ -7,6 +7,8 @@ function test_profiles()
   gr()
   p = performance_profile(stats, df->df.t);
   Plots.pdf("$example_folder/profile1")
+  p = profile_solvers(stats, [df->df.t, df->df.iter], ["Time", "Iterations"])
+  Plots.pdf("$example_folder/profile2")
   nothing
 end
 
