@@ -73,6 +73,30 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "api/#SolverBenchmark.bmark_results_to_dataframes",
+    "page": "API",
+    "title": "SolverBenchmark.bmark_results_to_dataframes",
+    "category": "function",
+    "text": "stats = bmark_results_to_dataframes(results)\n\nConvert PkgBenchmark results to a dictionary of DataFrames.\n\nInputs:\n\nresults::BenchmarkResults: the result of PkgBenchmark.benchmarkpkg()\n\nOutput:\n\nstats::Dict{Symbol,DataFrame}: a dictionary of DataFrames containing the   benchmark results per solver.\n\n\n\n\n\n"
+},
+
+{
+    "location": "api/#SolverBenchmark.to_gist",
+    "page": "API",
+    "title": "SolverBenchmark.to_gist",
+    "category": "function",
+    "text": "posted_gist = to_gist(results, p)\n\nCreate and post a gist with the benchmark results and performance profiles.\n\nInputs:\n\nresults::BenchmarkResults: the result of PkgBenchmark.benchmarkpkg()\np:: the result of profile_solvers().\n\nOutput:\n\nthe return value of GitHub.jl\'s create_gist().\n\n\n\n\n\nposted_gist = to_gist(results)\n\nCreate and post a gist with the benchmark results and performance profiles.\n\nInputs:\n\nresults::BenchmarkResults: the result of PkgBenchmark.benchmarkpkg()\n\nOutput:\n\nthe return value of GitHub.jl\'s create_gist().\n\n\n\n\n\n"
+},
+
+{
+    "location": "api/#PkgBenchmark-1",
+    "page": "API",
+    "title": "PkgBenchmark",
+    "category": "section",
+    "text": "bmark_results_to_dataframes\nto_gist"
+},
+
+{
     "location": "api/#BenchmarkProfiles.performance_profile",
     "page": "API",
     "title": "BenchmarkProfiles.performance_profile",
@@ -81,11 +105,19 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "api/#SolverBenchmark.profile_solvers",
+    "page": "API",
+    "title": "SolverBenchmark.profile_solvers",
+    "category": "function",
+    "text": "p = profile_solvers(stats, costs, costnames)\n\nProduce performance profiles comparing solvers based on the data in stats.\n\nInputs:\n\nstats::Dict{Symbol,DataFrame}: a dictionary of DataFrames containing the   benchmark results per solver (e.g., produced by bmark_results_to_dataframes())\ncosts::Vector{Function}: a vector of functions specifying the measures to use in the profiles\ncostnames::Vector{String}: names to be used as titles of the profiles.\n\nOutput: A Plots.jl plot representing a set of performance profiles comparing the solvers. The set contains performance profiles comparing all the solvers together on the measures given in costs. If there are more than two solvers, additional profiles are produced comparing the solvers two by two on each cost measure.\n\n\n\n\n\np = profile_solvers(results)\n\nProduce performance profiles based on PkgBenchmark.benchmarkpkg results.\n\nInputs:\n\nresults::BenchmarkResults: the result of PkgBenchmark.benchmarkpkg().\n\n\n\n\n\n"
+},
+
+{
     "location": "api/#Profiles-1",
     "page": "API",
     "title": "Profiles",
     "category": "section",
-    "text": "performance_profile"
+    "text": "performance_profile\nprofile_solvers"
 },
 
 {
