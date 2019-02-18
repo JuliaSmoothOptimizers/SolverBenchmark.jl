@@ -22,7 +22,7 @@ Output:
 """
 function join(stats::Dict{Symbol,DataFrame},
               cols::Array{Symbol,1};
-              invariant_cols::Array{Symbol,1} = [],
+              invariant_cols::Array{Symbol,1} = Symbol[],
               hdr_override::Dict{Symbol,String} = Dict{Symbol,String}(),
              )
   length(cols) == 0 && error("cols can't be empty")

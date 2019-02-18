@@ -78,7 +78,7 @@ function profile_solvers(stats::Dict{Symbol,DataFrame}, costs::Vector{<:Function
     end
     p = Plots.plot(ps..., layout=(1 + npairs, ncosts), size=(ncosts * 400, (1 + npairs) * 400))
   else
-    p = Plots.plot(ps..., layout=(1, ncosts))
+    p = Plots.plot(ps..., layout=(1, ncosts), size=(ncosts * 400, 400))
   end
   p
 end
