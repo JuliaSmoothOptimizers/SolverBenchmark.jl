@@ -17,6 +17,7 @@ markdown_table
 
 ```@docs
 bmark_results_to_dataframes
+judgement_results_to_dataframes
 to_gist
 ```
 
@@ -25,6 +26,7 @@ to_gist
 ```@docs
 performance_profile
 profile_solvers
+profile_package
 ```
 
 ## Formatting
