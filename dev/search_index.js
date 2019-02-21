@@ -81,6 +81,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "api/#SolverBenchmark.judgement_results_to_dataframes",
+    "page": "API",
+    "title": "SolverBenchmark.judgement_results_to_dataframes",
+    "category": "function",
+    "text": "stats = judgement_results_to_dataframes(judgement)\n\nConvert BenchmarkJudgement results to a dictionary of DataFrames.\n\nInputs:\n\njudgement::BenchmarkJudgement: the result of, e.g.,\ncommit = benchmarkpkg(mypkg)  # benchmark a commit or pull request\nmaster = benchmarkpkg(mypkg, \"master\")  # baseline benchmark\njudgement = judge(commit, master)\n\nOutput:\n\nstats::Dict{Symbol,DataFrame}: a dictionary of DataFrames containing the   target and baseline benchmark results.\n\n\n\n\n\n"
+},
+
+{
     "location": "api/#SolverBenchmark.to_gist",
     "page": "API",
     "title": "SolverBenchmark.to_gist",
@@ -93,7 +101,7 @@ var documenterSearchIndex = {"docs": [
     "page": "API",
     "title": "PkgBenchmark",
     "category": "section",
-    "text": "bmark_results_to_dataframes\nto_gist"
+    "text": "bmark_results_to_dataframes\njudgement_results_to_dataframes\nto_gist"
 },
 
 {
@@ -113,11 +121,19 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "api/#SolverBenchmark.profile_package",
+    "page": "API",
+    "title": "SolverBenchmark.profile_package",
+    "category": "function",
+    "text": "p = profile_package(judgement)\n\nProduce performance profiles based on PkgBenchmark.BenchmarkJudgement results.\n\nInputs:\n\njudgement::BenchmarkJudgement: the result of, e.g.,\ncommit = benchmarkpkg(mypkg)  # benchmark a commit or pull request\nmaster = benchmarkpkg(mypkg, \"master\")  # baseline benchmark\njudgement = judge(commit, master)\n\n\n\n\n\n"
+},
+
+{
     "location": "api/#Profiles-1",
     "page": "API",
     "title": "Profiles",
     "category": "section",
-    "text": "performance_profile\nprofile_solvers"
+    "text": "performance_profile\nprofile_solvers\nprofile_package"
 },
 
 {
