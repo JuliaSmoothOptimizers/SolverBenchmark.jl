@@ -3,7 +3,7 @@ import GitHub
 import JSON
 import PkgBenchmark
 
-export bmark_results_to_dataframes, to_gist
+export bmark_results_to_dataframes, judgement_results_to_dataframes, profile_package, to_gist
 
 """
     stats = bmark_results_to_dataframes(results)
@@ -44,6 +44,32 @@ function bmark_results_to_dataframes(results::PkgBenchmark.BenchmarkResults)
 end
 
 """
+    stats = judgement_results_to_dataframes(judgement)
+
+Convert `BenchmarkJudgement` results to a dictionary of `DataFrame`s.
+
+Inputs:
+- `judgement::BenchmarkJudgement`: the result of, e.g.,
+
+      commit = benchmarkpkg(mypkg)  # benchmark a commit or pull request
+      master = benchmarkpkg(mypkg, "master")  # baseline benchmark
+      judgement = judge(commit, master)
+
+Output:
+- `stats::Dict{Symbol,DataFrame}`: a dictionary of `DataFrame`s containing the
+    target and baseline benchmark results.
+"""
+function judgement_results_to_dataframes(judgement::PkgBenchmark.BenchmarkJudgement)
+  target_stats = bmark_results_to_dataframes(judgement.target_results)
+  baseline_stats = bmark_results_to_dataframes(judgement.baseline_results)
+  stats = Dict{Symbol,DataFrame}()
+  k = first(keys(target_stats))
+  stats[:target] = target_stats[k]
+  stats[:baseline] = baseline_stats[k]
+  stats
+end
+
+"""
     p = profile_solvers(results)
 
 Produce performance profiles based on `PkgBenchmark.benchmarkpkg` results.
@@ -55,6 +81,25 @@ function profile_solvers(results::PkgBenchmark.BenchmarkResults)
   # guard against zero gctimes
   costs = [df -> df[:time], df -> df[:memory], df -> df[:gctime] .+ 1, df -> df[:allocations]]
   profile_solvers(bmark_results_to_dataframes(results), costs, ["time", "memory", "gctime+1", "allocations"])
+end
+
+"""
+    p = profile_package(judgement)
+
+Produce performance profiles based on `PkgBenchmark.BenchmarkJudgement` results.
+
+Inputs:
+- `judgement::BenchmarkJudgement`: the result of, e.g.,
+
+      commit = benchmarkpkg(mypkg)  # benchmark a commit or pull request
+      master = benchmarkpkg(mypkg, "master")  # baseline benchmark
+      judgement = judge(commit, master)
+
+"""
+function profile_package(judgement::PkgBenchmark.BenchmarkJudgement)
+  # guard against zero gctimes
+  costs = [df -> df[:time], df -> df[:memory], df -> df[:gctime] .+ 1, df -> df[:allocations]]
+  profile_solvers(judgement_results_to_dataframes(judgement), costs, ["time", "memory", "gctime+1", "allocations"])
 end
 
 """
