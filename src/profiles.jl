@@ -36,6 +36,10 @@ Inputs:
 - `costs::Vector{Function}`: a vector of functions specifying the measures to use in the profiles
 - `costnames::Vector{String}`: names to be used as titles of the profiles.
 
+Keyword inputs:
+- `width::Int`: Width of each individual plot (Default: 400)
+- `height::Int`: Height of each individual plot (Default: 400)
+
 Output:
 A Plots.jl plot representing a set of performance profiles comparing the solvers.
 The set contains performance profiles comparing all the solvers together on the
@@ -43,7 +47,12 @@ measures given in `costs`.
 If there are more than two solvers, additional profiles are produced comparing the
 solvers two by two on each cost measure.
 """
-function profile_solvers(stats::Dict{Symbol,DataFrame}, costs::Vector{<:Function}, costnames::Vector{String})
+function profile_solvers(stats::Dict{Symbol,DataFrame},
+                         costs::Vector{<:Function},
+                         costnames::Vector{String};
+                         width::Int=400,
+                         height::Int=400
+                        )
   solvers = collect(keys(stats))
   dfs = (stats[solver] for solver in solvers)
   Ps = [hcat([cost(df) for df in dfs]...) for cost in costs]
@@ -76,9 +85,9 @@ function profile_solvers(stats::Dict{Symbol,DataFrame}, costs::Vector{<:Function
         end
       end
     end
-    p = plot(ps..., layout=(1 + npairs, ncosts), size=(ncosts * 400, (1 + npairs) * 400))
+    p = plot(ps..., layout=(1 + ipairs, ncosts), size=(ncosts * width, (1 + ipairs) * height))
   else
-    p = plot(ps..., layout=(1, ncosts), size=(ncosts * 400, 400))
+    p = plot(ps..., layout=(1, ncosts), size=(ncosts * width, height))
   end
   p
 end
