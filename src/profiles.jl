@@ -58,30 +58,40 @@ function profile_solvers(stats::Dict{Symbol,DataFrame},
   Ps = [hcat([cost(df) for df in dfs]...) for cost in costs]
 
   nprobs = size(stats[first(solvers)], 1)
+  nsolvers = length(solvers)
+  ncosts = length(costs)
+  npairs = div(nsolvers * (nsolvers - 1), 2)
 
   # profiles with all solvers
   ps = [performance_profile(Ps[1], string.(solvers), title=costnames[1], legend=:bottomright)]
-  for k = 2 : length(Ps)
-    push!(ps, performance_profile(Ps[k], string.(solvers), title=costnames[k], legend=false))
+  nsolvers > 2 && xlabel!(ps[1], "")
+  for k = 2 : ncosts
+    p = performance_profile(Ps[k], string.(solvers), title=costnames[k], legend=false)
+    nsolvers > 2 && xlabel!(p, "")
+    ylabel!(p, "")
+    push!(ps, p)
   end
 
-  nsolvers = length(solvers)
-  ncosts = length(costs)
   if nsolvers > 2
-    npairs = 0
+    ipairs = 0
     # combinations of solvers 2 by 2
     colors = get_color_palette(:auto, plot_color(:white), nsolvers)
     for i = 2 : nsolvers
       for j = 1 : i-1
-        npairs += 1
+        ipairs += 1
         pair = [solvers[i], solvers[j]]
         dfs = (stats[solver] for solver in pair)
         Ps = [hcat([cost(df) for df in dfs]...) for cost in costs]
 
         clrs = [colors[i], colors[j]]
-        push!(ps, performance_profile(Ps[1], string.(pair), palette=clrs, legend=:bottomright))
+        p = performance_profile(Ps[1], string.(pair), palette=clrs, legend=:bottomright)
+        ipairs < npairs && xlabel!(p, "")
+        push!(ps, p)
         for k = 2 : length(Ps)
-          push!(ps, performance_profile(Ps[k], string.(pair), palette=clrs, legend=false))
+          p = performance_profile(Ps[k], string.(pair), palette=clrs, legend=false)
+          ipairs < npairs && xlabel!(p, "")
+          ylabel!(p, "")
+          push!(ps, p)
         end
       end
     end
