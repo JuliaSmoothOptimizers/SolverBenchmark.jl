@@ -1,5 +1,5 @@
 import BenchmarkProfiles: performance_profile
-import Plots
+using Plots
 
 export performance_profile, profile_solvers
 
@@ -61,7 +61,7 @@ function profile_solvers(stats::Dict{Symbol,DataFrame}, costs::Vector{<:Function
   if nsolvers > 2
     npairs = 0
     # combinations of solvers 2 by 2
-    colors = Plots.get_color_palette(:auto, Plots.plot_color(:white), nsolvers)
+    colors = get_color_palette(:auto, plot_color(:white), nsolvers)
     for i = 2 : nsolvers
       for j = 1 : i-1
         npairs += 1
@@ -76,9 +76,9 @@ function profile_solvers(stats::Dict{Symbol,DataFrame}, costs::Vector{<:Function
         end
       end
     end
-    p = Plots.plot(ps..., layout=(1 + npairs, ncosts), size=(ncosts * 400, (1 + npairs) * 400))
+    p = plot(ps..., layout=(1 + npairs, ncosts), size=(ncosts * 400, (1 + npairs) * 400))
   else
-    p = Plots.plot(ps..., layout=(1, ncosts), size=(ncosts * 400, 400))
+    p = plot(ps..., layout=(1, ncosts), size=(ncosts * 400, 400))
   end
   p
 end
