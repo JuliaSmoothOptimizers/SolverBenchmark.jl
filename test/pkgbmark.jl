@@ -1,4 +1,5 @@
 using BenchmarkTools
+using LibGit2
 using PkgBenchmark
 import Plots
 
@@ -20,7 +21,9 @@ function test_pkgbmark()
   p = profile_solvers(stats, costs, ["time", "memory", "gctime+1", "allocations"])
   @test typeof(p) <: Plots.Plot
 
+  repo = LibGit2.GitRepo(joinpath(@__DIR__, ".."))
   if get(ENV, "CI", nothing) == "true"
+    LibGit2.lookup_branch(repo, "master") === nothing && LibGit2.branch!(repo, "master", force=true)
     master = PkgBenchmark.benchmarkpkg("SolverBenchmark", "master", script=joinpath(@__DIR__, "bmark_suite.jl"))
     judgement = PkgBenchmark.judge(results, master)
     stats = judgement_results_to_dataframes(judgement)
