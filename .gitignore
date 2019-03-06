@@ -3,3 +3,7 @@ test/example/profile*
 
 docs/build
 docs/Manifest.toml
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
