@@ -24,7 +24,7 @@ function generate_assets()
     latex_table(io, df, cols=cols, hdr_override=header)
   end
   run(`latexmk -pdf alpha-standalone.tex`)
-  run(`convert -density 150 alpha-standalone.pdf -background white -flatten alpha.png`)
+  run(`pdf2svg alpha-standalone.pdf alpha.svg`)
 
   header = Dict(:status => "flag", :f => "f(x)", :t => "time")
   open("alpha.md", "w") do io
@@ -39,7 +39,7 @@ function generate_assets()
     latex_table(io, df)
   end
   run(`latexmk -pdf joined-standalone.tex`)
-  run(`convert -density 150 joined-standalone.pdf -background white -flatten joined.png`)
+  run(`pdf2svg joined-standalone.pdf joined.svg`)
 
   open("joined.md", "w") do io
     markdown_table(io, df)
@@ -47,9 +47,9 @@ function generate_assets()
 
   # Profile
   p = performance_profile(stats, df->df.t);
-  Plots.png("profile1")
+  Plots.svg("profile1")
   p = profile_solvers(stats, [df->df.t, df->df.iter], ["Time", "Iterations"])
-  Plots.png("profile2")
+  Plots.svg("profile2")
 end
 
 generate_assets()

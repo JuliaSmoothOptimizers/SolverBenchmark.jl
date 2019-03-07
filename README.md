@@ -16,7 +16,7 @@ guidelines:
 
 This package is developed focusing on
 [Krylov.jl](https://github.com/JuliaSmoothOptimizers/Krylov.jl) and
-[Optimize.jl](https://github.com/JuliaSmoothOptimizers/Optimize.jl), but is
+[JSOSolvers.jl](https://github.com/JuliaSmoothOptimizers/JSOSolvers.jl), but is
 sufficiently general to be used in other places.
 
 ## Example
@@ -44,7 +44,7 @@ Obs: See the [assets](assets) folder for the complete code, or the [docs](https:
 
 `latex_table(io, df)`
 
-![](assets/alpha.png?)
+![](assets/alpha.svg)
 
 ### Example table of a joined `DataFrame`
 
@@ -70,16 +70,16 @@ markdown_table(io, df)
 
 `latex_table(io, df)`
 
-![](assets/joined.png?)
+![](assets/joined.svg)
 
 ### Example profile
 
 `p = performance_profile(stats, df->df.t)`
 
-![](assets/profile1.png)
+![](assets/profile1.svg)
 
 ### Example profile-wall
 
 `p = profile_solvers(stats, costs, titles)`
 
-![](assets/profile2.png)
+![](assets/profile2.svg)
