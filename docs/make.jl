@@ -9,6 +9,7 @@ makedocs(
   format = Documenter.HTML(prettyurls = get(ENV, "CI", nothing) == "true"),
   sitename = "SolverBenchmark.jl",
   pages = ["Home" => "index.md",
+           "Tutorial" => "tutorial.md",
            "API" => "api.md",
            "Reference" => "reference.md",
           ]
