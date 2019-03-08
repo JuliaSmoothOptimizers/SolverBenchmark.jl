@@ -1,8 +1,8 @@
 # Tutorial
 
-In this tutorial we can see the main uses of `SolverBenchmark`.
+In this tutorial we illustrate the main uses of `SolverBenchmark`.
 
-First, let's create fake data. It is imperative that the data for each solver is stored
+First, let's create fake data. It is imperative that the data for each solver be stored
 in `DataFrame`s, and the collection of different solver must be stored in a dictionary of
 `Symbol` to `DataFrame`.
 
@@ -17,7 +17,7 @@ n = 10
 names = [:alpha, :beta, :gamma]
 stats = Dict(name => DataFrame(:id => 1:n,
          :name => [@sprintf("prob%03d", i) for i = 1:n],
-         :status => map(x -> x ? :success : :failure, rand(n) .< 0.75),
+         :status => map(x -> x < 0.75 ? :success : :failure, rand(n)),
          :f => randn(n),
          :t => 1e-3 .+ rand(n) * 1000,
          :iter => rand(10:10:100, n),
@@ -27,9 +27,10 @@ stats = Dict(name => DataFrame(:id => 1:n,
 The data consists of a (fake) run of three solvers `alpha`, `beta` and `gamma`.
 Each solver has a column `id`, which is necessary for joining the solvers (names
 can be repeated), and columns `name`, `status`, `f`, `t` and `iter` corresponding to
-problem results. There is also a column `irrelevant` with irrelevant information.
+problem results. There is also a column `irrelevant` with extra information that will
+not be used to produce our benchmarks.
 
-Here is solver `alpha`:
+Here are the statistics of solver `alpha`:
 
 ```@example ex1
 stats[:alpha]
@@ -43,7 +44,7 @@ packages, as well as simply printing the DataFrame.
 Our concern here is two-fold: producing publication-ready LaTeX tables, and web-ready
 markdown tables.
 
-The simplest use is `foo_table(io, dataframe)`. Here is printout to the `stdout`.
+The simplest use is `foo_table(io, dataframe)`. Here is printout to the `stdout`:
 
 ```@example ex1
 using SolverBenchmark
@@ -84,8 +85,8 @@ markdown_table(stdout, stats[:alpha], cols=[:name, :f, :t])
 Notice that passing a column that does not exist will throw an error, but you can pass
 `ignore_missing_cols=true` to simply ignore that column.
 
-The `fmt_override` option override the formatting of a specific column. The  argument
-should be a dictionary of `Symbol` to functions, where the functions will be applied on
+The `fmt_override` option overrides the formatting of a specific column. The  argument
+should be a dictionary of `Symbol` to functions, where the functions will be applied to
 each element of the column.
 
 The `hdr_override` simply changes the name of the column.
@@ -97,7 +98,7 @@ hdr_override = Dict(:name => "Name", :f => "f(x)", :t => "Time")
 markdown_table(stdout, stats[:alpha], cols=[:name, :f, :t], fmt_override=fmt_override, hdr_override=hdr_override)
 ```
 
-This allows for elaborated things, such as
+This allows for elaborate things, such as
 
 ```@example ex1
 function time_fmt(x)
@@ -112,7 +113,7 @@ hdr_override = Dict(:name => "Name", :f => "f(x)", :t => "Time")
 markdown_table(stdout, stats[:alpha], cols=[:name, :f, :t], fmt_override=fmt_override, hdr_override=hdr_override)
 ```
 
-Notice that for `latex_table`, the output needs to be understood by the LaTeX compiler.
+Notice that for `latex_table`, the output must be understood by the LaTeX compiler.
 To that end, we have a few functions that convert a specific element into a LaTeX-safe
 string: [`safe_latex_AbstractFloat`](@ref), [`safe_latex_AbstractString`](@ref),
 [`safe_latex_Symbol`](@ref) and [`safe_latex_Signed`](@ref).
@@ -146,7 +147,7 @@ run(`pdf2svg alpha2.pdf alpha2.svg`)
 
 ### Joining tables
 
-In some occasions, instead of/in addition to showing the individual results, we show
+In some occasions, instead of/in addition to showing individual results, we show
 a table with the result of multiple solvers.
 
 ```@example ex1
@@ -154,8 +155,8 @@ df = join(stats, [:f, :t])
 markdown_table(stdout, df)
 ```
 
-The column `:id` is used as guide on where to join. In addition, we may have more
-repeated columns between the solvers. We inform that with argument `invartiant_cols`.
+The column `:id` is used as guide on where to join. In addition, we may have
+repeated columns between the solvers. We convery that information with argument `invariant_cols`.
 
 ```@example ex1
 df = join(stats, [:f, :t], invariant_cols=[:name])
@@ -193,11 +194,11 @@ run(`pdf2svg alpha3.pdf alpha3.svg`)
 ## Profiles
 
 Performance profiles are a comparison tool developed by [Dolan and
-Moré, 2002](https://link.springer.com/article/10.1007/s101070100263) which takes into
-account the relative speed of a solver and whether it has achieved convergence for each
-problem. `SolverBenchmark.jl` uses the implementation in
+Moré, 2002](https://link.springer.com/article/10.1007/s101070100263) that takes into
+account the relative performance of a solver and whether it has achieved convergence for each
+problem. `SolverBenchmark.jl` uses
 [BenchmarkProfiles.jl](https://github.com/JuliaSmoothOptimizers/BenchmarkProfiles.jl)
-for generating performance profiles from the dictionary of dataframes.
+for generating performance profiles from the dictionary of `DataFrame`s.
 
 The basic usage is `performance_profile(stats, cost)`, where `cost` is a function
 applied to a `DataFrame` and returning a vector.
@@ -212,7 +213,8 @@ Plots.svg(p, "profile1")
 
 ![](profile1.svg)
 
-Notice that we used `df -> df.t` which corresponds to the column `:t` of the dataframes.
+Notice that we used `df -> df.t` which corresponds to the column `:t` of the
+`DataFrame`s.
 This does not take into account that the solvers have failed for a few problems
 (according to column :status). The next profile takes that into account.
 
@@ -227,7 +229,7 @@ Plots.svg(p, "profile2")
 ### Profile wall
 
 Another profile function is `profile_solvers`, which creates a wall of performance
-profiles, accepting multiple costs and doing 1x1 comparisons in addition to the
+profiles, accepting multiple costs and doing 1 vs 1 comparisons in addition to the
 traditional performance profile.
 
 ```@example ex1
