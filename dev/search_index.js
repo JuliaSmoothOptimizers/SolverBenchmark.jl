@@ -53,7 +53,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Tutorial",
     "title": "Profiles",
     "category": "section",
-    "text": "Performance profiles are a comparison tool developed by Dolan and Moré, 2002 that takes into account the relative performance of a solver and whether it has achieved convergence for each problem. SolverBenchmark.jl uses BenchmarkProfiles.jl for generating performance profiles from the dictionary of DataFrames.The basic usage is performance_profile(stats, cost), where cost is a function applied to a DataFrame and returning a vector.using Plots\npyplot()\n\np = performance_profile(stats, df -> df.t)\nPlots.svg(p, \"profile1\")(Image: )Notice that we used df -> df.t which corresponds to the column :t of the DataFrames. This does not take into account that the solvers have failed for a few problems (according to column :status). The next profile takes that into account.cost(df) = (df.status .!= :success) * Inf + df.t\np = performance_profile(stats, cost)\nPlots.svg(p, \"profile2\")(Image: )"
+    "text": "Performance profiles are a comparison tool developed by Dolan and Moré, 2002 that takes into account the relative performance of a solver and whether it has achieved convergence for each problem. SolverBenchmark.jl uses BenchmarkProfiles.jl for generating performance profiles from the dictionary of DataFrames.The basic usage is performance_profile(stats, cost), where cost is a function applied to a DataFrame and returning a vector.# Running on setup to avoid warnings\nusing Plots\npyplot()\n\np = performance_profile(stats, df -> df.t)\nPlots.svg(p, \"profile1\")using Plots\npyplot()\n\np = performance_profile(stats, df -> df.t)\nPlots.svg(p, \"profile1\")(Image: )Notice that we used df -> df.t which corresponds to the column :t of the DataFrames. This does not take into account that the solvers have failed for a few problems (according to column :status). The next profile takes that into account.cost(df) = (df.status .!= :success) * Inf + df.t\np = performance_profile(stats, cost)\nPlots.svg(p, \"profile2\")cost(df) = (df.status .!= :success) * Inf + df.t\np = performance_profile(stats, cost)\nPlots.svg(p, \"profile2\")(Image: )"
 },
 
 {
@@ -61,7 +61,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Tutorial",
     "title": "Profile wall",
     "category": "section",
-    "text": "Another profile function is profile_solvers, which creates a wall of performance profiles, accepting multiple costs and doing 1 vs 1 comparisons in addition to the traditional performance profile.solved(df) = (df.status .== :success)\ncosts = [df -> .!solved(df) * Inf + df.t, df -> .!solved(df) * Inf + df.iter]\ncostnames = [\"Time\", \"Iterations\"]\np = profile_solvers(stats, costs, costnames)\nPlots.svg(p, \"profile3\")(Image: )"
+    "text": "Another profile function is profile_solvers, which creates a wall of performance profiles, accepting multiple costs and doing 1 vs 1 comparisons in addition to the traditional performance profile.solved(df) = (df.status .== :success)\ncosts = [df -> .!solved(df) * Inf + df.t, df -> .!solved(df) * Inf + df.iter]\ncostnames = [\"Time\", \"Iterations\"]\np = profile_solvers(stats, costs, costnames)\nPlots.svg(p, \"profile3\")solved(df) = (df.status .== :success)\ncosts = [df -> .!solved(df) * Inf + df.t, df -> .!solved(df) * Inf + df.iter]\ncostnames = [\"Time\", \"Iterations\"]\np = profile_solvers(stats, costs, costnames)\nPlots.svg(p, \"profile3\")(Image: )"
 },
 
 {
