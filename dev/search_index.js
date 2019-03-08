@@ -13,7 +13,55 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "SolverBenchmark.jl documentation",
     "category": "section",
-    "text": "This package provides general tools for benchmarking solvers, focusing on a few guidelines:The output of a solver\'s run on a suite of problems is a DataFrame, where each row is a different problem.\nSince naming issues may arise (e.g., same problem with different number of variables), there must be an ID column;\nThe collection of two or more solver runs (DataFrames), is a Dict{Symbol,DataFrame}, where each key is a solver;Package objectives:Print to latex;\nPrint to pretty markdown table;\nProduce performance profiles.This package is developed focusing on Krylov.jl and Optimize.jl, but they should be general enough to be used in other places."
+    "text": "This package provides general tools for benchmarking solvers, focusing on a few guidelines:The output of a solver\'s run on a suite of problems is a DataFrame, where each row is a different problem.\nSince naming issues may arise (e.g., same problem with different number of variables), there must be an ID column;\nThe collection of two or more solver runs (DataFrames), is a Dict{Symbol,DataFrame}, where each key is a solver;This package is developed focusing on Krylov.jl and JSOSolvers.jl, but they should be general enough to be used in other places."
+},
+
+{
+    "location": "tutorial/#",
+    "page": "Tutorial",
+    "title": "Tutorial",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "tutorial/#Tutorial-1",
+    "page": "Tutorial",
+    "title": "Tutorial",
+    "category": "section",
+    "text": "In this tutorial we illustrate the main uses of SolverBenchmark.First, let\'s create fake data. It is imperative that the data for each solver be stored in DataFrames, and the collection of different solver must be stored in a dictionary of Symbol to DataFrame.In our examples we\'ll use the following data.using DataFrames, Printf, Random\n\nRandom.seed!(0)\n\nn = 10\nnames = [:alpha, :beta, :gamma]\nstats = Dict(name => DataFrame(:id => 1:n,\n         :name => [@sprintf(\"prob%03d\", i) for i = 1:n],\n         :status => map(x -> x < 0.75 ? :success : :failure, rand(n)),\n         :f => randn(n),\n         :t => 1e-3 .+ rand(n) * 1000,\n         :iter => rand(10:10:100, n),\n         :irrelevant => randn(n)) for name in names)The data consists of a (fake) run of three solvers alpha, beta and gamma. Each solver has a column id, which is necessary for joining the solvers (names can be repeated), and columns name, status, f, t and iter corresponding to problem results. There is also a column irrelevant with extra information that will not be used to produce our benchmarks.Here are the statistics of solver alpha:stats[:alpha]"
+},
+
+{
+    "location": "tutorial/#Tables-1",
+    "page": "Tutorial",
+    "title": "Tables",
+    "category": "section",
+    "text": "The first thing we may want to do is produce a table for each solver. Notice that the solver result is already a DataFrame, so there are a few options available in other packages, as well as simply printing the DataFrame. Our concern here is two-fold: producing publication-ready LaTeX tables, and web-ready markdown tables.The simplest use is foo_table(io, dataframe). Here is printout to the stdout:using SolverBenchmark\n\nmarkdown_table(stdout, stats[:alpha])latex_table(stdout, stats[:alpha])Alternatively, you can print to a file.open(\"alpha.tex\", \"w\") do io\n  println(io, \"\\\\documentclass[varwidth=20cm,crop=true]{standalone}\")\n  println(io, \"\\\\usepackage{longtable}\")\n  println(io, \"\\\\begin{document}\")\n  latex_table(io, stats[:alpha])\n  println(io, \"\\\\end{document}\")\nendrun(`latexmk -quiet -pdf alpha.tex`)\nrun(`pdf2svg alpha.pdf alpha.svg`)(Image: )The main options for both table commands is cols, which defines which columns to use.markdown_table(stdout, stats[:alpha], cols=[:name, :f, :t])Notice that passing a column that does not exist will throw an error, but you can pass ignore_missing_cols=true to simply ignore that column.The fmt_override option overrides the formatting of a specific column. The  argument should be a dictionary of Symbol to functions, where the functions will be applied to each element of the column.The hdr_override simply changes the name of the column.fmt_override = Dict(:f => x->@sprintf(\"%+10.3e\", x),\n                    :t => x->@sprintf(\"%08.2f\", x))\nhdr_override = Dict(:name => \"Name\", :f => \"f(x)\", :t => \"Time\")\nmarkdown_table(stdout, stats[:alpha], cols=[:name, :f, :t], fmt_override=fmt_override, hdr_override=hdr_override)This allows for elaborate things, such asfunction time_fmt(x)\n  xi = floor(Int, x)\n  minutes = div(xi, 60)\n  seconds = xi % 60\n  micros  = round(Int, 1e6 * (x - xi))\n  @sprintf(\"%2dm %02ds %06dμs\", minutes, seconds, micros)\nend\nfmt_override = Dict(:f => x->@sprintf(\"%+10.3e\", x), :t => time_fmt)\nhdr_override = Dict(:name => \"Name\", :f => \"f(x)\", :t => \"Time\")\nmarkdown_table(stdout, stats[:alpha], cols=[:name, :f, :t], fmt_override=fmt_override, hdr_override=hdr_override)Notice that for latex_table, the output must be understood by the LaTeX compiler. To that end, we have a few functions that convert a specific element into a LaTeX-safe string: safe_latex_AbstractFloat, safe_latex_AbstractString, safe_latex_Symbol and safe_latex_Signed.function time_fmt(x)\n  xi = floor(Int, x)\n  minutes = div(xi, 60)\n  seconds = xi % 60\n  micros  = round(Int, 1e6 * (x - xi))\n  @sprintf(\"\\\\(%2d\\\\)m \\\\(%02d\\\\)s \\\\(%06d\\\\mu s\\\\)\", minutes, seconds, micros)\nend\nfmt_override = Dict(:f => x->@sprintf(\"%+10.3e\", x) |> safe_latex_AbstractFloat,\n                    :t => time_fmt)\nhdr_override = Dict(:name => \"Name\", :f => \"\\\\(f(x)\\\\)\", :t => \"Time\")\nopen(\"alpha2.tex\", \"w\") do io\n  println(io, \"\\\\documentclass[varwidth=20cm,crop=true]{standalone}\")\n  println(io, \"\\\\usepackage{longtable}\")\n  println(io, \"\\\\begin{document}\")\n  latex_table(io, stats[:alpha], cols=[:name, :f, :t], fmt_override=fmt_override, hdr_override=hdr_override)\n  println(io, \"\\\\end{document}\")\nendrun(`latexmk -quiet -pdf alpha2.tex`)\nrun(`pdf2svg alpha2.pdf alpha2.svg`)(Image: )"
+},
+
+{
+    "location": "tutorial/#Joining-tables-1",
+    "page": "Tutorial",
+    "title": "Joining tables",
+    "category": "section",
+    "text": "In some occasions, instead of/in addition to showing individual results, we show a table with the result of multiple solvers.df = join(stats, [:f, :t])\nmarkdown_table(stdout, df)The column :id is used as guide on where to join. In addition, we may have repeated columns between the solvers. We convery that information with argument invariant_cols.df = join(stats, [:f, :t], invariant_cols=[:name])\nmarkdown_table(stdout, df)join also accepts hdr_override for changing the column name before appending _solver.hdr_override = Dict(:name => \"Name\", :f => \"f(x)\", :t => \"Time\")\ndf = join(stats, [:f, :t], invariant_cols=[:name], hdr_override=hdr_override)\nmarkdown_table(stdout, df)hdr_override = Dict(:name => \"Name\", :f => \"\\\\(f(x)\\\\)\", :t => \"Time\")\ndf = join(stats, [:f, :t], invariant_cols=[:name], hdr_override=hdr_override)\nopen(\"alpha3.tex\", \"w\") do io\n  println(io, \"\\\\documentclass[varwidth=20cm,crop=true]{standalone}\")\n  println(io, \"\\\\usepackage{longtable}\")\n  println(io, \"\\\\begin{document}\")\n  latex_table(io, df)\n  println(io, \"\\\\end{document}\")\nendrun(`latexmk -quiet -pdf alpha3.tex`)\nrun(`pdf2svg alpha3.pdf alpha3.svg`)(Image: )"
+},
+
+{
+    "location": "tutorial/#Profiles-1",
+    "page": "Tutorial",
+    "title": "Profiles",
+    "category": "section",
+    "text": "Performance profiles are a comparison tool developed by Dolan and Moré, 2002 that takes into account the relative performance of a solver and whether it has achieved convergence for each problem. SolverBenchmark.jl uses BenchmarkProfiles.jl for generating performance profiles from the dictionary of DataFrames.The basic usage is performance_profile(stats, cost), where cost is a function applied to a DataFrame and returning a vector.using Plots\npyplot()\n\np = performance_profile(stats, df -> df.t)\nPlots.svg(p, \"profile1\")(Image: )Notice that we used df -> df.t which corresponds to the column :t of the DataFrames. This does not take into account that the solvers have failed for a few problems (according to column :status). The next profile takes that into account.cost(df) = (df.status .!= :success) * Inf + df.t\np = performance_profile(stats, cost)\nPlots.svg(p, \"profile2\")(Image: )"
+},
+
+{
+    "location": "tutorial/#Profile-wall-1",
+    "page": "Tutorial",
+    "title": "Profile wall",
+    "category": "section",
+    "text": "Another profile function is profile_solvers, which creates a wall of performance profiles, accepting multiple costs and doing 1 vs 1 comparisons in addition to the traditional performance profile.solved(df) = (df.status .== :success)\ncosts = [df -> .!solved(df) * Inf + df.t, df -> .!solved(df) * Inf + df.iter]\ncostnames = [\"Time\", \"Iterations\"]\np = profile_solvers(stats, costs, costnames)\nPlots.svg(p, \"profile3\")(Image: )"
 },
 
 {
