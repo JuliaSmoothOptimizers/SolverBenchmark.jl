@@ -203,7 +203,16 @@ for generating performance profiles from the dictionary of `DataFrame`s.
 The basic usage is `performance_profile(stats, cost)`, where `cost` is a function
 applied to a `DataFrame` and returning a vector.
 
-```@example ex1
+```@setup ex1
+# Running on setup to avoid warnings
+using Plots
+pyplot()
+
+p = performance_profile(stats, df -> df.t)
+Plots.svg(p, "profile1")
+```
+
+```
 using Plots
 pyplot()
 
@@ -218,7 +227,13 @@ Notice that we used `df -> df.t` which corresponds to the column `:t` of the
 This does not take into account that the solvers have failed for a few problems
 (according to column :status). The next profile takes that into account.
 
-```@example ex1
+```@setup ex1
+cost(df) = (df.status .!= :success) * Inf + df.t
+p = performance_profile(stats, cost)
+Plots.svg(p, "profile2")
+```
+
+```
 cost(df) = (df.status .!= :success) * Inf + df.t
 p = performance_profile(stats, cost)
 Plots.svg(p, "profile2")
@@ -232,7 +247,15 @@ Another profile function is `profile_solvers`, which creates a wall of performan
 profiles, accepting multiple costs and doing 1 vs 1 comparisons in addition to the
 traditional performance profile.
 
-```@example ex1
+```@setup ex1
+solved(df) = (df.status .== :success)
+costs = [df -> .!solved(df) * Inf + df.t, df -> .!solved(df) * Inf + df.iter]
+costnames = ["Time", "Iterations"]
+p = profile_solvers(stats, costs, costnames)
+Plots.svg(p, "profile3")
+```
+
+```
 solved(df) = (df.status .== :success)
 costs = [df -> .!solved(df) * Inf + df.t, df -> .!solved(df) * Inf + df.iter]
 costnames = ["Time", "Iterations"]
