@@ -70,6 +70,10 @@ Latexmk: Run number 2 of rule &#39;pdflatex&#39;
 This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian)
  restricted \write18 enabled.
 entering extended mode
+Latexmk: Run number 3 of rule &#39;pdflatex&#39;
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian)
+ restricted \write18 enabled.
+entering extended mode
 Process(`pdf2svg alpha.pdf alpha.svg`, ProcessExited(0))</code></pre></div><p><img src="../alpha.svg" alt/></p><p>The main options for both <code>table</code> commands is <code>cols</code>, which defines which columns to use.</p><div><pre><code class="language-julia">markdown_table(stdout, stats[:alpha], cols=[:name, :f, :t])</code></pre><pre><code class="language-none">|    name |        f |        t |
 |---------|----------|----------|
 | prob001 | -6.9e-01 |  6.2e+01 |

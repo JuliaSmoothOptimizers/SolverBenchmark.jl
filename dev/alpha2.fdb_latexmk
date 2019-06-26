@@ -1,7 +1,7 @@
 # Fdb version 3
-["pdflatex"] 1560541987 "alpha2.tex" "alpha2.pdf" "alpha2" 1560541987
-  "/dev/null" 1560541630 0 d41d8cd98f00b204e9800998ecf8427e ""
-  "/etc/texmf/web2c/texmf.cnf" 1560541682 475 c0e671620eb5563b2130f56340a5fde8 ""
+["pdflatex"] 1561570401 "alpha2.tex" "alpha2.pdf" "alpha2" 1561570401
+  "/dev/null" 1561570004 0 d41d8cd98f00b204e9800998ecf8427e ""
+  "/etc/texmf/web2c/texmf.cnf" 1561570174 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm" 1136768653 1328 c834bbb027764024c09d3d2bf908b5f0 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb" 1248133631 36299 5f9df58c2139e7edcf37c8fca4bd384d ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb" 1248133631 35752 024fb6c41858982481f6968b5fc26508 ""
@@ -20,11 +20,11 @@
   "/usr/share/texlive/texmf-dist/tex/latex/xkeyval/xkeyval.sty" 1350473462 4934 09bb8eb3760faa4ffb6107a36e5b3d76 ""
   "/usr/share/texlive/texmf-dist/web2c/texmf.cnf" 1503347518 31075 dbb81bd39d798acf14cc121a151f7fe7 ""
   "/usr/share/texmf/web2c/texmf.cnf" 1503347518 31075 dbb81bd39d798acf14cc121a151f7fe7 ""
-  "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1560541689 36654 b0cb74be1f5c4b3e13aea99fea1b5602 ""
-  "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1560541687 722335 e55a8582ce304bbd2fd6c8bdd4d0a885 ""
-  "alpha2.aux" 1560541987 113 d57c8e9344c3349ad21388289d705ce9 ""
-  "alpha2.tex" 1560541986 1121 a4291402b267b1c858b9e155de268dde ""
+  "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1561570182 36654 b0cb74be1f5c4b3e13aea99fea1b5602 ""
+  "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1561570181 722335 23bec48f7b04f403e791fbf0027e85b5 ""
+  "alpha2.aux" 1561570401 113 d57c8e9344c3349ad21388289d705ce9 ""
+  "alpha2.tex" 1561570401 1121 a4291402b267b1c858b9e155de268dde ""
   (generated)
+  "alpha2.aux"
   "alpha2.log"
   "alpha2.pdf"
-  "alpha2.aux"
