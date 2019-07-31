@@ -89,15 +89,15 @@ end</code></pre><pre><code class="language-none">┌ Warning: `haskey(df::Abstra
 │   caller = (::getfield(SolverBenchmark, Symbol(&quot;##4#8&quot;)){Dict{Symbol,Function},DataFrames.DataFrame,typeof(LTXformat)})(::Symbol) at array.jl:0
 └ @ SolverBenchmark ./array.jl:0</code></pre></div><div><pre><code class="language-julia">run(`latexmk -quiet -pdf alpha.tex`)
 run(`pdf2svg alpha.pdf alpha.svg`)</code></pre><pre><code class="language-none">Latexmk: Run number 1 of rule &#39;pdflatex&#39;
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian)
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex)
  restricted \write18 enabled.
 entering extended mode
 Latexmk: Run number 2 of rule &#39;pdflatex&#39;
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian)
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex)
  restricted \write18 enabled.
 entering extended mode
 Latexmk: Run number 3 of rule &#39;pdflatex&#39;
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian)
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex)
  restricted \write18 enabled.
 entering extended mode
 Process(`pdf2svg alpha.pdf alpha.svg`, ProcessExited(0))</code></pre></div><p><img src="../alpha.svg" alt/></p><p>The main options for both <code>table</code> commands is <code>cols</code>, which defines which columns to use.</p><div><pre><code class="language-julia">markdown_table(stdout, stats[:alpha], cols=[:name, :f, :t])</code></pre><pre><code class="language-none">┌ Warning: `haskey(df::AbstractDataFrame, key::Symbol)` is deprecated, use `hasproperty(df, key)` instead.

@@ -108,6 +108,9 @@
 <path style="stroke:none;" d="M 6.5625 -2.296875 C 6.734375 -2.296875 6.921875 -2.296875 6.921875 -2.5 C 6.921875 -2.6875 6.734375 -2.6875 6.5625 -2.6875 L 1.171875 -2.6875 C 1 -2.6875 0.828125 -2.6875 0.828125 -2.5 C 0.828125 -2.296875 1 -2.296875 1.171875 -2.296875 Z M 6.5625 -2.296875 "/>
 </symbol>
 </g>
+<clipPath id="clip1">
+  <path d="M 64 144 L 503 144 L 503 144.65625 L 64 144.65625 Z M 64 144 "/>
+</clipPath>
 </defs>
 <g id="surface1">
 <path style="fill:none;stroke-width:0.398;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M -0.001625 -0.00125 L 437.705406 -0.00125 " transform="matrix(1,0,0,-1,64.611,12.155)"/>
@@ -1257,7 +1260,9 @@
   <use xlink:href="#glyph0-19" x="486.37759" y="140.673"/>
   <use xlink:href="#glyph0-22" x="491.35889" y="140.673"/>
 </g>
+<g clip-path="url(#clip1)" clip-rule="nonzero">
 <path style="fill:none;stroke-width:0.398;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M -0.001625 -0.0019375 L 437.705406 -0.0019375 " transform="matrix(1,0,0,-1,64.611,144.459)"/>
 <path style="fill:none;stroke-width:0.398;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M -0.001625 -0.0019375 L 437.705406 -0.0019375 " transform="matrix(1,0,0,-1,64.611,144.459)"/>
+</g>
 </g>
 </svg>
