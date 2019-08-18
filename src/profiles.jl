@@ -18,11 +18,11 @@ Examples of cost functions:
 - `cost(df) = df.elapsed_time`: Simple `elapsed_time` cost. Assumes the solver solved the problem.
 - `cost(df) = (df.status .!= :first_order) * Inf + df.elapsed_time`: Takes into consideration the status of the solver.
 """
-function performance_profile(stats::Dict{Symbol,DataFrame}, cost::Function)
+function performance_profile(stats::Dict{Symbol,DataFrame}, cost::Function, args...; kwargs...)
   solvers = keys(stats)
   dfs = (stats[s] for s in solvers)
   P = hcat([cost(df) for df in dfs]...)
-  performance_profile(P, string.(solvers))
+  performance_profile(P, string.(solvers), args...; kwargs...)
 end
 
 """
