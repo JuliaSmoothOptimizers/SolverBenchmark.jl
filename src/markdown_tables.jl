@@ -23,8 +23,7 @@ MDformat
 """
     markdown_table(io, df, kwargs...)
 
-Create a markdown table using PrettyTables of a dataframe of results, formatting the
-output.
+Create a markdown table from a DataFrame using PrettyTables and format the output.
 
 Inputs:
 - `io::IO`: where to send the table, e.g.:

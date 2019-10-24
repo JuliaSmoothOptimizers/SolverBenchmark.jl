@@ -12,7 +12,7 @@ safe_latex_Signed(s :: AbstractString) = "\\(" * s * "\\)"
 
 """`safe_latex_AbstractString(s)`
 
-For strings. Replaces `_` by `\\_`.
+For strings. Replaces `_` with `\\_`.
 """
 safe_latex_AbstractString(s :: AbstractString) = replace(s, "_" => "\\_")
 
@@ -56,8 +56,7 @@ LTXformat
 """
     latex_table(io, df, kwargs...)
 
-Create a latex longtable using LaTeXTabulars of a dataframe of results, formatting
-the output for a publication-ready table.
+Create a latex longtable of a DataFrame using LaTeXTabulars, and format the output for a publication-ready table.
 
 Inputs:
 - `io::IO`: where to send the table, e.g.:
