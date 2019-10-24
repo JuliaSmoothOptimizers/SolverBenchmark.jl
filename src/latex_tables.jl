@@ -66,6 +66,8 @@ Inputs:
         latex_table(io, df)
       end
 
+  If left out, `io` defaults to `stdout`.
+
 - `df::DataFrame`: Dataframe of a solver. Each row is a problem.
 
 Keyword arguments:
@@ -90,3 +92,5 @@ function latex_table(io :: IO, df :: DataFrame; kwargs...)
                 [table, Rule()])
   nothing
 end
+
+latex_table(df :: DataFrame; kwargs...) = latex_table(stdout, df; kwargs...)

@@ -33,6 +33,8 @@ Inputs:
         markdown_table(io, df)
       end
 
+  If left out, `io` defaults to `stdout`.
+
 - `df::DataFrame`: Dataframe of a solver. Each row is a problem.
 
 Keyword arguments:
@@ -52,3 +54,5 @@ function markdown_table(io :: IO, df :: DataFrame; kwargs...)
   pretty_table(io, table, header, markdown)
   nothing
 end
+
+markdown_table(df :: DataFrame; kwargs...) = markdown_table(stdout, df; kwargs...)
