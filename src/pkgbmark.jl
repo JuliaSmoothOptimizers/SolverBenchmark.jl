@@ -79,7 +79,7 @@ Inputs:
 """
 function profile_solvers(results::PkgBenchmark.BenchmarkResults)
   # guard against zero gctimes
-  costs = [df -> df[:time], df -> df[:memory], df -> df[:gctime] .+ 1, df -> df[:allocations]]
+  costs = [df -> df[!, :time], df -> df[!, :memory], df -> df[!, :gctime] .+ 1, df -> df[!, :allocations]]
   profile_solvers(bmark_results_to_dataframes(results), costs, ["time", "memory", "gctime+1", "allocations"])
 end
 
@@ -98,7 +98,7 @@ Inputs:
 """
 function profile_package(judgement::PkgBenchmark.BenchmarkJudgement)
   # guard against zero gctimes
-  costs = [df -> df[:time], df -> df[:memory], df -> df[:gctime] .+ 1, df -> df[:allocations]]
+  costs = [df -> df[!, :time], df -> df[!, :memory], df -> df[!, :gctime] .+ 1, df -> df[!, :allocations]]
   profile_solvers(judgement_results_to_dataframes(judgement), costs, ["time", "memory", "gctime+1", "allocations"])
 end
 

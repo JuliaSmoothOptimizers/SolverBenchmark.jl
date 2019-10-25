@@ -8,7 +8,7 @@ function test_tables()
   cols = [:status, :name, :f, :t, :iter]
 
   @info "alpha results in DataFrame format"
-  println(df[cols])
+  println(df[:, cols])
 
   @info "alpha results in latex format"
   old_lines = readlines("$example_folder/alpha.tex", keep=true)

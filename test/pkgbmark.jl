@@ -17,7 +17,7 @@ function test_pkgbmark()
   p = profile_solvers(results)
   @test typeof(p) <: Plots.Plot
 
-  costs = [df -> df[:time], df -> df[:memory], df -> df[:gctime] .+ 1, df -> df[:allocations]]
+  costs = [df -> df[!, :time], df -> df[!, :memory], df -> df[!, :gctime] .+ 1, df -> df[!, :allocations]]
   p = profile_solvers(stats, costs, ["time", "memory", "gctime+1", "allocations"])
   @test typeof(p) <: Plots.Plot
 
@@ -36,7 +36,7 @@ function test_pkgbmark()
     p = profile_package(judgement)
     @test typeof(p) <: Plots.Plot
 
-    costs = [df -> df[:time], df -> df[:memory], df -> df[:gctime] .+ 1, df -> df[:allocations]]
+    costs = [df -> df[!, :time], df -> df[!, :memory], df -> df[!, :gctime] .+ 1, df -> df[!, :allocations]]
     p = profile_solvers(stats, costs, ["time", "memory", "gctime+1", "allocations"])
     @test typeof(p) <: Plots.Plot
   end
