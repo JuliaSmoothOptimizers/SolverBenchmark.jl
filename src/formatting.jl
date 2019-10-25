@@ -37,13 +37,13 @@ function format_table(df :: DataFrame, formatter::Function;
                       hdr_override :: Dict{Symbol,String} = Dict{Symbol,String}(),
                      )
   if ignore_missing_cols
-    cols = filter(c->haskey(df, c), cols)
-  elseif !all(haskey(df, c) for c in cols)
+    cols = filter(c->hasproperty(df, c), cols)
+  elseif !all(hasproperty(df, c) for c in cols)
     missing_cols = setdiff(cols, names(df))
     @error("There are no columns `" * join(missing_cols, ", ") * "` in dataframe")
     throw(BoundsError)
   end
-  string_cols = [map(haskey(fmt_override, col) ? fmt_override[col] : formatter, df[col]) for col in cols]
+  string_cols = [map(haskey(fmt_override, col) ? fmt_override[col] : formatter, df[!, col]) for col in cols]
   table = hcat(string_cols...)
 
   header = [haskey(hdr_override, c) ? hdr_override[c] : formatter(c) for c in cols]

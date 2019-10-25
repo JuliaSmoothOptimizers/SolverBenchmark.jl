@@ -46,7 +46,7 @@ function join(stats::Dict{Symbol,DataFrame},
   cols = [:id; cols]
 
   s = first(stats)[1]
-  df = stats[s][invariant_cols]
+  df = stats[s][:, invariant_cols]
 
   rename_f(c, s) = begin
     c in invariant_cols && return c
@@ -55,7 +55,7 @@ function join(stats::Dict{Symbol,DataFrame},
   end
 
   for (s, dfs) in stats
-    df = join(df, rename(c->rename_f(c, s), dfs[cols]), on=:id, makeunique=true)
+    df = join(df, rename(c->rename_f(c, s), dfs[!, cols]), on=:id, makeunique=true)
   end
 
   return df
