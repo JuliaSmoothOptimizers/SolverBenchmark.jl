@@ -16,16 +16,7 @@ stats = Dict(name =&gt; DataFrame(:id =&gt; 1:n,
   :beta  =&gt; 10×7 DataFrames.DataFrame…
   :gamma =&gt; 10×7 DataFrames.DataFrame…</code></pre></div><p>The data consists of a (fake) run of three solvers <code>alpha</code>, <code>beta</code> and <code>gamma</code>. Each solver has a column <code>id</code>, which is necessary for joining the solvers (names can be repeated), and columns <code>name</code>, <code>status</code>, <code>f</code>, <code>t</code> and <code>iter</code> corresponding to problem results. There is also a column <code>irrelevant</code> with extra information that will not be used to produce our benchmarks.</p><p>Here are the statistics of solver <code>alpha</code>:</p><div><pre><code class="language-julia">stats[:alpha]</code></pre><table class="data-frame"><thead><tr><th></th><th>id</th><th>name</th><th>status</th><th>f</th><th>t</th><th>iter</th><th>irrelevant</th></tr><tr><th></th><th>Int64</th><th>String</th><th>Symbol</th><th>Float64</th><th>Float64</th><th>Int64</th><th>Float64</th></tr></thead><tbody><p>10 rows × 7 columns</p><tr><th>1</th><td>1</td><td>prob001</td><td>failure</td><td>-0.688907</td><td>62.3686</td><td>70</td><td>0.891315</td></tr><tr><th>2</th><td>2</td><td>prob002</td><td>failure</td><td>-0.762804</td><td>353.13</td><td>10</td><td>-2.29449</td></tr><tr><th>3</th><td>3</td><td>prob003</td><td>success</td><td>0.397482</td><td>767.603</td><td>10</td><td>-1.17303</td></tr><tr><th>4</th><td>4</td><td>prob004</td><td>success</td><td>0.81163</td><td>43.142</td><td>80</td><td>-0.879915</td></tr><tr><th>5</th><td>5</td><td>prob005</td><td>success</td><td>-0.346355</td><td>267.986</td><td>30</td><td>-0.494043</td></tr><tr><th>6</th><td>6</td><td>prob006</td><td>success</td><td>-0.187573</td><td>66.8474</td><td>80</td><td>0.511959</td></tr><tr><th>7</th><td>7</td><td>prob007</td><td>success</td><td>-1.60726</td><td>156.638</td><td>60</td><td>-0.758701</td></tr><tr><th>8</th><td>8</td><td>prob008</td><td>success</td><td>-2.48079</td><td>605.298</td><td>40</td><td>-0.76796</td></tr><tr><th>9</th><td>9</td><td>prob009</td><td>success</td><td>2.27623</td><td>135.746</td><td>40</td><td>-0.0303032</td></tr><tr><th>10</th><td>10</td><td>prob010</td><td>failure</td><td>0.219693</td><td>838.119</td><td>50</td><td>-1.31924</td></tr></tbody></table></div><h2><a class="nav-anchor" id="Tables-1" href="#Tables-1">Tables</a></h2><p>The first thing we may want to do is produce a table for each solver. Notice that the solver result is already a DataFrame, so there are a few options available in other packages, as well as simply printing the DataFrame. Our concern here is two-fold: producing publication-ready LaTeX tables, and web-ready markdown tables.</p><p>The simplest use is <code>foo_table(io, dataframe)</code>. Here is printout to the <code>stdout</code>:</p><div><pre><code class="language-julia">using SolverBenchmark
 
-markdown_table(stdout, stats[:alpha])</code></pre><pre><code class="language-none">┌ Warning: `haskey(df::AbstractDataFrame, key::Symbol)` is deprecated, use `hasproperty(df, key)` instead.
-│   caller = #3 at none:0 [inlined]
-└ @ Core ./none:0
-┌ Warning: `haskey(df::AbstractDataFrame, key::Symbol)` is deprecated, use `hasproperty(df, key)` instead.
-│   caller = iterate at none:0 [inlined]
-└ @ Core ./none:0
-┌ Warning: `getindex(df::DataFrame, col_ind::ColumnIndex)` is deprecated, use `df[!, col_ind]` instead.
-│   caller = (::getfield(SolverBenchmark, Symbol(&quot;##4#8&quot;)){Dict{Symbol,Function},DataFrames.DataFrame,typeof(MDformat)})(::Symbol) at array.jl:0
-└ @ SolverBenchmark ./array.jl:0
-|    id |    name |  status |        f |        t |  iter | irrelevant |
+markdown_table(stdout, stats[:alpha])</code></pre><pre><code class="language-none">|    id |    name |  status |        f |        t |  iter | irrelevant |
 |-------|---------|---------|----------|----------|-------|------------|
 |     1 | prob001 | failure | -6.9e-01 |  6.2e+01 |    70 |    8.9e-01 |
 |     2 | prob002 | failure | -7.6e-01 |  3.5e+02 |    10 |   -2.3e+00 |
@@ -36,16 +27,7 @@ markdown_table(stdout, stats[:alpha])</code></pre><pre><code class="language-non
 |     7 | prob007 | success | -1.6e+00 |  1.6e+02 |    60 |   -7.6e-01 |
 |     8 | prob008 | success | -2.5e+00 |  6.1e+02 |    40 |   -7.7e-01 |
 |     9 | prob009 | success |  2.3e+00 |  1.4e+02 |    40 |   -3.0e-02 |
-|    10 | prob010 | failure |  2.2e-01 |  8.4e+02 |    50 |   -1.3e+00 |</code></pre></div><div><pre><code class="language-julia">latex_table(stdout, stats[:alpha])</code></pre><pre><code class="language-none">┌ Warning: `haskey(df::AbstractDataFrame, key::Symbol)` is deprecated, use `hasproperty(df, key)` instead.
-│   caller = #3 at none:0 [inlined]
-└ @ Core ./none:0
-┌ Warning: `haskey(df::AbstractDataFrame, key::Symbol)` is deprecated, use `hasproperty(df, key)` instead.
-│   caller = iterate at none:0 [inlined]
-└ @ Core ./none:0
-┌ Warning: `getindex(df::DataFrame, col_ind::ColumnIndex)` is deprecated, use `df[!, col_ind]` instead.
-│   caller = (::getfield(SolverBenchmark, Symbol(&quot;##4#8&quot;)){Dict{Symbol,Function},DataFrames.DataFrame,typeof(LTXformat)})(::Symbol) at array.jl:0
-└ @ SolverBenchmark ./array.jl:0
-\begin{longtable}[c]{lrrrrrr}
+|    10 | prob010 | failure |  2.2e-01 |  8.4e+02 |    50 |   -1.3e+00 |</code></pre></div><div><pre><code class="language-julia">latex_table(stdout, stats[:alpha])</code></pre><pre><code class="language-none">\begin{longtable}[c]{lrrrrrr}
 \hline
 id &amp; name &amp; status &amp; f &amp; t &amp; iter &amp; irrelevant \\
 \hline
@@ -79,15 +61,7 @@ id &amp; name &amp; status &amp; f &amp; t &amp; iter &amp; irrelevant \\
   println(io, &quot;\\begin{document}&quot;)
   latex_table(io, stats[:alpha])
   println(io, &quot;\\end{document}&quot;)
-end</code></pre><pre><code class="language-none">┌ Warning: `haskey(df::AbstractDataFrame, key::Symbol)` is deprecated, use `hasproperty(df, key)` instead.
-│   caller = #3 at none:0 [inlined]
-└ @ Core ./none:0
-┌ Warning: `haskey(df::AbstractDataFrame, key::Symbol)` is deprecated, use `hasproperty(df, key)` instead.
-│   caller = iterate at none:0 [inlined]
-└ @ Core ./none:0
-┌ Warning: `getindex(df::DataFrame, col_ind::ColumnIndex)` is deprecated, use `df[!, col_ind]` instead.
-│   caller = (::getfield(SolverBenchmark, Symbol(&quot;##4#8&quot;)){Dict{Symbol,Function},DataFrames.DataFrame,typeof(LTXformat)})(::Symbol) at array.jl:0
-└ @ SolverBenchmark ./array.jl:0</code></pre></div><div><pre><code class="language-julia">run(`latexmk -quiet -pdf alpha.tex`)
+end</code></pre></div><div><pre><code class="language-julia">run(`latexmk -quiet -pdf alpha.tex`)
 run(`pdf2svg alpha.pdf alpha.svg`)</code></pre><pre><code class="language-none">Latexmk: Run number 1 of rule &#39;pdflatex&#39;
 This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex)
  restricted \write18 enabled.
@@ -100,16 +74,7 @@ Latexmk: Run number 3 of rule &#39;pdflatex&#39;
 This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex)
  restricted \write18 enabled.
 entering extended mode
-Process(`pdf2svg alpha.pdf alpha.svg`, ProcessExited(0))</code></pre></div><p><img src="../alpha.svg" alt/></p><p>The main options for both <code>table</code> commands is <code>cols</code>, which defines which columns to use.</p><div><pre><code class="language-julia">markdown_table(stdout, stats[:alpha], cols=[:name, :f, :t])</code></pre><pre><code class="language-none">┌ Warning: `haskey(df::AbstractDataFrame, key::Symbol)` is deprecated, use `hasproperty(df, key)` instead.
-│   caller = #3 at none:0 [inlined]
-└ @ Core ./none:0
-┌ Warning: `haskey(df::AbstractDataFrame, key::Symbol)` is deprecated, use `hasproperty(df, key)` instead.
-│   caller = iterate at none:0 [inlined]
-└ @ Core ./none:0
-┌ Warning: `getindex(df::DataFrame, col_ind::ColumnIndex)` is deprecated, use `df[!, col_ind]` instead.
-│   caller = (::getfield(SolverBenchmark, Symbol(&quot;##4#8&quot;)){Dict{Symbol,Function},DataFrames.DataFrame,typeof(MDformat)})(::Symbol) at array.jl:0
-└ @ SolverBenchmark ./array.jl:0
-|    name |        f |        t |
+Process(`pdf2svg alpha.pdf alpha.svg`, ProcessExited(0))</code></pre></div><p><img src="../alpha.svg" alt/></p><p>The main options for both <code>table</code> commands is <code>cols</code>, which defines which columns to use.</p><div><pre><code class="language-julia">markdown_table(stdout, stats[:alpha], cols=[:name, :f, :t])</code></pre><pre><code class="language-none">|    name |        f |        t |
 |---------|----------|----------|
 | prob001 | -6.9e-01 |  6.2e+01 |
 | prob002 | -7.6e-01 |  3.5e+02 |
@@ -123,16 +88,7 @@ Process(`pdf2svg alpha.pdf alpha.svg`, ProcessExited(0))</code></pre></div><p><i
 | prob010 |  2.2e-01 |  8.4e+02 |</code></pre></div><p>Notice that passing a column that does not exist will throw an error, but you can pass <code>ignore_missing_cols=true</code> to simply ignore that column.</p><p>The <code>fmt_override</code> option overrides the formatting of a specific column. The  argument should be a dictionary of <code>Symbol</code> to functions, where the functions will be applied to each element of the column.</p><p>The <code>hdr_override</code> simply changes the name of the column.</p><div><pre><code class="language-julia">fmt_override = Dict(:f =&gt; x-&gt;@sprintf(&quot;%+10.3e&quot;, x),
                     :t =&gt; x-&gt;@sprintf(&quot;%08.2f&quot;, x))
 hdr_override = Dict(:name =&gt; &quot;Name&quot;, :f =&gt; &quot;f(x)&quot;, :t =&gt; &quot;Time&quot;)
-markdown_table(stdout, stats[:alpha], cols=[:name, :f, :t], fmt_override=fmt_override, hdr_override=hdr_override)</code></pre><pre><code class="language-none">┌ Warning: `haskey(df::AbstractDataFrame, key::Symbol)` is deprecated, use `hasproperty(df, key)` instead.
-│   caller = #3 at none:0 [inlined]
-└ @ Core ./none:0
-┌ Warning: `haskey(df::AbstractDataFrame, key::Symbol)` is deprecated, use `hasproperty(df, key)` instead.
-│   caller = iterate at none:0 [inlined]
-└ @ Core ./none:0
-┌ Warning: `getindex(df::DataFrame, col_ind::ColumnIndex)` is deprecated, use `df[!, col_ind]` instead.
-│   caller = (::getfield(SolverBenchmark, Symbol(&quot;##4#8&quot;)){Dict{Symbol,Function},DataFrames.DataFrame,typeof(MDformat)})(::Symbol) at array.jl:0
-└ @ SolverBenchmark ./array.jl:0
-|    Name |       f(x) |     Time |
+markdown_table(stdout, stats[:alpha], cols=[:name, :f, :t], fmt_override=fmt_override, hdr_override=hdr_override)</code></pre><pre><code class="language-none">|    Name |       f(x) |     Time |
 |---------|------------|----------|
 | prob001 | -6.889e-01 | 00062.37 |
 | prob002 | -7.628e-01 | 00353.13 |
@@ -152,16 +108,7 @@ markdown_table(stdout, stats[:alpha], cols=[:name, :f, :t], fmt_override=fmt_ove
 end
 fmt_override = Dict(:f =&gt; x-&gt;@sprintf(&quot;%+10.3e&quot;, x), :t =&gt; time_fmt)
 hdr_override = Dict(:name =&gt; &quot;Name&quot;, :f =&gt; &quot;f(x)&quot;, :t =&gt; &quot;Time&quot;)
-markdown_table(stdout, stats[:alpha], cols=[:name, :f, :t], fmt_override=fmt_override, hdr_override=hdr_override)</code></pre><pre><code class="language-none">┌ Warning: `haskey(df::AbstractDataFrame, key::Symbol)` is deprecated, use `hasproperty(df, key)` instead.
-│   caller = #3 at none:0 [inlined]
-└ @ Core ./none:0
-┌ Warning: `haskey(df::AbstractDataFrame, key::Symbol)` is deprecated, use `hasproperty(df, key)` instead.
-│   caller = iterate at none:0 [inlined]
-└ @ Core ./none:0
-┌ Warning: `getindex(df::DataFrame, col_ind::ColumnIndex)` is deprecated, use `df[!, col_ind]` instead.
-│   caller = (::getfield(SolverBenchmark, Symbol(&quot;##4#8&quot;)){Dict{Symbol,Function},DataFrames.DataFrame,typeof(MDformat)})(::Symbol) at array.jl:0
-└ @ SolverBenchmark ./array.jl:0
-|    Name |       f(x) |             Time |
+markdown_table(stdout, stats[:alpha], cols=[:name, :f, :t], fmt_override=fmt_override, hdr_override=hdr_override)</code></pre><pre><code class="language-none">|    Name |       f(x) |             Time |
 |---------|------------|------------------|
 | prob001 | -6.889e-01 |  1m 02s 368558μs |
 | prob002 | -7.628e-01 |  5m 53s 129773μs |
@@ -188,31 +135,8 @@ open(&quot;alpha2.tex&quot;, &quot;w&quot;) do io
   println(io, &quot;\\begin{document}&quot;)
   latex_table(io, stats[:alpha], cols=[:name, :f, :t], fmt_override=fmt_override, hdr_override=hdr_override)
   println(io, &quot;\\end{document}&quot;)
-end</code></pre><pre><code class="language-none">┌ Warning: `haskey(df::AbstractDataFrame, key::Symbol)` is deprecated, use `hasproperty(df, key)` instead.
-│   caller = #3 at none:0 [inlined]
-└ @ Core ./none:0
-┌ Warning: `haskey(df::AbstractDataFrame, key::Symbol)` is deprecated, use `hasproperty(df, key)` instead.
-│   caller = iterate at none:0 [inlined]
-└ @ Core ./none:0
-┌ Warning: `getindex(df::DataFrame, col_ind::ColumnIndex)` is deprecated, use `df[!, col_ind]` instead.
-│   caller = (::getfield(SolverBenchmark, Symbol(&quot;##4#8&quot;)){Dict{Symbol,Function},DataFrames.DataFrame,typeof(LTXformat)})(::Symbol) at array.jl:0
-└ @ SolverBenchmark ./array.jl:0</code></pre></div><div></div><p><img src="../alpha2.svg" alt/></p><h3><a class="nav-anchor" id="Joining-tables-1" href="#Joining-tables-1">Joining tables</a></h3><p>In some occasions, instead of/in addition to showing individual results, we show a table with the result of multiple solvers.</p><div><pre><code class="language-julia">df = join(stats, [:f, :t])
-markdown_table(stdout, df)</code></pre><pre><code class="language-none">┌ Warning: `getindex(df::DataFrame, col_inds::Union{AbstractVector, Regex, Not})` is deprecated, use `df[:, col_inds]` instead.
-│   caller = #join#14(::Array{Symbol,1}, ::Dict{Symbol,String}, ::Function, ::Dict{Symbol,DataFrames.DataFrame}, ::Array{Symbol,1}) at join.jl:49
-└ @ SolverBenchmark ~/.julia/packages/SolverBenchmark/I4mQu/src/join.jl:49
-┌ Warning: `getindex(df::DataFrame, col_inds::Union{AbstractVector, Regex, Not})` is deprecated, use `df[:, col_inds]` instead.
-│   caller = #join#14(::Array{Symbol,1}, ::Dict{Symbol,String}, ::Function, ::Dict{Symbol,DataFrames.DataFrame}, ::Array{Symbol,1}) at join.jl:58
-└ @ SolverBenchmark ~/.julia/packages/SolverBenchmark/I4mQu/src/join.jl:58
-┌ Warning: `haskey(df::AbstractDataFrame, key::Symbol)` is deprecated, use `hasproperty(df, key)` instead.
-│   caller = #3 at none:0 [inlined]
-└ @ Core ./none:0
-┌ Warning: `haskey(df::AbstractDataFrame, key::Symbol)` is deprecated, use `hasproperty(df, key)` instead.
-│   caller = iterate at none:0 [inlined]
-└ @ Core ./none:0
-┌ Warning: `getindex(df::DataFrame, col_ind::ColumnIndex)` is deprecated, use `df[!, col_ind]` instead.
-│   caller = (::getfield(SolverBenchmark, Symbol(&quot;##4#8&quot;)){Dict{Symbol,Function},DataFrames.DataFrame,typeof(MDformat)})(::Symbol) at array.jl:0
-└ @ SolverBenchmark ./array.jl:0
-|    id |  f_alpha |  t_alpha |   f_beta |   t_beta |  f_gamma |  t_gamma |
+end</code></pre></div><div></div><p><img src="../alpha2.svg" alt/></p><h3><a class="nav-anchor" id="Joining-tables-1" href="#Joining-tables-1">Joining tables</a></h3><p>In some occasions, instead of/in addition to showing individual results, we show a table with the result of multiple solvers.</p><div><pre><code class="language-julia">df = join(stats, [:f, :t])
+markdown_table(stdout, df)</code></pre><pre><code class="language-none">|    id |  f_alpha |  t_alpha |   f_beta |   t_beta |  f_gamma |  t_gamma |
 |-------|----------|----------|----------|----------|----------|----------|
 |     1 | -6.9e-01 |  6.2e+01 | -1.1e+00 |  1.8e+02 |  6.3e-02 |  3.3e+01 |
 |     2 | -7.6e-01 |  3.5e+02 |  8.2e-01 |  8.0e+01 |  1.2e-01 |  6.9e+02 |
@@ -224,22 +148,7 @@ markdown_table(stdout, df)</code></pre><pre><code class="language-none">┌ Warn
 |     8 | -2.5e+00 |  6.1e+02 | -2.5e-01 |  4.8e+02 | -4.5e-01 |  7.8e+02 |
 |     9 |  2.3e+00 |  1.4e+02 |  2.9e-01 |  6.3e+01 | -8.8e-01 |  8.7e+02 |
 |    10 |  2.2e-01 |  8.4e+02 | -3.5e+00 |  4.7e+02 |  1.1e+00 |  8.4e+02 |</code></pre></div><p>The column <code>:id</code> is used as guide on where to join. In addition, we may have repeated columns between the solvers. We convery that information with argument <code>invariant_cols</code>.</p><div><pre><code class="language-julia">df = join(stats, [:f, :t], invariant_cols=[:name])
-markdown_table(stdout, df)</code></pre><pre><code class="language-none">┌ Warning: `getindex(df::DataFrame, col_inds::Union{AbstractVector, Regex, Not})` is deprecated, use `df[:, col_inds]` instead.
-│   caller = #join#14(::Array{Symbol,1}, ::Dict{Symbol,String}, ::Function, ::Dict{Symbol,DataFrames.DataFrame}, ::Array{Symbol,1}) at join.jl:49
-└ @ SolverBenchmark ~/.julia/packages/SolverBenchmark/I4mQu/src/join.jl:49
-┌ Warning: `getindex(df::DataFrame, col_inds::Union{AbstractVector, Regex, Not})` is deprecated, use `df[:, col_inds]` instead.
-│   caller = #join#14(::Array{Symbol,1}, ::Dict{Symbol,String}, ::Function, ::Dict{Symbol,DataFrames.DataFrame}, ::Array{Symbol,1}) at join.jl:58
-└ @ SolverBenchmark ~/.julia/packages/SolverBenchmark/I4mQu/src/join.jl:58
-┌ Warning: `haskey(df::AbstractDataFrame, key::Symbol)` is deprecated, use `hasproperty(df, key)` instead.
-│   caller = #3 at none:0 [inlined]
-└ @ Core ./none:0
-┌ Warning: `haskey(df::AbstractDataFrame, key::Symbol)` is deprecated, use `hasproperty(df, key)` instead.
-│   caller = iterate at none:0 [inlined]
-└ @ Core ./none:0
-┌ Warning: `getindex(df::DataFrame, col_ind::ColumnIndex)` is deprecated, use `df[!, col_ind]` instead.
-│   caller = (::getfield(SolverBenchmark, Symbol(&quot;##4#8&quot;)){Dict{Symbol,Function},DataFrames.DataFrame,typeof(MDformat)})(::Symbol) at array.jl:0
-└ @ SolverBenchmark ./array.jl:0
-|    id |    name |  f_alpha |  t_alpha |   f_beta |   t_beta |  f_gamma |  t_gamma |
+markdown_table(stdout, df)</code></pre><pre><code class="language-none">|    id |    name |  f_alpha |  t_alpha |   f_beta |   t_beta |  f_gamma |  t_gamma |
 |-------|---------|----------|----------|----------|----------|----------|----------|
 |     1 | prob001 | -6.9e-01 |  6.2e+01 | -1.1e+00 |  1.8e+02 |  6.3e-02 |  3.3e+01 |
 |     2 | prob002 | -7.6e-01 |  3.5e+02 |  8.2e-01 |  8.0e+01 |  1.2e-01 |  6.9e+02 |
@@ -252,22 +161,7 @@ markdown_table(stdout, df)</code></pre><pre><code class="language-none">┌ Warn
 |     9 | prob009 |  2.3e+00 |  1.4e+02 |  2.9e-01 |  6.3e+01 | -8.8e-01 |  8.7e+02 |
 |    10 | prob010 |  2.2e-01 |  8.4e+02 | -3.5e+00 |  4.7e+02 |  1.1e+00 |  8.4e+02 |</code></pre></div><p><code>join</code> also accepts <code>hdr_override</code> for changing the column name before appending <code>_solver</code>.</p><div><pre><code class="language-julia">hdr_override = Dict(:name =&gt; &quot;Name&quot;, :f =&gt; &quot;f(x)&quot;, :t =&gt; &quot;Time&quot;)
 df = join(stats, [:f, :t], invariant_cols=[:name], hdr_override=hdr_override)
-markdown_table(stdout, df)</code></pre><pre><code class="language-none">┌ Warning: `getindex(df::DataFrame, col_inds::Union{AbstractVector, Regex, Not})` is deprecated, use `df[:, col_inds]` instead.
-│   caller = #join#14(::Array{Symbol,1}, ::Dict{Symbol,String}, ::Function, ::Dict{Symbol,DataFrames.DataFrame}, ::Array{Symbol,1}) at join.jl:49
-└ @ SolverBenchmark ~/.julia/packages/SolverBenchmark/I4mQu/src/join.jl:49
-┌ Warning: `getindex(df::DataFrame, col_inds::Union{AbstractVector, Regex, Not})` is deprecated, use `df[:, col_inds]` instead.
-│   caller = #join#14(::Array{Symbol,1}, ::Dict{Symbol,String}, ::Function, ::Dict{Symbol,DataFrames.DataFrame}, ::Array{Symbol,1}) at join.jl:58
-└ @ SolverBenchmark ~/.julia/packages/SolverBenchmark/I4mQu/src/join.jl:58
-┌ Warning: `haskey(df::AbstractDataFrame, key::Symbol)` is deprecated, use `hasproperty(df, key)` instead.
-│   caller = #3 at none:0 [inlined]
-└ @ Core ./none:0
-┌ Warning: `haskey(df::AbstractDataFrame, key::Symbol)` is deprecated, use `hasproperty(df, key)` instead.
-│   caller = iterate at none:0 [inlined]
-└ @ Core ./none:0
-┌ Warning: `getindex(df::DataFrame, col_ind::ColumnIndex)` is deprecated, use `df[!, col_ind]` instead.
-│   caller = (::getfield(SolverBenchmark, Symbol(&quot;##4#8&quot;)){Dict{Symbol,Function},DataFrames.DataFrame,typeof(MDformat)})(::Symbol) at array.jl:0
-└ @ SolverBenchmark ./array.jl:0
-|    id |    name | f(x)_alpha | Time_alpha | f(x)_beta | Time_beta | f(x)_gamma | Time_gamma |
+markdown_table(stdout, df)</code></pre><pre><code class="language-none">|    id |    name | f(x)_alpha | Time_alpha | f(x)_beta | Time_beta | f(x)_gamma | Time_gamma |
 |-------|---------|------------|------------|-----------|-----------|------------|------------|
 |     1 | prob001 |   -6.9e-01 |    6.2e+01 |  -1.1e+00 |   1.8e+02 |    6.3e-02 |    3.3e+01 |
 |     2 | prob002 |   -7.6e-01 |    3.5e+02 |   8.2e-01 |   8.0e+01 |    1.2e-01 |    6.9e+02 |
@@ -286,21 +180,7 @@ open(&quot;alpha3.tex&quot;, &quot;w&quot;) do io
   println(io, &quot;\\begin{document}&quot;)
   latex_table(io, df)
   println(io, &quot;\\end{document}&quot;)
-end</code></pre><pre><code class="language-none">┌ Warning: `getindex(df::DataFrame, col_inds::Union{AbstractVector, Regex, Not})` is deprecated, use `df[:, col_inds]` instead.
-│   caller = #join#14(::Array{Symbol,1}, ::Dict{Symbol,String}, ::Function, ::Dict{Symbol,DataFrames.DataFrame}, ::Array{Symbol,1}) at join.jl:49
-└ @ SolverBenchmark ~/.julia/packages/SolverBenchmark/I4mQu/src/join.jl:49
-┌ Warning: `getindex(df::DataFrame, col_inds::Union{AbstractVector, Regex, Not})` is deprecated, use `df[:, col_inds]` instead.
-│   caller = #join#14(::Array{Symbol,1}, ::Dict{Symbol,String}, ::Function, ::Dict{Symbol,DataFrames.DataFrame}, ::Array{Symbol,1}) at join.jl:58
-└ @ SolverBenchmark ~/.julia/packages/SolverBenchmark/I4mQu/src/join.jl:58
-┌ Warning: `haskey(df::AbstractDataFrame, key::Symbol)` is deprecated, use `hasproperty(df, key)` instead.
-│   caller = #3 at none:0 [inlined]
-└ @ Core ./none:0
-┌ Warning: `haskey(df::AbstractDataFrame, key::Symbol)` is deprecated, use `hasproperty(df, key)` instead.
-│   caller = iterate at none:0 [inlined]
-└ @ Core ./none:0
-┌ Warning: `getindex(df::DataFrame, col_ind::ColumnIndex)` is deprecated, use `df[!, col_ind]` instead.
-│   caller = (::getfield(SolverBenchmark, Symbol(&quot;##4#8&quot;)){Dict{Symbol,Function},DataFrames.DataFrame,typeof(LTXformat)})(::Symbol) at array.jl:0
-└ @ SolverBenchmark ./array.jl:0</code></pre></div><div></div><p><img src="../alpha3.svg" alt/></p><h2><a class="nav-anchor" id="Profiles-1" href="#Profiles-1">Profiles</a></h2><p>Performance profiles are a comparison tool developed by <a href="https://link.springer.com/article/10.1007/s101070100263">Dolan and Moré, 2002</a> that takes into account the relative performance of a solver and whether it has achieved convergence for each problem. <code>SolverBenchmark.jl</code> uses <a href="https://github.com/JuliaSmoothOptimizers/BenchmarkProfiles.jl">BenchmarkProfiles.jl</a> for generating performance profiles from the dictionary of <code>DataFrame</code>s.</p><p>The basic usage is <code>performance_profile(stats, cost)</code>, where <code>cost</code> is a function applied to a <code>DataFrame</code> and returning a vector.</p><div></div><pre><code class="language-none">using Plots
+end</code></pre></div><div></div><p><img src="../alpha3.svg" alt/></p><h2><a class="nav-anchor" id="Profiles-1" href="#Profiles-1">Profiles</a></h2><p>Performance profiles are a comparison tool developed by <a href="https://link.springer.com/article/10.1007/s101070100263">Dolan and Moré, 2002</a> that takes into account the relative performance of a solver and whether it has achieved convergence for each problem. <code>SolverBenchmark.jl</code> uses <a href="https://github.com/JuliaSmoothOptimizers/BenchmarkProfiles.jl">BenchmarkProfiles.jl</a> for generating performance profiles from the dictionary of <code>DataFrame</code>s.</p><p>The basic usage is <code>performance_profile(stats, cost)</code>, where <code>cost</code> is a function applied to a <code>DataFrame</code> and returning a vector.</p><div></div><pre><code class="language-none">using Plots
 pyplot()
 
 p = performance_profile(stats, df -&gt; df.t)
