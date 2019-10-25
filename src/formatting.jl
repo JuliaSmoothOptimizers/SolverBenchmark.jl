@@ -33,9 +33,9 @@ Outputs:
 function format_table(df :: DataFrame, formatter::Function;
                       cols :: Array{Symbol,1} = names(df),
                       ignore_missing_cols :: Bool = false,
-                      fmt_override :: Dict{Symbol,Function} = Dict{Symbol,Function}(),
+                      fmt_override :: Dict{Symbol,F} = Dict{Symbol,Function}(),
                       hdr_override :: Dict{Symbol,String} = Dict{Symbol,String}(),
-                     )
+                     ) where F <: Function
   if ignore_missing_cols
     cols = filter(c->hasproperty(df, c), cols)
   elseif !all(hasproperty(df, c) for c in cols)
