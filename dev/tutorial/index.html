@@ -198,11 +198,11 @@ end</code></pre><pre><code class="language-none">┌ Warning: `haskey(df::Abstra
 │   caller = (::getfield(SolverBenchmark, Symbol(&quot;##4#8&quot;)){Dict{Symbol,Function},DataFrames.DataFrame,typeof(LTXformat)})(::Symbol) at array.jl:0
 └ @ SolverBenchmark ./array.jl:0</code></pre></div><div></div><p><img src="../alpha2.svg" alt/></p><h3><a class="nav-anchor" id="Joining-tables-1" href="#Joining-tables-1">Joining tables</a></h3><p>In some occasions, instead of/in addition to showing individual results, we show a table with the result of multiple solvers.</p><div><pre><code class="language-julia">df = join(stats, [:f, :t])
 markdown_table(stdout, df)</code></pre><pre><code class="language-none">┌ Warning: `getindex(df::DataFrame, col_inds::Union{AbstractVector, Regex, Not})` is deprecated, use `df[:, col_inds]` instead.
-│   caller = #join#12(::Array{Symbol,1}, ::Dict{Symbol,String}, ::Function, ::Dict{Symbol,DataFrames.DataFrame}, ::Array{Symbol,1}) at join.jl:49
-└ @ SolverBenchmark ~/.julia/packages/SolverBenchmark/jB4Cr/src/join.jl:49
+│   caller = #join#14(::Array{Symbol,1}, ::Dict{Symbol,String}, ::Function, ::Dict{Symbol,DataFrames.DataFrame}, ::Array{Symbol,1}) at join.jl:49
+└ @ SolverBenchmark ~/.julia/packages/SolverBenchmark/QJmYq/src/join.jl:49
 ┌ Warning: `getindex(df::DataFrame, col_inds::Union{AbstractVector, Regex, Not})` is deprecated, use `df[:, col_inds]` instead.
-│   caller = #join#12(::Array{Symbol,1}, ::Dict{Symbol,String}, ::Function, ::Dict{Symbol,DataFrames.DataFrame}, ::Array{Symbol,1}) at join.jl:58
-└ @ SolverBenchmark ~/.julia/packages/SolverBenchmark/jB4Cr/src/join.jl:58
+│   caller = #join#14(::Array{Symbol,1}, ::Dict{Symbol,String}, ::Function, ::Dict{Symbol,DataFrames.DataFrame}, ::Array{Symbol,1}) at join.jl:58
+└ @ SolverBenchmark ~/.julia/packages/SolverBenchmark/QJmYq/src/join.jl:58
 ┌ Warning: `haskey(df::AbstractDataFrame, key::Symbol)` is deprecated, use `hasproperty(df, key)` instead.
 │   caller = #3 at none:0 [inlined]
 └ @ Core ./none:0
@@ -225,11 +225,11 @@ markdown_table(stdout, df)</code></pre><pre><code class="language-none">┌ Warn
 |     9 |  2.3e+00 |  1.4e+02 |  2.9e-01 |  6.3e+01 | -8.8e-01 |  8.7e+02 |
 |    10 |  2.2e-01 |  8.4e+02 | -3.5e+00 |  4.7e+02 |  1.1e+00 |  8.4e+02 |</code></pre></div><p>The column <code>:id</code> is used as guide on where to join. In addition, we may have repeated columns between the solvers. We convery that information with argument <code>invariant_cols</code>.</p><div><pre><code class="language-julia">df = join(stats, [:f, :t], invariant_cols=[:name])
 markdown_table(stdout, df)</code></pre><pre><code class="language-none">┌ Warning: `getindex(df::DataFrame, col_inds::Union{AbstractVector, Regex, Not})` is deprecated, use `df[:, col_inds]` instead.
-│   caller = #join#12(::Array{Symbol,1}, ::Dict{Symbol,String}, ::Function, ::Dict{Symbol,DataFrames.DataFrame}, ::Array{Symbol,1}) at join.jl:49
-└ @ SolverBenchmark ~/.julia/packages/SolverBenchmark/jB4Cr/src/join.jl:49
+│   caller = #join#14(::Array{Symbol,1}, ::Dict{Symbol,String}, ::Function, ::Dict{Symbol,DataFrames.DataFrame}, ::Array{Symbol,1}) at join.jl:49
+└ @ SolverBenchmark ~/.julia/packages/SolverBenchmark/QJmYq/src/join.jl:49
 ┌ Warning: `getindex(df::DataFrame, col_inds::Union{AbstractVector, Regex, Not})` is deprecated, use `df[:, col_inds]` instead.
-│   caller = #join#12(::Array{Symbol,1}, ::Dict{Symbol,String}, ::Function, ::Dict{Symbol,DataFrames.DataFrame}, ::Array{Symbol,1}) at join.jl:58
-└ @ SolverBenchmark ~/.julia/packages/SolverBenchmark/jB4Cr/src/join.jl:58
+│   caller = #join#14(::Array{Symbol,1}, ::Dict{Symbol,String}, ::Function, ::Dict{Symbol,DataFrames.DataFrame}, ::Array{Symbol,1}) at join.jl:58
+└ @ SolverBenchmark ~/.julia/packages/SolverBenchmark/QJmYq/src/join.jl:58
 ┌ Warning: `haskey(df::AbstractDataFrame, key::Symbol)` is deprecated, use `hasproperty(df, key)` instead.
 │   caller = #3 at none:0 [inlined]
 └ @ Core ./none:0
@@ -253,11 +253,11 @@ markdown_table(stdout, df)</code></pre><pre><code class="language-none">┌ Warn
 |    10 | prob010 |  2.2e-01 |  8.4e+02 | -3.5e+00 |  4.7e+02 |  1.1e+00 |  8.4e+02 |</code></pre></div><p><code>join</code> also accepts <code>hdr_override</code> for changing the column name before appending <code>_solver</code>.</p><div><pre><code class="language-julia">hdr_override = Dict(:name =&gt; &quot;Name&quot;, :f =&gt; &quot;f(x)&quot;, :t =&gt; &quot;Time&quot;)
 df = join(stats, [:f, :t], invariant_cols=[:name], hdr_override=hdr_override)
 markdown_table(stdout, df)</code></pre><pre><code class="language-none">┌ Warning: `getindex(df::DataFrame, col_inds::Union{AbstractVector, Regex, Not})` is deprecated, use `df[:, col_inds]` instead.
-│   caller = #join#12(::Array{Symbol,1}, ::Dict{Symbol,String}, ::Function, ::Dict{Symbol,DataFrames.DataFrame}, ::Array{Symbol,1}) at join.jl:49
-└ @ SolverBenchmark ~/.julia/packages/SolverBenchmark/jB4Cr/src/join.jl:49
+│   caller = #join#14(::Array{Symbol,1}, ::Dict{Symbol,String}, ::Function, ::Dict{Symbol,DataFrames.DataFrame}, ::Array{Symbol,1}) at join.jl:49
+└ @ SolverBenchmark ~/.julia/packages/SolverBenchmark/QJmYq/src/join.jl:49
 ┌ Warning: `getindex(df::DataFrame, col_inds::Union{AbstractVector, Regex, Not})` is deprecated, use `df[:, col_inds]` instead.
-│   caller = #join#12(::Array{Symbol,1}, ::Dict{Symbol,String}, ::Function, ::Dict{Symbol,DataFrames.DataFrame}, ::Array{Symbol,1}) at join.jl:58
-└ @ SolverBenchmark ~/.julia/packages/SolverBenchmark/jB4Cr/src/join.jl:58
+│   caller = #join#14(::Array{Symbol,1}, ::Dict{Symbol,String}, ::Function, ::Dict{Symbol,DataFrames.DataFrame}, ::Array{Symbol,1}) at join.jl:58
+└ @ SolverBenchmark ~/.julia/packages/SolverBenchmark/QJmYq/src/join.jl:58
 ┌ Warning: `haskey(df::AbstractDataFrame, key::Symbol)` is deprecated, use `hasproperty(df, key)` instead.
 │   caller = #3 at none:0 [inlined]
 └ @ Core ./none:0
@@ -287,11 +287,11 @@ open(&quot;alpha3.tex&quot;, &quot;w&quot;) do io
   latex_table(io, df)
   println(io, &quot;\\end{document}&quot;)
 end</code></pre><pre><code class="language-none">┌ Warning: `getindex(df::DataFrame, col_inds::Union{AbstractVector, Regex, Not})` is deprecated, use `df[:, col_inds]` instead.
-│   caller = #join#12(::Array{Symbol,1}, ::Dict{Symbol,String}, ::Function, ::Dict{Symbol,DataFrames.DataFrame}, ::Array{Symbol,1}) at join.jl:49
-└ @ SolverBenchmark ~/.julia/packages/SolverBenchmark/jB4Cr/src/join.jl:49
+│   caller = #join#14(::Array{Symbol,1}, ::Dict{Symbol,String}, ::Function, ::Dict{Symbol,DataFrames.DataFrame}, ::Array{Symbol,1}) at join.jl:49
+└ @ SolverBenchmark ~/.julia/packages/SolverBenchmark/QJmYq/src/join.jl:49
 ┌ Warning: `getindex(df::DataFrame, col_inds::Union{AbstractVector, Regex, Not})` is deprecated, use `df[:, col_inds]` instead.
-│   caller = #join#12(::Array{Symbol,1}, ::Dict{Symbol,String}, ::Function, ::Dict{Symbol,DataFrames.DataFrame}, ::Array{Symbol,1}) at join.jl:58
-└ @ SolverBenchmark ~/.julia/packages/SolverBenchmark/jB4Cr/src/join.jl:58
+│   caller = #join#14(::Array{Symbol,1}, ::Dict{Symbol,String}, ::Function, ::Dict{Symbol,DataFrames.DataFrame}, ::Array{Symbol,1}) at join.jl:58
+└ @ SolverBenchmark ~/.julia/packages/SolverBenchmark/QJmYq/src/join.jl:58
 ┌ Warning: `haskey(df::AbstractDataFrame, key::Symbol)` is deprecated, use `hasproperty(df, key)` instead.
 │   caller = #3 at none:0 [inlined]
 └ @ Core ./none:0

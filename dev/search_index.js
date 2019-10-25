@@ -101,7 +101,7 @@ var documenterSearchIndex = {"docs": [
     "page": "API",
     "title": "SolverBenchmark.latex_table",
     "category": "function",
-    "text": "latex_table(io, df, kwargs...)\n\nCreate a latex longtable using LaTeXTabulars of a dataframe of results, formatting the output for a publication-ready table.\n\nInputs:\n\nio::IO: where to send the table, e.g.:\nopen(\"file.tex\", \"w\") do io\n  latex_table(io, df)\nend\ndf::DataFrame: Dataframe of a solver. Each row is a problem.\n\nKeyword arguments:\n\ncols::Array{Symbol}: Which columns of the df. Defaults to using all columns;\nignore_missing_cols::Bool: If true, filters out the columns in cols that don\'t exist in the data frame. Useful when creating tables for solvers in a loop where one solver has a column the other doesn\'t. If false, throws BoundsError in that situation.\nfmt_override::Dict{Symbol,Function}: Overrides format for a specific column, such as\nfmt_override=Dict(:name => x->@sprintf(\"\\textbf{%s}\", x) |> safe_latex_AbstractString)`\nhdr_override::Dict{Symbol,String}: Overrides header names, such as hdr_override=Dict(:name => \"Name\"), where LaTeX escaping should be used if necessary.\n\nWe recommend using the safe_latex_foo functions when overriding formats, unless you\'re sure you don\'t need them.\n\n\n\n\n\n"
+    "text": "latex_table(io, df, kwargs...)\n\nCreate a latex longtable of a DataFrame using LaTeXTabulars, and format the output for a publication-ready table.\n\nInputs:\n\nio::IO: where to send the table, e.g.:\nopen(\"file.tex\", \"w\") do io\n  latex_table(io, df)\nend\nIf left out, io defaults to stdout.\ndf::DataFrame: Dataframe of a solver. Each row is a problem.\n\nKeyword arguments:\n\ncols::Array{Symbol}: Which columns of the df. Defaults to using all columns;\nignore_missing_cols::Bool: If true, filters out the columns in cols that don\'t exist in the data frame. Useful when creating tables for solvers in a loop where one solver has a column the other doesn\'t. If false, throws BoundsError in that situation.\nfmt_override::Dict{Symbol,Function}: Overrides format for a specific column, such as\nfmt_override=Dict(:name => x->@sprintf(\"\\textbf{%s}\", x) |> safe_latex_AbstractString)`\nhdr_override::Dict{Symbol,String}: Overrides header names, such as hdr_override=Dict(:name => \"Name\"), where LaTeX escaping should be used if necessary.\n\nWe recommend using the safe_latex_foo functions when overriding formats, unless you\'re sure you don\'t need them.\n\n\n\n\n\n"
 },
 
 {
@@ -109,7 +109,7 @@ var documenterSearchIndex = {"docs": [
     "page": "API",
     "title": "SolverBenchmark.markdown_table",
     "category": "function",
-    "text": "markdown_table(io, df, kwargs...)\n\nCreate a markdown table using PrettyTables of a dataframe of results, formatting the output.\n\nInputs:\n\nio::IO: where to send the table, e.g.:\nopen(\"file.md\", \"w\") do io\n  markdown_table(io, df)\nend\ndf::DataFrame: Dataframe of a solver. Each row is a problem.\n\nKeyword arguments:\n\ncols::Array{Symbol}: Which columns of the df. Defaults to using all columns;\nignore_missing_cols::Bool: If true, filters out the columns in cols that don\'t exist in the data frame. Useful when creating tables for solvers in a loop where one solver has a column the other doesn\'t. If false, throws BoundsError in that situation.\nfmt_override::Dict{Symbol,Function}: Overrides format for a specific column, such as\nfmt_override=Dict(:name => x->@sprintf(\"%-10s\", x))\nhdr_override::Dict{Symbol,String}: Overrides header names, such as hdr_override=Dict(:name => \"Name\").\n\n\n\n\n\n"
+    "text": "markdown_table(io, df, kwargs...)\n\nCreate a markdown table from a DataFrame using PrettyTables and format the output.\n\nInputs:\n\nio::IO: where to send the table, e.g.:\nopen(\"file.md\", \"w\") do io\n  markdown_table(io, df)\nend\nIf left out, io defaults to stdout.\ndf::DataFrame: Dataframe of a solver. Each row is a problem.\n\nKeyword arguments:\n\ncols::Array{Symbol}: Which columns of the df. Defaults to using all columns;\nignore_missing_cols::Bool: If true, filters out the columns in cols that don\'t exist in the data frame. Useful when creating tables for solvers in a loop where one solver has a column the other doesn\'t. If false, throws BoundsError in that situation.\nfmt_override::Dict{Symbol,Function}: Overrides format for a specific column, such as\nfmt_override=Dict(:name => x->@sprintf(\"%-10s\", x))\nhdr_override::Dict{Symbol,String}: Overrides header names, such as hdr_override=Dict(:name => \"Name\").\n\n\n\n\n\n"
 },
 
 {
@@ -213,7 +213,7 @@ var documenterSearchIndex = {"docs": [
     "page": "API",
     "title": "SolverBenchmark.safe_latex_AbstractString",
     "category": "function",
-    "text": "safe_latex_AbstractString(s)\n\nFor strings. Replaces _ by \\_.\n\n\n\n\n\n"
+    "text": "safe_latex_AbstractString(s)\n\nFor strings. Replaces _ with \\_.\n\n\n\n\n\n"
 },
 
 {
