@@ -23,6 +23,7 @@ exponent in `\\(` and `\\)`.
 """
 function safe_latex_AbstractFloat(s :: AbstractString)
   strip(s) == "Inf" && return "\\(\\infty\\)"
+  strip(s) == "-Inf" && return "\\(-\\infty\\)"
   strip(s) == "NaN" && return s
   mantissa, exponent = split(s, 'e')
   "\\(" * mantissa * "\\)e\\(" * exponent * "\\)"
