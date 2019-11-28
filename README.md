@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/JuliaSmoothOptimizers/SolverBenchmark.jl.svg?branch=master)](https://travis-ci.org/JuliaSmoothOptimizers/SolverBenchmark.jl)
 [![Build status](https://ci.appveyor.com/api/projects/status/s3213w0k9s9d45ro?svg=true)](https://ci.appveyor.com/project/dpo/solverbenchmark-jl)
+[![Build Status](https://api.cirrus-ci.com/github/JuliaSmoothOptimizers/SolverBenchmark.jl.svg)](https://cirrus-ci.com/github/JuliaSmoothOptimizers/SolverBenchmark.jl)
 [![](https://img.shields.io/badge/docs-latest-3f51b5.svg)](https://JuliaSmoothOptimizers.github.io/SolverBenchmark.jl/latest)
 [![Coverage Status](https://coveralls.io/repos/github/JuliaSmoothOptimizers/SolverBenchmark.jl/badge.svg?branch=master)](https://coveralls.io/github/JuliaSmoothOptimizers/SolverBenchmark.jl?branch=master)
 
