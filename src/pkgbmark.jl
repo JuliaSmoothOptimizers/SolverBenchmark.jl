@@ -126,8 +126,8 @@ function to_gist(results::PkgBenchmark.BenchmarkResults, p)
     "description": "A benchmark for Krylov repository",
     "public": true,
     "files": {
-        "bmark.md.md": {
-          "content": "$(escape_string(sprint(export_markdown, stdout, results)))"
+        "bmark.md": {
+          "content": "$(escape_string(sprint(PkgBenchmark.export_markdown, stdout, results)))"
         },
         "bmark.svg": {
           "content": "$(svgfilecontents)"
