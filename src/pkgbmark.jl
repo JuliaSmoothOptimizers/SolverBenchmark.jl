@@ -123,7 +123,7 @@ function to_gist(results::PkgBenchmark.BenchmarkResults, p)
   gist_json = JSON.parse(
   """
   {
-    "description": "A benchmark for Krylov repository",
+    "description": "Benchmarks uploaded by SolverBenchmark.jl",
     "public": true,
     "files": {
         "bmark.md": {
