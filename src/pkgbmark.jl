@@ -127,7 +127,7 @@ function to_gist(results::PkgBenchmark.BenchmarkResults, p)
     "public": true,
     "files": {
         "bmark.md": {
-          "content": "$(escape_string(sprint(PkgBenchmark.export_markdown, stdout, results)))"
+          "content": "$(escape_string(sprint(PkgBenchmark.export_markdown, results; context=stdout)))"
         },
         "bmark.svg": {
           "content": "$(svgfilecontents)"
