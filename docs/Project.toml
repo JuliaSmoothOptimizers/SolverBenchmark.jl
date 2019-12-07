@@ -7,4 +7,9 @@ PrettyTables = "08abe8d2-0d0c-5749-adfa-8a2ac140af0d"
 PyPlot = "d330b81b-6aea-500a-939a-2ce795aea3ee"
 
 [compat]
+DataFrames = "^0.19"
 Documenter = "~0.21"
+LaTeXTabulars = "^0.1.0"
+Plots = "0.23.0, 0.24.0, 0.25.0, 0.26.0, 0.27.0, 0.28.0"
+PrettyTables = "0.3.0, 0.4.0, 0.5.0, 0.6.0, 0.7.0"
+PyPlot = "2.8.2"
