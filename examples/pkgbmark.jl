@@ -20,5 +20,5 @@ Plots.default(; common_plot_args...)
 
 # process benchmark results and post gist
 p = profile_solvers(results)
-posted_gist = to_gist(results, svgfilename)
+posted_gist = to_gist(results, p)
 println(posted_gist.html_url)
