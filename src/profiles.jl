@@ -61,12 +61,13 @@ function profile_solvers(stats::Dict{Symbol,DataFrame},
   nsolvers = length(solvers)
   ncosts = length(costs)
   npairs = div(nsolvers * (nsolvers - 1), 2)
+  colors = get_color_palette(:auto, plot_color(:white), nsolvers)
 
   # profiles with all solvers
-  ps = [performance_profile(Ps[1], string.(solvers), title=costnames[1], legend=:bottomright)]
+  ps = [performance_profile(Ps[1], string.(solvers), palette=colors, title=costnames[1], legend=:bottomright)]
   nsolvers > 2 && xlabel!(ps[1], "")
   for k = 2 : ncosts
-    p = performance_profile(Ps[k], string.(solvers), title=costnames[k], legend=false)
+    p = performance_profile(Ps[k], string.(solvers), palette=colors, title=costnames[k], legend=false)
     nsolvers > 2 && xlabel!(p, "")
     ylabel!(p, "")
     push!(ps, p)
@@ -75,7 +76,6 @@ function profile_solvers(stats::Dict{Symbol,DataFrame},
   if nsolvers > 2
     ipairs = 0
     # combinations of solvers 2 by 2
-    colors = get_color_palette(:auto, plot_color(:white), nsolvers)
     for i = 2 : nsolvers
       for j = 1 : i-1
         ipairs += 1
