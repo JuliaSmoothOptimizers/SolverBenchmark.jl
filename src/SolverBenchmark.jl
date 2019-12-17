@@ -5,6 +5,7 @@ using Printf
 
 # dependencies imports
 using DataFrames
+using PrettyTables
 
 # Tables
 include("formatting.jl")
