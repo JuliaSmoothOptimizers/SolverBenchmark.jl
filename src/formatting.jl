@@ -43,10 +43,19 @@ function format_table(df :: DataFrame, formatter::Function;
     @error("There are no columns `" * join(missing_cols, ", ") * "` in dataframe")
     throw(BoundsError)
   end
+  local hl
+  if hasproperty(df, :status)
+    # extract failure ids
+    failure_id = df[(df.status .!= :first_order) .& (df.status .!= :unbounded), :].id
+    hl = Highlighter(f = (data, i, j) -> i ∈ failure_id, crayon = crayon"bold red")
+  else
+    hl = Highlighter(f = (data, i, j) -> false, crayon = crayon"black")
+  end
+
   string_cols = [map(haskey(fmt_override, col) ? fmt_override[col] : formatter, df[!, col]) for col in cols]
   table = hcat(string_cols...)
 
   header = [haskey(hdr_override, c) ? hdr_override[c] : formatter(c) for c in cols]
 
-  return header, table
+  return header, table, hl
 end

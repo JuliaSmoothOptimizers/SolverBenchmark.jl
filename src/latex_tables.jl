@@ -87,7 +87,7 @@ We recommend using the `safe_latex_foo` functions when overriding formats, unles
 you're sure you don't need them.
 """
 function latex_table(io :: IO, df :: DataFrame; kwargs...)
-  header, table = format_table(df, LTXformat; kwargs...)
+  header, table, _ = format_table(df, LTXformat; kwargs...)  # ignore highlighter
   latex_tabular(io, LongTable("l" * "r"^(length(header)-1), header),
                 [table, Rule()])
   nothing

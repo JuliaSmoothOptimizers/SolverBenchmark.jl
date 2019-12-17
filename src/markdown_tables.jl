@@ -1,5 +1,3 @@
-using PrettyTables
-
 export MDformat, markdown_table
 
 for (typ, fmt) in formats
@@ -49,8 +47,8 @@ Keyword arguments:
 - `hdr_override::Dict{Symbol,String}`: Overrides header names, such as `hdr_override=Dict(:name => "Name")`.
 """
 function markdown_table(io :: IO, df :: DataFrame; kwargs...)
-  header, table = format_table(df, MDformat; kwargs...)
-  pretty_table(io, table, header, markdown)
+  header, table, hl = format_table(df, MDformat; kwargs...)
+  pretty_table(io, table, header, tf=markdown, highlighters=hl)
   nothing
 end
 
