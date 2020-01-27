@@ -1,5 +1,6 @@
 name = "SolverBenchmark"
 uuid = "581a75fa-a23a-52d0-a590-d6201de2218a"
+version = "0.2.0"
 
 [deps]
 BenchmarkProfiles = "ecbce9bc-3e5e-569d-9e29-55181f61f8d0"
@@ -19,13 +20,13 @@ Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 [compat]
 BenchmarkProfiles = "0.2.0, 0.3.0"
 BenchmarkTools = "^0.4.2"
-DataFrames = "^0.19"
+DataFrames = "^0.20"
 GitHub = "^5.0.2"
 JSON = "0.20.0, 0.21.0"
 LaTeXTabulars = "^0.1.0"
 PkgBenchmark = "^0.2.0"
 Plots = "0.23.0, 0.24.0, 0.25.0, 0.26.0, 0.27.0, 0.28.0"
-PrettyTables = "0.3.0, 0.4.0, 0.5.0, 0.6.0, 0.7.0"
+PrettyTables = "0.3.0, 0.4.0, 0.5.0, 0.6.0, 0.7.0, 0.8.0"
 julia = "^1.0.0"
 
 [extras]
