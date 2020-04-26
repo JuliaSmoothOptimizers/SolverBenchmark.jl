@@ -61,7 +61,7 @@ function profile_solvers(stats::Dict{Symbol,DataFrame},
   nsolvers = length(solvers)
   ncosts = length(costs)
   npairs = div(nsolvers * (nsolvers - 1), 2)
-  colors = get_color_palette(:auto, plot_color(:white), nsolvers)
+  colors = get_color_palette(:auto, nsolvers)
 
   # profiles with all solvers
   ps = [performance_profile(Ps[1], string.(solvers), palette=colors, title=costnames[1], legend=:bottomright)]
