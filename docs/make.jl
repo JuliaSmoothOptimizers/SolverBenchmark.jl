@@ -14,8 +14,4 @@ makedocs(
           ]
 )
 
-deploydocs(deps = nothing, make = nothing,
-  repo = "github.com/JuliaSmoothOptimizers/SolverBenchmark.jl.git",
-  target = "build",
-  devbranch = "master"
-)
+deploydocs(repo = "github.com/JuliaSmoothOptimizers/SolverBenchmark.jl.git")
