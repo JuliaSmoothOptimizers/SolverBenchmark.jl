@@ -20,7 +20,7 @@ Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 [compat]
 BenchmarkProfiles = "0.2.0, 0.3.0"
 BenchmarkTools = "^0.4.2, 0.5"
-DataFrames = "^0.20"
+DataFrames = "^0.20, 0.21"
 GitHub = "^5.0.2"
 JSON = "0.20.0, 0.21.0"
 LaTeXTabulars = "^0.1.0"
