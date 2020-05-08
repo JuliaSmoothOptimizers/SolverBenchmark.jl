@@ -1,5 +1,4 @@
 function test_profiles()
-  example_folder = joinpath(@__DIR__, "example")
   stats = get_stats_data() # from data.jl
 
   @info "Generating performance profiles"

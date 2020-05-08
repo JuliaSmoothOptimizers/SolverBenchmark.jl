@@ -1,6 +1,4 @@
-export MDformat, markdown_table
-
-for (typ, fmt) in formats
+for (typ, fmt) in default_formatters
   @eval begin
     MDformat(x :: $typ) = @sprintf($fmt, x)
   end
@@ -35,21 +33,16 @@ Inputs:
 - `df::DataFrame`: Dataframe of a solver. Each row is a problem.
 
 Keyword arguments:
-- `cols::Array{Symbol}`: Which columns of the `df`. Defaults to using all columns;
-- `ignore_missing_cols::Bool`: If `true`, filters out the columns in `cols` that don't
-  exist in the data frame. Useful when creating tables for solvers in a loop where one
-  solver has a column the other doesn't. If `false`, throws `BoundsError` in that
-  situation.
-- `fmt_override::Dict{Symbol,Function}`: Overrides format for a specific column, such as
+- `hl`: a highlighter or tuple of highlighters to color individual cells (when output to screen).
+        By default, we use a simple `passfail_highlighter()`.
 
-    fmt_override=Dict(:name => x->@sprintf("**%-10s**", x))
-
-- `hdr_override::Dict{Symbol,String}`: Overrides header names, such as `hdr_override=Dict(:name => "Name")`.
+- all other keyword arguments are passed directly to `format_table()`.
 """
-function markdown_table(io :: IO, df :: DataFrame; kwargs...)
-  header, table, hl = format_table(df, MDformat; kwargs...)
+function markdown_table(io :: IO, df :: DataFrame; hl=passfail_highlighter(df), kwargs...)
+  header, table = format_table(df, MDformat; kwargs...)
   pretty_table(io, table, header, tf=markdown, highlighters=hl)
-  nothing
 end
 
 markdown_table(df :: DataFrame; kwargs...) = markdown_table(stdout, df; kwargs...)
+
+Base.@deprecate markdown_table pretty_stats true

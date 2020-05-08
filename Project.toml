@@ -5,6 +5,7 @@ version = "0.2.0"
 [deps]
 BenchmarkProfiles = "ecbce9bc-3e5e-569d-9e29-55181f61f8d0"
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+ColorSchemes = "35d6a980-a343-548e-a6ea-1d62b119f2f4"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 GitHub = "bc5e4493-9b4d-5f90-b8aa-2b2bcaad7a26"
 JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
@@ -20,13 +21,14 @@ Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 [compat]
 BenchmarkProfiles = "0.2.0, 0.3.0"
 BenchmarkTools = "^0.4.2, 0.5"
+ColorSchemes = "^3.9"
 DataFrames = "^0.20"
 GitHub = "^5.0.2"
 JSON = "0.20.0, 0.21.0"
 LaTeXTabulars = "^0.1.0"
 PkgBenchmark = "^0.2.0"
 Plots = "1.0, 1.1"
-PrettyTables = "0.3.0, 0.4.0, 0.5.0, 0.6.0, 0.7.0, 0.8.0, 0.9"
+PrettyTables = "0.9.0"
 julia = "^1.0.0"
 
 [extras]
