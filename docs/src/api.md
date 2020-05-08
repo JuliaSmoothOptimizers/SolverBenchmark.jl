@@ -7,10 +7,20 @@ Pages = ["api.md"]
 ## Tables
 
 ```@docs
-format_table
+pretty_stats
+passfail_highlighter
+gradient_highlighter
+pretty_latex_stats
+passfail_latex_highlighter
 join
-latex_table
-markdown_table
+SolverBenchmark.safe_latex_Signed_col
+SolverBenchmark.safe_latex_Signed
+SolverBenchmark.safe_latex_AbstractFloat_col
+SolverBenchmark.safe_latex_AbstractFloat
+SolverBenchmark.safe_latex_AbstractString_col
+SolverBenchmark.safe_latex_AbstractString
+SolverBenchmark.safe_latex_Symbol_col
+SolverBenchmark.safe_latex_Symbol
 ```
 
 ## PkgBenchmark
@@ -29,13 +39,12 @@ profile_solvers
 profile_package
 ```
 
-## Formatting
+## Deprecated
 
 ```@docs
-LTXformat
-MDformat
-safe_latex_AbstractFloat
-safe_latex_AbstractString
-safe_latex_Signed
-safe_latex_Symbol
+SolverBenchmark.format_table
+SolverBenchmark.markdown_table
+SolverBenchmark.latex_table
+SolverBenchmark.MDformat
+SolverBenchmark.LTXformat
 ```
