@@ -26,9 +26,9 @@ function join(stats::Dict{Symbol,DataFrame},
               hdr_override::Dict{Symbol,String} = Dict{Symbol,String}(),
              )
   length(cols) == 0 && error("cols can't be empty")
-  if !all(:id in names(df) for (s,df) in stats)
+  if !all(:id in propertynames(df) for (s,df) in stats)
     error("Missing column :id in some DataFrame")
-  elseif !all(setdiff(cols, names(df)) == [] for (s,df) in stats)
+  elseif !all(setdiff(cols, propertynames(df)) == [] for (s,df) in stats)
     error("Not all DataFrames have all columns given by `cols`")
   end
 
@@ -49,13 +49,15 @@ function join(stats::Dict{Symbol,DataFrame},
   df = stats[s][:, invariant_cols]
 
   rename_f(c, s) = begin
-    c in invariant_cols && return c
-    sc = haskey(hdr_override, c) ? hdr_override[c] : string(c)
+    symbol_c = Symbol(c)
+    symbol_c in invariant_cols && return symbol_c
+    sc = haskey(hdr_override, symbol_c) ? hdr_override[symbol_c] : c
     Symbol(sc * "_$s")
   end
 
+  show(df)
   for (s, dfs) in stats
-    df = join(df, rename(c->rename_f(c, s), dfs[!, cols]), on=:id, makeunique=true)
+    df = innerjoin(df, rename(c->rename_f(c, s), dfs[!, cols]), on=:id, makeunique=true)
   end
 
   return df

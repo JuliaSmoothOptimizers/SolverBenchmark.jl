@@ -16,11 +16,12 @@ Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 PrettyTables = "08abe8d2-0d0c-5749-adfa-8a2ac140af0d"
 Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 
 [compat]
 BenchmarkProfiles = "0.2.0, 0.3.0"
 BenchmarkTools = "^0.4.2, 0.5"
-DataFrames = "^0.20"
+DataFrames = "^0.21"
 GitHub = "^5.0.2"
 JSON = "0.20.0, 0.21.0"
 LaTeXTabulars = "^0.1.0"
@@ -37,6 +38,7 @@ Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 UnicodePlots = "b8865327-cd53-5732-bb35-84acbb429228"
+SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 
 [targets]
-test = ["LibGit2", "LinearAlgebra", "Test", "Plots", "Random", "Printf", "UnicodePlots"]
+test = ["LibGit2", "LinearAlgebra", "Test", "Plots", "Random", "Printf", "UnicodePlots", "SparseArrays"]
