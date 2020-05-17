@@ -1,6 +1,8 @@
 test/example/latex_example.*
 test/example/profile*
 
+benchmark/*.json
+
 docs/build
 docs/Manifest.toml
 *.aux
