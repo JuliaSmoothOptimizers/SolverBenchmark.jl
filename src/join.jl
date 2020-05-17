@@ -55,7 +55,6 @@ function join(stats::Dict{Symbol,DataFrame},
     Symbol(sc * "_$s")
   end
 
-  show(df)
   for (s, dfs) in stats
     df = innerjoin(df, rename(c->rename_f(c, s), dfs[!, cols]), on=:id, makeunique=true)
   end
