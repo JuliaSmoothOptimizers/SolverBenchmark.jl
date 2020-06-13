@@ -55,7 +55,7 @@ function pretty_stats(io::IO, df::DataFrame;
   end
 
   # merge default and user-specified column formatters
-  df_names = names(df)
+  df_names = propertynames(df)
   for col = 1 : length(df_names)
     name = df_names[col]
     if name ∈ keys(col_formatters)
