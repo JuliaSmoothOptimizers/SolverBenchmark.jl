@@ -2,7 +2,7 @@ using SolverBenchmark
 
 # auxiliary packages
 using DataFrames, Plots, Printf, Random
-pyplot()
+#pyplot()
 
 function generate_assets()
   # Fake data
@@ -11,7 +11,7 @@ function generate_assets()
   names = [:alpha, :beta, :gamma]
   stats = Dict(name => DataFrame(:id => 1:n,
                                  :name => [@sprintf("prob%03d", i) for i = 1:n],
-                                 :status => map(x -> x < 0.75 ? :success : :failure, rand(n)),
+                                 :status => map(x -> x < 0.75 ? :first_order : :failure, rand(n)),
                                  :f => randn(n),
                                  :t => 1e-3 .+ rand(n) * 1000,
                                  :iter => rand(10:10:100, n)) for name in names)
@@ -21,14 +21,14 @@ function generate_assets()
   cols = [:status, :name, :f, :t, :iter]
   header = Dict(:status => "flag", :f => "\\(f(x)\\)", :t => "time")
   open("alpha.tex", "w") do io
-    latex_table(io, df, cols=cols, hdr_override=header)
+    pretty_latex_stats(io, df[!, cols], hdr_override=header)
   end
   run(`latexmk -pdf alpha-standalone.tex`)
   run(`pdf2svg alpha-standalone.pdf alpha.svg`)
 
   header = Dict(:status => "flag", :f => "f(x)", :t => "time")
   open("alpha.md", "w") do io
-    markdown_table(io, df, cols=cols, hdr_override=header)
+    pretty_stats(io, df[!, cols], hdr_override=header)
   end
 
   # Joined table
@@ -36,13 +36,13 @@ function generate_assets()
             hdr_override=Dict(:status => "flag"))
 
   open("joined.tex", "w") do io
-    latex_table(io, df)
+    pretty_latex_stats(io, df)
   end
   run(`latexmk -pdf joined-standalone.tex`)
   run(`pdf2svg joined-standalone.pdf joined.svg`)
 
   open("joined.md", "w") do io
-    markdown_table(io, df)
+    pretty_stats(io, df, tf=markdown)
   end
 
   # Profile
