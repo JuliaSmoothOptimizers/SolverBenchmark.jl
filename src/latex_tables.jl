@@ -1,41 +1,7 @@
 # dependencies imports
 using LaTeXTabulars
 
-export latex_table, safe_latex_Signed, safe_latex_AbstractString,
-       safe_latex_AbstractFloat, safe_latex_Symbol, LTXformat
-
-"""`safe_latex_Signed(s)`
-
-For signed integers. Encloses `s` in `\\(` and `\\)`.
-"""
-safe_latex_Signed(s :: AbstractString) = "\\(" * s * "\\)"
-
-"""`safe_latex_AbstractString(s)`
-
-For strings. Replaces `_` with `\\_`.
-"""
-safe_latex_AbstractString(s :: AbstractString) = replace(s, "_" => "\\_")
-
-"""`safe_latex_AbstractFloat(s)`
-
-For floats. Bypasses `Inf` and `NaN`. Enclose both the mantissa and the
-exponent in `\\(` and `\\)`.
-"""
-function safe_latex_AbstractFloat(s :: AbstractString)
-  strip(s) == "Inf" && return "\\(\\infty\\)"
-  strip(s) == "-Inf" && return "\\(-\\infty\\)"
-  strip(s) == "NaN" && return s
-  mantissa, exponent = split(s, 'e')
-  "\\(" * mantissa * "\\)e\\(" * exponent * "\\)"
-end
-
-"""`safe_latex_Symbol(s)`
-
-For symbols. Same as strings.
-"""
-safe_latex_Symbol = safe_latex_AbstractString
-
-for (typ, fmt) in formats
+for (typ, fmt) in default_formatters
   safe = Symbol("safe_latex_$typ")
   @eval begin
     LTXformat(x :: $typ) = @sprintf($fmt, x) |> $safe
@@ -94,3 +60,5 @@ function latex_table(io :: IO, df :: DataFrame; kwargs...)
 end
 
 latex_table(df :: DataFrame; kwargs...) = latex_table(stdout, df; kwargs...)
+
+Base.@deprecate latex_table pretty_latex_stats true
