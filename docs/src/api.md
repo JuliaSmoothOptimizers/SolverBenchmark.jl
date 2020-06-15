@@ -15,6 +15,17 @@ passfail_latex_highlighter
 join
 ```
 
+## Benchmarks
+
+```@docs
+bmark_solvers
+solve_problems
+save_stats
+load_stats
+count_unique
+quick_summary
+```
+
 ## PkgBenchmark
 
 ```@docs

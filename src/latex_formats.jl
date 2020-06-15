@@ -105,7 +105,7 @@ safe_latex_formatters = Dict(AbstractFloat => safe_latex_AbstractFloat_col,
 
 Pretty-print a DataFrame as a LaTeX longtable using PrettyTables.
 
-See the `pretty_stats()` documentation. Specific settings in this method are:
+See the `pretty_stats` documentation. Specific settings in this method are:
 
 * the backend is set to `:latex`;
 * the table type is set to `:longtable`;

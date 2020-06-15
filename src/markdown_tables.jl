@@ -34,9 +34,9 @@ Inputs:
 
 Keyword arguments:
 - `hl`: a highlighter or tuple of highlighters to color individual cells (when output to screen).
-        By default, we use a simple `passfail_highlighter()`.
+        By default, we use a simple `passfail_highlighter`.
 
-- all other keyword arguments are passed directly to `format_table()`.
+- all other keyword arguments are passed directly to `format_table`.
 """
 function markdown_table(io :: IO, df :: DataFrame; hl=passfail_highlighter(df), kwargs...)
   header, table = format_table(df, MDformat; kwargs...)

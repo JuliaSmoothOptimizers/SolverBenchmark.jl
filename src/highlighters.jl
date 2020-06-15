@@ -30,7 +30,7 @@ end
 
 A PrettyTables LaTeX highlighter that colors failures in bold red by default.
 
-See the documentation of `passfail_highlighter()` for more information.
+See the documentation of `passfail_highlighter` for more information.
 """
 function passfail_latex_highlighter(df::DataFrame, c="cellcolor{red}")
   # NB: not obvious how to also use bold as \textbf{\(1.0e-03\)} will not appear in bold

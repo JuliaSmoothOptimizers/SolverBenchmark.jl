@@ -1,12 +1,15 @@
 module SolverBenchmark
 
-# stdlib imports
+using Logging
 using Printf
 
-# dependencies imports
 using ColorSchemes
 using DataFrames
+using JLD2
 using PrettyTables
+
+using NLPModels
+using SolverTools
 
 # reexport PrettyTable table formats for convenience
 export unicode, ascii_dots, ascii_rounded, borderless, compact,
@@ -17,6 +20,11 @@ include("formats.jl")
 include("latex_formats.jl")
 include("highlighters.jl")
 include("join.jl")
+
+# Benchmark
+include("run_solver.jl")
+include("bmark_solvers.jl")
+include("bmark_utils.jl")
 
 # deprecated, remove in a future version
 include("formatting.jl")

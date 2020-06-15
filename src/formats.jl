@@ -28,12 +28,12 @@ Pretty-print a DataFrame using PrettyTables.
 * `hdr_override::Dict{Symbol, String}`: a Dict of those headers that should be displayed differently than
       simply according to the column name (default: empty). Example: `Dict(:col1 => "column 1")`.
 
-All other keyword arguments are passed directly to `pretty_table()`.
+All other keyword arguments are passed directly to `pretty_table`.
 In particular,
 
 * use `tf=markdown` to display a Markdown table;
-* do not use this function for LaTeX output; use `pretty_latex_stats()` instead;
-* any PrettyTables highlighters can be given, but see the predefined `passfail_highlighter()` and `gradient_highlighter()`.
+* do not use this function for LaTeX output; use `pretty_latex_stats` instead;
+* any PrettyTables highlighters can be given, but see the predefined `passfail_highlighter` and `gradient_highlighter`.
 """
 function pretty_stats(io::IO, df::DataFrame;
                       col_formatters=default_formatters,
