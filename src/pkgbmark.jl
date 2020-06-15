@@ -11,7 +11,7 @@ export bmark_results_to_dataframes, judgement_results_to_dataframes, profile_pac
 Convert `PkgBenchmark` results to a dictionary of `DataFrame`s.
 
 Inputs:
-- `results::BenchmarkResults`: the result of `PkgBenchmark.benchmarkpkg()`
+- `results::BenchmarkResults`: the result of `PkgBenchmark.benchmarkpkg`
 
 Output:
 - `stats::Dict{Symbol,DataFrame}`: a dictionary of `DataFrame`s containing the
@@ -75,7 +75,7 @@ end
 Produce performance profiles based on `PkgBenchmark.benchmarkpkg` results.
 
 Inputs:
-- `results::BenchmarkResults`: the result of `PkgBenchmark.benchmarkpkg()`.
+- `results::BenchmarkResults`: the result of `PkgBenchmark.benchmarkpkg`.
 """
 function profile_solvers(results::PkgBenchmark.BenchmarkResults)
   # guard against zero gctimes
@@ -108,11 +108,11 @@ end
 Create and post a gist with the benchmark results and performance profiles.
 
 Inputs:
-- `results::BenchmarkResults`: the result of `PkgBenchmark.benchmarkpkg()`
-- `p`:: the result of `profile_solvers()`.
+- `results::BenchmarkResults`: the result of `PkgBenchmark.benchmarkpkg`
+- `p`:: the result of `profile_solvers`.
 
 Output:
-- the return value of GitHub.jl's `create_gist()`.
+- the return value of GitHub.jl's `create_gist`.
 """
 function to_gist(results::PkgBenchmark.BenchmarkResults, p)
   filename = tempname()
@@ -147,9 +147,9 @@ end
 Create and post a gist with the benchmark results and performance profiles.
 
 Inputs:
-- `results::BenchmarkResults`: the result of `PkgBenchmark.benchmarkpkg()`
+- `results::BenchmarkResults`: the result of `PkgBenchmark.benchmarkpkg`
 
 Output:
-- the return value of GitHub.jl's `create_gist()`.
+- the return value of GitHub.jl's `create_gist`.
 """
 to_gist(results) = to_gist(results, profile_solvers(results))
