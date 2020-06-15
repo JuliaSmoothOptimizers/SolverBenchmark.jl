@@ -45,5 +45,5 @@ function format_table(df :: DataFrame, formatter :: Function;
   return header, table
 end
 
-Base.@deprecate format_table pretty_stats true
+Base.@deprecate format_table pretty_stats false
 

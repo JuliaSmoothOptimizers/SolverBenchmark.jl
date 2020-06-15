@@ -45,4 +45,4 @@ end
 
 markdown_table(df :: DataFrame; kwargs...) = markdown_table(stdout, df; kwargs...)
 
-Base.@deprecate markdown_table pretty_stats true
+Base.@deprecate markdown_table pretty_stats false

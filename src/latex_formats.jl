@@ -1,6 +1,4 @@
 export pretty_latex_stats
-export safe_latex_Signed, safe_latex_AbstractString,
-       safe_latex_AbstractFloat, safe_latex_Symbol
 
 """
     safe_latex_Signed_col(col::Integer)
