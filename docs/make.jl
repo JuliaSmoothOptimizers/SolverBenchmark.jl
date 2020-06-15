@@ -2,6 +2,7 @@ using Documenter, SolverBenchmark
 
 makedocs(
   modules = [SolverBenchmark],
+  checkdocs = :exports,
   doctest = true,
   linkcheck = true,
   strict = true,

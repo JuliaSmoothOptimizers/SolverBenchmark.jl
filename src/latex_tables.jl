@@ -61,4 +61,4 @@ end
 
 latex_table(df :: DataFrame; kwargs...) = latex_table(stdout, df; kwargs...)
 
-Base.@deprecate latex_table pretty_latex_stats true
+Base.@deprecate latex_table pretty_latex_stats false
