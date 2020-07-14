@@ -9,6 +9,17 @@ export bmark_results_to_dataframes, judgement_results_to_dataframes, profile_pac
     stats = bmark_results_to_dataframes(results)
 
 Convert `PkgBenchmark` results to a dictionary of `DataFrame`s.
+The benchmark SUITE should have been constructed in
+the form
+
+    SUITE[solver][case] = ...
+
+where `solver` will be recorded as one of the solvers
+to be compared in the DataFrame and case is a test
+case. For example:
+
+    SUITE["CG"]["BCSSTK09"] = @benchmarkable ...
+    SUITE["LBFGS"]["ROSENBR"] = @benchmarkable ...
 
 Inputs:
 - `results::BenchmarkResults`: the result of `PkgBenchmark.benchmarkpkg`
@@ -20,7 +31,7 @@ Output:
 function bmark_results_to_dataframes(results::PkgBenchmark.BenchmarkResults)
   entries = BenchmarkTools.leaves(PkgBenchmark.benchmarkgroup(results))
   entries = entries[sortperm(map(x -> string(first(x)), entries))]
-  solvers = unique(map(pair -> pair[1][end], entries))
+  solvers = unique(map(pair -> pair[1][1], entries))
   names = [:name, :time, :memory, :gctime, :allocations]
   types = [String, Float64, Float64, Float64, Int]
 
@@ -31,8 +42,8 @@ function bmark_results_to_dataframes(results::PkgBenchmark.BenchmarkResults)
 
   for entry in entries
     case, trial = entry
-    name = case[end-1]
-    solver = Symbol(case[end])
+    name = case[end]
+    solver = Symbol(case[1])
     time = BenchmarkTools.time(trial)
     mem = BenchmarkTools.memory(trial)
     gctime = BenchmarkTools.gctime(trial)
@@ -56,17 +67,19 @@ Inputs:
       judgement = judge(commit, master)
 
 Output:
-- `stats::Dict{Symbol,DataFrame}`: a dictionary of `DataFrame`s containing the
-    target and baseline benchmark results.
+- `stats::Dict{Symbol,Dict{Symbol,DataFrame}}`: a dictionary of
+    `Dict{Symbol,DataFrame}`s containing the target and baseline benchmark results.
+    The elements of this dictionary are the same as those returned by
+    `bmark_results_to_dataframes(master)` and `bmark_results_to_dataframes(commit)`.
 """
 function judgement_results_to_dataframes(judgement::PkgBenchmark.BenchmarkJudgement)
   target_stats = bmark_results_to_dataframes(judgement.target_results)
   baseline_stats = bmark_results_to_dataframes(judgement.baseline_results)
-  stats = Dict{Symbol,DataFrame}()
-  k = first(keys(target_stats))
-  stats[:target] = target_stats[k]
-  stats[:baseline] = baseline_stats[k]
-  stats
+  Dict{Symbol, Dict{Symbol,DataFrame}}(
+    k => Dict{Symbol,DataFrame}(
+           :target => target_stats[k],
+           :baseline => baseline_stats[k])
+    for k ∈ keys(target_stats))
 end
 
 """

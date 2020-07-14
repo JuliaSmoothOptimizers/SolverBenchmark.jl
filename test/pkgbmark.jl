@@ -27,6 +27,7 @@ function test_pkgbmark()
     master = PkgBenchmark.benchmarkpkg("SolverBenchmark", "master", script=joinpath(@__DIR__, "bmark_suite.jl"))
     judgement = PkgBenchmark.judge(results, master)
     stats = judgement_results_to_dataframes(judgement)
+    @info stats
     @test length(keys(stats)) == 2
     @test :target ∈ keys(stats)
     @test :baseline ∈ keys(stats)
