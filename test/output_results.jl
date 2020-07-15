@@ -108,3 +108,24 @@ joined_md = raw"""|     id |    name |  flag_alpha |   f_alpha |   t_alpha |   f
 |     10 | prob010 |     failure |  2.20e-01 |  8.38e+02 | first_order | -3.47e+00 |  4.71e+02 | first_order |  1.08e+00 |  8.38e+02 |
 """
 
+missing_md = raw"""|         A |       B |       C |       D |
+|-----------|---------|---------|---------|
+|  1.00e+00 | missing | missing | missing |
+|   missing |       1 |       a | missing |
+|  3.00e+00 |       3 |       b | notmiss |
+"""
+
+missing_ltx = raw"""\begin{longtable}{rrrr}
+\hline
+A & B & C & D \\\hline
+\endhead
+\hline
+\multicolumn{4}{r}{{\bfseries Continued on next page}}\\
+\hline
+\endfoot
+\endlastfoot
+\( 1.00\)e\(+00\) &            &   & missing \\
+                  & \(     1\) & a & missing \\
+\( 3.00\)e\(+00\) & \(     3\) & b & notmiss \\\hline
+\end{longtable}
+"""

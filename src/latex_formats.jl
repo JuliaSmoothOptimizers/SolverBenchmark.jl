@@ -8,7 +8,7 @@ Generate a PrettyTables LaTeX formatter for signed integers.
 function safe_latex_Signed_col(col::Integer)
   return (s, i, j) -> begin
                         j !== col && return s
-                        return safe_latex_Signed(s)
+                        return ismissing(s) ? " "^10 : safe_latex_Signed(s) 
                       end
 end
 
@@ -29,7 +29,7 @@ Replaces `_` with `\\_`.
 function safe_latex_AbstractString_col(col::Integer)
   return (s, i, j) -> begin
                         j !== col && return s
-                        safe_latex_AbstractString(s)
+                        ismissing(s) ? " " : safe_latex_AbstractString(s)
                       end
 end
 
@@ -70,7 +70,7 @@ function safe_latex_AbstractFloat_col(col::Integer)
   # by this point, the table value should already have been converted to a string
   return (s, i, j) -> begin
                         j != col && return s
-                        return safe_latex_AbstractFloat(s)
+                        return ismissing(s) ? " "^17 : safe_latex_AbstractFloat(s)
                       end
 end
 
@@ -96,9 +96,9 @@ function safe_latex_AbstractFloat(s::AbstractString)
 end
 
 safe_latex_formatters = Dict(AbstractFloat => safe_latex_AbstractFloat_col,
-                                   Signed => safe_latex_Signed_col,
-                                   AbstractString => safe_latex_AbstractString_col,
-                                   Symbol => safe_latex_Symbol_col)
+                             Signed => safe_latex_Signed_col,
+                             AbstractString => safe_latex_AbstractString_col,
+                             Symbol => safe_latex_Symbol_col)
 
 """
     pretty_latex_stats(df; kwargs...)
@@ -136,7 +136,7 @@ function pretty_latex_stats(io::IO, df::DataFrame;
   df_names = propertynames(df)
   for col = 1 : length(df_names)
     name = df_names[col]
-    typ = eltype(df[!, name])
+    typ = Missings.nonmissingtype(eltype(df[!, name]))
     styp = supertype(typ)
     if name ∈ keys(col_formatters)
       push!(pt_formatters, ft_printf(col_formatters[name], col))

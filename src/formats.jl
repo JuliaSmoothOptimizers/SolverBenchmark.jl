@@ -61,7 +61,7 @@ function pretty_stats(io::IO, df::DataFrame;
     if name ∈ keys(col_formatters)
       push!(pt_formatters, ft_printf(col_formatters[name], col))
     else
-      typ = eltype(df[!, name])
+      typ = Missings.nonmissingtype(eltype(df[!, name]))
       styp = supertype(typ)
       push!(pt_formatters, ft_printf(default_formatters[typ == Symbol ? typ : styp], col))
     end

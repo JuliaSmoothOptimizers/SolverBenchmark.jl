@@ -56,6 +56,19 @@ function test_tables()
     pretty_stats(io, df, tf=markdown)
     @test joined_md == String(take!(io))
   end
+
+  @testset "missing values" begin
+    df = DataFrame(A = [1.0, missing, 3.0], B = [missing, 1, 3],
+                   C = [missing, "a", "b"], D = [missing, missing, :notmiss])
+    io = IOBuffer()
+    pretty_stats(io, df, tf=markdown)
+    pretty_stats(stdout, df, tf=markdown)
+    println(missing_md)
+    @test missing_md == String(take!(io))
+    io = IOBuffer()
+    pretty_latex_stats(io, df)
+    @test missing_ltx == String(take!(io))
+  end
 end
 
 test_tables()
