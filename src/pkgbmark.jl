@@ -112,7 +112,10 @@ Inputs:
 function profile_package(judgement::PkgBenchmark.BenchmarkJudgement)
   # guard against zero gctimes
   costs = [df -> df[!, :time], df -> df[!, :memory], df -> df[!, :gctime] .+ 1, df -> df[!, :allocations]]
-  profile_solvers(judgement_results_to_dataframes(judgement), costs, ["time", "memory", "gctime+1", "allocations"])
+  judgement_dataframes = judgement_results_to_dataframes(judgement)
+  Dict{Symbol, Plots.Plot}(
+    k => profile_solvers(judgement_dataframes[k], costs, ["time", "memory", "gctime+1", "allocations"])
+    for k ∈ keys(judgement_dataframes))
 end
 
 """
