@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2020.7.9)  9 JUL 2020 15:34
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2020.7.16)  16 JUL 2020 14:49
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -97,7 +97,7 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] (./alpha2.aux) ) 
 Here is how much of TeX's memory you used:
  834 strings out of 494953
- 12689 string characters out of 6180978
+ 12689 string characters out of 6180977
  66764 words of memory out of 5000000
  4168 multiletter control sequences out of 15000+600000
  3948 words of font info for 15 fonts, out of 8000000 for 9000
