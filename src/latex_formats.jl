@@ -143,9 +143,9 @@ function pretty_latex_stats(io::IO, df::DataFrame;
     else
       # be careful because supertype(Symbol) = Any
       push!(pt_formatters, ft_printf(default_formatters[typ == Symbol ? typ : styp], col))
-      # add LaTeX-specific formatters to make our table pretty
-      push!(pt_formatters, safe_latex_formatters[typ == Symbol ? typ : styp](col))
     end
+    # add LaTeX-specific formatters to make our table pretty
+    push!(pt_formatters, safe_latex_formatters[typ == Symbol ? typ : styp](col))
   end
 
   # set header
