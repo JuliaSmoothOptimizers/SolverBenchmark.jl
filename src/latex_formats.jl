@@ -8,7 +8,7 @@ Generate a PrettyTables LaTeX formatter for signed integers.
 function safe_latex_Signed_col(col::Integer)
   return (s, i, j) -> begin
                         j !== col && return s
-                        return ismissing(s) ? " "^10 : safe_latex_Signed(s) 
+                        return ismissing(s) ? " "^10 : safe_latex_Signed(s)
                       end
 end
 
