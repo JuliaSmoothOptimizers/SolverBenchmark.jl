@@ -5,7 +5,6 @@ makedocs(
   checkdocs = :exports,
   doctest = true,
   linkcheck = true,
-  strict = true,
   format = Documenter.HTML(assets = ["assets/style.css"], prettyurls = get(ENV, "CI", nothing) == "true"),
   sitename = "SolverBenchmark.jl",
   pages = ["Home" => "index.md",
