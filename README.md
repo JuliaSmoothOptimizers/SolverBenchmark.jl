@@ -1,6 +1,12 @@
 # SolverBenchmark.jl
 
-[![Build Status](https://travis-ci.org/JuliaSmoothOptimizers/SolverBenchmark.jl.svg?branch=master)](https://travis-ci.org/JuliaSmoothOptimizers/SolverBenchmark.jl)
+## How to Cite
+
+If you use SolverBenchmark.jl in your work, please cite using the format given in [CITATION.bib](https://github.com/JuliaSmoothOptimizers/SolverBenchmark.jl/blob/master/CITATION.bib).
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3948381.svg)](https://doi.org/10.5281/zenodo.3948381)
+![CI](https://github.com/JuliaSmoothOptimizers/SolverBenchmark.jl/workflows/CI/badge.svg?branch=master)
+[![CircleCI](https://circleci.com/gh/JuliaSmoothOptimizers/SolverBenchmark.jl.svg?style=svg)](https://circleci.com/gh/JuliaSmoothOptimizers/SolverBenchmark.jl)
 [![Build status](https://ci.appveyor.com/api/projects/status/s3213w0k9s9d45ro?svg=true)](https://ci.appveyor.com/project/dpo/solverbenchmark-jl)
 [![Build Status](https://api.cirrus-ci.com/github/JuliaSmoothOptimizers/SolverBenchmark.jl.svg)](https://cirrus-ci.com/github/JuliaSmoothOptimizers/SolverBenchmark.jl)
 [![](https://img.shields.io/badge/docs-latest-3f51b5.svg)](https://JuliaSmoothOptimizers.github.io/SolverBenchmark.jl/latest)
