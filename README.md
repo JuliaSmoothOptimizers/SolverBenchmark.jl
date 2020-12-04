@@ -6,11 +6,9 @@ If you use SolverBenchmark.jl in your work, please cite using the format given i
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3948381.svg)](https://doi.org/10.5281/zenodo.3948381)
 ![CI](https://github.com/JuliaSmoothOptimizers/SolverBenchmark.jl/workflows/CI/badge.svg?branch=master)
-[![CircleCI](https://circleci.com/gh/JuliaSmoothOptimizers/SolverBenchmark.jl.svg?style=svg)](https://circleci.com/gh/JuliaSmoothOptimizers/SolverBenchmark.jl)
-[![Build status](https://ci.appveyor.com/api/projects/status/s3213w0k9s9d45ro?svg=true)](https://ci.appveyor.com/project/dpo/solverbenchmark-jl)
 [![Build Status](https://api.cirrus-ci.com/github/JuliaSmoothOptimizers/SolverBenchmark.jl.svg)](https://cirrus-ci.com/github/JuliaSmoothOptimizers/SolverBenchmark.jl)
 [![](https://img.shields.io/badge/docs-latest-3f51b5.svg)](https://JuliaSmoothOptimizers.github.io/SolverBenchmark.jl/latest)
-[![Coverage Status](https://coveralls.io/repos/github/JuliaSmoothOptimizers/SolverBenchmark.jl/badge.svg?branch=master)](https://coveralls.io/github/JuliaSmoothOptimizers/SolverBenchmark.jl?branch=master)
+[![codecov](https://codecov.io/gh/JuliaSmoothOptimizers/SolverBenchmark.jl/branch/master/graph/badge.svg?token=E0srGT31Xi)](https://codecov.io/gh/JuliaSmoothOptimizers/SolverBenchmark.jl)
 
 This package provides general tools for benchmarking solvers, focusing on the following
 guidelines:
