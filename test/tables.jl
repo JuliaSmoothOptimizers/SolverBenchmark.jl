@@ -11,7 +11,7 @@ function test_tables()
     header = Dict(:status => "flag", :f => "\\(f(x)\\)", :t => "time")
     io = IOBuffer()
     pretty_latex_stats(io, df[!, cols], hdr_override=header)
-    @test alpha_tex == String(take!(io))
+    @test all(chomp.(split(alpha_tex)) .== chomp.(split(String(take!(io)))))
   end
 
   @testset "alpha results in latex format with highlighting" begin
@@ -19,7 +19,7 @@ function test_tables()
     hl = passfail_latex_highlighter(df)
     io = IOBuffer()
     pretty_latex_stats(io, df[!, cols], hdr_override=header, highlighters=hl)
-    @test alpha_hi_tex == String(take!(io))
+    @test all(chomp.(split(alpha_hi_tex)) .== chomp.(split(String(take!(io)))))
   end
 
   @testset "alpha results in markdown format" begin
@@ -27,7 +27,7 @@ function test_tables()
     fmts = Dict(:t => "%.2f")
     io = IOBuffer()
     pretty_stats(io, df[!, cols], col_formatters=fmts, hdr_override=header, tf=markdown)
-    @test alpha_md == String(take!(io))
+    @test all(chomp.(split(alpha_md)) .== chomp.(split(String(take!(io)))))
   end
 
   @testset "alpha results in unicode format" begin
@@ -35,7 +35,7 @@ function test_tables()
     fmts = Dict(:t => "%.2f")
     io = IOBuffer()
     pretty_stats(io, df[!, cols], col_formatters=fmts, hdr_override=header)
-    @test alpha_txt == String(take!(io))
+    @test all(chomp.(split(alpha_txt)) .== chomp.(split(String(take!(io)))))
   end
 
   @testset "Show all table output for joined solver" begin
@@ -48,13 +48,13 @@ function test_tables()
   @testset "joined results in latex format" begin
     io = IOBuffer()
     pretty_latex_stats(io, df)
-    @test joined_tex == String(take!(io))
+    @test all(chomp.(split(joined_tex)) .== chomp.(split(String(take!(io)))))
   end
 
   @testset "joined results in markdown format" begin
     io = IOBuffer()
     pretty_stats(io, df, tf=markdown)
-    @test joined_md == String(take!(io))
+    @test all(chomp.(split(joined_md)) .== chomp.(split(String(take!(io)))))
   end
 
   @testset "missing values" begin
@@ -64,10 +64,10 @@ function test_tables()
     pretty_stats(io, df, tf=markdown)
     pretty_stats(stdout, df, tf=markdown)
     println(missing_md)
-    @test missing_md == String(take!(io))
+    @test all(chomp.(split(missing_md)) .== chomp.(split(String(take!(io)))))
     io = IOBuffer()
     pretty_latex_stats(io, df)
-    @test missing_ltx == String(take!(io))
+    @test all(chomp.(split(missing_ltx)) .== chomp.(split(String(take!(io)))))
   end
 end
 
