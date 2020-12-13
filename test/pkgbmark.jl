@@ -4,6 +4,8 @@ using PkgBenchmark
 import Plots
 
 function test_pkgbmark()
+  repo = LibGit2.GitRepo(joinpath(@__DIR__, ".."))
+  clean_state = LibGit2.snapshot(repo)
   results = PkgBenchmark.benchmarkpkg("SolverBenchmark", script=joinpath(@__DIR__, "bmark_suite.jl"))
 
   stats = bmark_results_to_dataframes(results)
@@ -21,8 +23,8 @@ function test_pkgbmark()
   p = profile_solvers(stats, costs, ["time", "memory", "gctime+1", "allocations"])
   @test typeof(p) <: Plots.Plot
 
-  repo = LibGit2.GitRepo(joinpath(@__DIR__, ".."))
   LibGit2.lookup_branch(repo, "master") === nothing && LibGit2.branch!(repo, "master", force=true)
+  LibGit2.restore(clean_state, repo)  # appears to be an issue on Windows
   master = PkgBenchmark.benchmarkpkg("SolverBenchmark", "master", script=joinpath(@__DIR__, "bmark_suite.jl"))
   judgement = PkgBenchmark.judge(results, master)
   stats = judgement_results_to_dataframes(judgement)
