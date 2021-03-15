@@ -1,6 +1,6 @@
 using DataFrames
 using Logging
-using NLPModels
+using NLPModels, ADNLPModels
 using SolverTools
 
 include("dummy_solver.jl")
