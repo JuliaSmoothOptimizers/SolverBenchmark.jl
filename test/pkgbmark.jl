@@ -4,6 +4,10 @@ using PkgBenchmark
 import Plots
 
 function test_pkgbmark()
+  # When running breakage tests, don't run these tests
+  if get(ENV, "CI", nothing) !== nothing && get(ENV, "GITHUB_REPOSITORY", "") != "JuliaSmoothOptimizers/SolverBenchmark.jl"
+    return
+  end
   results = PkgBenchmark.benchmarkpkg("SolverBenchmark", script=joinpath(@__DIR__, "bmark_suite.jl"))
 
   stats = bmark_results_to_dataframes(results)
