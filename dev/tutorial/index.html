@@ -11,24 +11,24 @@ stats = Dict(name =&gt; DataFrame(:id =&gt; 1:n,
          :f =&gt; randn(n),
          :t =&gt; 1e-3 .+ rand(n) * 1000,
          :iter =&gt; rand(10:10:100, n),
-         :irrelevant =&gt; randn(n)) for name in names)</code></pre><pre><code class="language-none">Dict{Symbol,DataFrames.DataFrame} with 3 entries:
+         :irrelevant =&gt; randn(n)) for name in names)</code></pre><pre><code class="language-none">Dict{Symbol, DataFrames.DataFrame} with 3 entries:
   :alpha =&gt; 10×7 DataFrame. Omitted printing of 1 columns…
   :beta  =&gt; 10×7 DataFrame. Omitted printing of 1 columns…
-  :gamma =&gt; 10×7 DataFrame. Omitted printing of 1 columns…</code></pre><p>The data consists of a (fake) run of three solvers <code>alpha</code>, <code>beta</code> and <code>gamma</code>. Each solver has a column <code>id</code>, which is necessary for joining the solvers (names can be repeated), and columns <code>name</code>, <code>status</code>, <code>f</code>, <code>t</code> and <code>iter</code> corresponding to problem results. There is also a column <code>irrelevant</code> with extra information that will not be used to produce our benchmarks.</p><p>Here are the statistics of solver <code>alpha</code>:</p><pre><code class="language-julia">stats[:alpha]</code></pre><table class="data-frame"><thead><tr><th></th><th>id</th><th>name</th><th>status</th><th>f</th><th>t</th><th>iter</th><th>irrelevant</th></tr><tr><th></th><th>Int64</th><th>String</th><th>Symbol</th><th>Float64</th><th>Float64</th><th>Int64</th><th>Float64</th></tr></thead><tbody><p>10 rows × 7 columns</p><tr><th>1</th><td>1</td><td>prob001</td><td>failure</td><td>-0.688907</td><td>62.3686</td><td>20</td><td>-0.750523</td></tr><tr><th>2</th><td>2</td><td>prob002</td><td>failure</td><td>-0.762804</td><td>353.13</td><td>80</td><td>1.19557</td></tr><tr><th>3</th><td>3</td><td>prob003</td><td>first_order</td><td>0.397482</td><td>767.603</td><td>10</td><td>1.48354</td></tr><tr><th>4</th><td>4</td><td>prob004</td><td>first_order</td><td>0.81163</td><td>43.142</td><td>60</td><td>0.455818</td></tr><tr><th>5</th><td>5</td><td>prob005</td><td>first_order</td><td>-0.346355</td><td>267.986</td><td>60</td><td>-0.130051</td></tr><tr><th>6</th><td>6</td><td>prob006</td><td>first_order</td><td>-0.187573</td><td>66.8474</td><td>60</td><td>0.700297</td></tr><tr><th>7</th><td>7</td><td>prob007</td><td>first_order</td><td>-1.60726</td><td>156.638</td><td>50</td><td>-0.873254</td></tr><tr><th>8</th><td>8</td><td>prob008</td><td>first_order</td><td>-2.48079</td><td>605.298</td><td>10</td><td>-0.410048</td></tr><tr><th>9</th><td>9</td><td>prob009</td><td>first_order</td><td>2.27623</td><td>135.746</td><td>10</td><td>-0.691936</td></tr><tr><th>10</th><td>10</td><td>prob010</td><td>failure</td><td>0.219693</td><td>838.119</td><td>80</td><td>0.152318</td></tr></tbody></table><h2 id="Tables-1"><a class="docs-heading-anchor" href="#Tables-1">Tables</a><a class="docs-heading-anchor-permalink" href="#Tables-1" title="Permalink"></a></h2><p>The first thing we may want to do is produce a table for each solver. Notice that the solver result is already a DataFrame, so there are a few options available in other packages, as well as simply printing the DataFrame. Our concern here is two-fold: producing publication-ready LaTeX tables, and web-ready markdown tables.</p><p>The simplest use is <code>pretty_stats(io, dataframe)</code>. By default, <code>io</code> is <code>stdout</code>:</p><pre><code class="language-julia">using SolverBenchmark
+  :gamma =&gt; 10×7 DataFrame. Omitted printing of 1 columns…</code></pre><p>The data consists of a (fake) run of three solvers <code>alpha</code>, <code>beta</code> and <code>gamma</code>. Each solver has a column <code>id</code>, which is necessary for joining the solvers (names can be repeated), and columns <code>name</code>, <code>status</code>, <code>f</code>, <code>t</code> and <code>iter</code> corresponding to problem results. There is also a column <code>irrelevant</code> with extra information that will not be used to produce our benchmarks.</p><p>Here are the statistics of solver <code>alpha</code>:</p><pre><code class="language-julia">stats[:alpha]</code></pre><table class="data-frame"><thead><tr><th></th><th>id</th><th>name</th><th>status</th><th>f</th><th>t</th><th>iter</th><th>irrelevant</th></tr><tr><th></th><th>Int64</th><th>String</th><th>Symbol</th><th>Float64</th><th>Float64</th><th>Int64</th><th>Float64</th></tr></thead><tbody><p>10 rows × 7 columns</p><tr><th>1</th><td>1</td><td>prob001</td><td>failure</td><td>-0.688907</td><td>62.3686</td><td>90</td><td>1.42305</td></tr><tr><th>2</th><td>2</td><td>prob002</td><td>failure</td><td>-0.762804</td><td>353.13</td><td>90</td><td>0.408387</td></tr><tr><th>3</th><td>3</td><td>prob003</td><td>first_order</td><td>0.397482</td><td>767.603</td><td>20</td><td>0.588621</td></tr><tr><th>4</th><td>4</td><td>prob004</td><td>first_order</td><td>0.81163</td><td>43.142</td><td>70</td><td>-0.296278</td></tr><tr><th>5</th><td>5</td><td>prob005</td><td>first_order</td><td>-0.346355</td><td>267.986</td><td>40</td><td>0.691111</td></tr><tr><th>6</th><td>6</td><td>prob006</td><td>first_order</td><td>-0.187573</td><td>66.8474</td><td>20</td><td>0.506874</td></tr><tr><th>7</th><td>7</td><td>prob007</td><td>first_order</td><td>-1.60726</td><td>156.638</td><td>60</td><td>-0.0569299</td></tr><tr><th>8</th><td>8</td><td>prob008</td><td>first_order</td><td>-2.48079</td><td>605.298</td><td>50</td><td>-1.77102</td></tr><tr><th>9</th><td>9</td><td>prob009</td><td>first_order</td><td>2.27623</td><td>135.746</td><td>70</td><td>1.59062</td></tr><tr><th>10</th><td>10</td><td>prob010</td><td>failure</td><td>0.219693</td><td>838.119</td><td>90</td><td>1.39706</td></tr></tbody></table><h2 id="Tables-1"><a class="docs-heading-anchor" href="#Tables-1">Tables</a><a class="docs-heading-anchor-permalink" href="#Tables-1" title="Permalink"></a></h2><p>The first thing we may want to do is produce a table for each solver. Notice that the solver result is already a DataFrame, so there are a few options available in other packages, as well as simply printing the DataFrame. Our concern here is two-fold: producing publication-ready LaTeX tables, and web-ready markdown tables.</p><p>The simplest use is <code>pretty_stats(io, dataframe)</code>. By default, <code>io</code> is <code>stdout</code>:</p><pre><code class="language-julia">using SolverBenchmark
 
 pretty_stats(stats[:alpha])</code></pre><pre><code class="language-none">┌────────┬─────────┬─────────────┬───────────┬───────────┬────────┬────────────┐
 │     id │    name │      status │         f │         t │   iter │ irrelevant │
 ├────────┼─────────┼─────────────┼───────────┼───────────┼────────┼────────────┤
-│      1 │ prob001 │     failure │ -6.89e-01 │  6.24e+01 │     20 │  -7.51e-01 │
-│      2 │ prob002 │     failure │ -7.63e-01 │  3.53e+02 │     80 │   1.20e+00 │
-│      3 │ prob003 │ first_order │  3.97e-01 │  7.68e+02 │     10 │   1.48e+00 │
-│      4 │ prob004 │ first_order │  8.12e-01 │  4.31e+01 │     60 │   4.56e-01 │
-│      5 │ prob005 │ first_order │ -3.46e-01 │  2.68e+02 │     60 │  -1.30e-01 │
-│      6 │ prob006 │ first_order │ -1.88e-01 │  6.68e+01 │     60 │   7.00e-01 │
-│      7 │ prob007 │ first_order │ -1.61e+00 │  1.57e+02 │     50 │  -8.73e-01 │
-│      8 │ prob008 │ first_order │ -2.48e+00 │  6.05e+02 │     10 │  -4.10e-01 │
-│      9 │ prob009 │ first_order │  2.28e+00 │  1.36e+02 │     10 │  -6.92e-01 │
-│     10 │ prob010 │     failure │  2.20e-01 │  8.38e+02 │     80 │   1.52e-01 │
+│      1 │ prob001 │     failure │ -6.89e-01 │  6.24e+01 │     90 │   1.42e+00 │
+│      2 │ prob002 │     failure │ -7.63e-01 │  3.53e+02 │     90 │   4.08e-01 │
+│      3 │ prob003 │ first_order │  3.97e-01 │  7.68e+02 │     20 │   5.89e-01 │
+│      4 │ prob004 │ first_order │  8.12e-01 │  4.31e+01 │     70 │  -2.96e-01 │
+│      5 │ prob005 │ first_order │ -3.46e-01 │  2.68e+02 │     40 │   6.91e-01 │
+│      6 │ prob006 │ first_order │ -1.88e-01 │  6.68e+01 │     20 │   5.07e-01 │
+│      7 │ prob007 │ first_order │ -1.61e+00 │  1.57e+02 │     60 │  -5.69e-02 │
+│      8 │ prob008 │ first_order │ -2.48e+00 │  6.05e+02 │     50 │  -1.77e+00 │
+│      9 │ prob009 │ first_order │  2.28e+00 │  1.36e+02 │     70 │   1.59e+00 │
+│     10 │ prob010 │     failure │  2.20e-01 │  8.38e+02 │     90 │   1.40e+00 │
 └────────┴─────────┴─────────────┴───────────┴───────────┴────────┴────────────┘</code></pre><p>Printing is LaTeX format is achieved with <code>pretty_latex_stats</code>:</p><pre><code class="language-julia">pretty_latex_stats(stats[:alpha])</code></pre><pre><code class="language-none">\begin{longtable}{rrrrrrr}
 \hline
 id &amp; name &amp; status &amp; f &amp; t &amp; iter &amp; irrelevant \\\hline
@@ -38,16 +38,16 @@ id &amp; name &amp; status &amp; f &amp; t &amp; iter &amp; irrelevant \\\hline
 \hline
 \endfoot
 \endlastfoot
-\(     1\) &amp; prob001 &amp; failure &amp; \(-6.89\)e\(-01\) &amp; \( 6.24\)e\(+01\) &amp; \(    20\) &amp; \(-7.51\)e\(-01\) \\
-\(     2\) &amp; prob002 &amp; failure &amp; \(-7.63\)e\(-01\) &amp; \( 3.53\)e\(+02\) &amp; \(    80\) &amp; \( 1.20\)e\(+00\) \\
-\(     3\) &amp; prob003 &amp; first\_order &amp; \( 3.97\)e\(-01\) &amp; \( 7.68\)e\(+02\) &amp; \(    10\) &amp; \( 1.48\)e\(+00\) \\
-\(     4\) &amp; prob004 &amp; first\_order &amp; \( 8.12\)e\(-01\) &amp; \( 4.31\)e\(+01\) &amp; \(    60\) &amp; \( 4.56\)e\(-01\) \\
-\(     5\) &amp; prob005 &amp; first\_order &amp; \(-3.46\)e\(-01\) &amp; \( 2.68\)e\(+02\) &amp; \(    60\) &amp; \(-1.30\)e\(-01\) \\
-\(     6\) &amp; prob006 &amp; first\_order &amp; \(-1.88\)e\(-01\) &amp; \( 6.68\)e\(+01\) &amp; \(    60\) &amp; \( 7.00\)e\(-01\) \\
-\(     7\) &amp; prob007 &amp; first\_order &amp; \(-1.61\)e\(+00\) &amp; \( 1.57\)e\(+02\) &amp; \(    50\) &amp; \(-8.73\)e\(-01\) \\
-\(     8\) &amp; prob008 &amp; first\_order &amp; \(-2.48\)e\(+00\) &amp; \( 6.05\)e\(+02\) &amp; \(    10\) &amp; \(-4.10\)e\(-01\) \\
-\(     9\) &amp; prob009 &amp; first\_order &amp; \( 2.28\)e\(+00\) &amp; \( 1.36\)e\(+02\) &amp; \(    10\) &amp; \(-6.92\)e\(-01\) \\
-\(    10\) &amp; prob010 &amp; failure &amp; \( 2.20\)e\(-01\) &amp; \( 8.38\)e\(+02\) &amp; \(    80\) &amp; \( 1.52\)e\(-01\) \\\hline
+\(     1\) &amp; prob001 &amp; failure &amp; \(-6.89\)e\(-01\) &amp; \( 6.24\)e\(+01\) &amp; \(    90\) &amp; \( 1.42\)e\(+00\) \\
+\(     2\) &amp; prob002 &amp; failure &amp; \(-7.63\)e\(-01\) &amp; \( 3.53\)e\(+02\) &amp; \(    90\) &amp; \( 4.08\)e\(-01\) \\
+\(     3\) &amp; prob003 &amp; first\_order &amp; \( 3.97\)e\(-01\) &amp; \( 7.68\)e\(+02\) &amp; \(    20\) &amp; \( 5.89\)e\(-01\) \\
+\(     4\) &amp; prob004 &amp; first\_order &amp; \( 8.12\)e\(-01\) &amp; \( 4.31\)e\(+01\) &amp; \(    70\) &amp; \(-2.96\)e\(-01\) \\
+\(     5\) &amp; prob005 &amp; first\_order &amp; \(-3.46\)e\(-01\) &amp; \( 2.68\)e\(+02\) &amp; \(    40\) &amp; \( 6.91\)e\(-01\) \\
+\(     6\) &amp; prob006 &amp; first\_order &amp; \(-1.88\)e\(-01\) &amp; \( 6.68\)e\(+01\) &amp; \(    20\) &amp; \( 5.07\)e\(-01\) \\
+\(     7\) &amp; prob007 &amp; first\_order &amp; \(-1.61\)e\(+00\) &amp; \( 1.57\)e\(+02\) &amp; \(    60\) &amp; \(-5.69\)e\(-02\) \\
+\(     8\) &amp; prob008 &amp; first\_order &amp; \(-2.48\)e\(+00\) &amp; \( 6.05\)e\(+02\) &amp; \(    50\) &amp; \(-1.77\)e\(+00\) \\
+\(     9\) &amp; prob009 &amp; first\_order &amp; \( 2.28\)e\(+00\) &amp; \( 1.36\)e\(+02\) &amp; \(    70\) &amp; \( 1.59\)e\(+00\) \\
+\(    10\) &amp; prob010 &amp; failure &amp; \( 2.20\)e\(-01\) &amp; \( 8.38\)e\(+02\) &amp; \(    90\) &amp; \( 1.40\)e\(+00\) \\\hline
 \end{longtable}</code></pre><p>Alternatively, you can print to a file.</p><pre><code class="language-julia">open(&quot;alpha.tex&quot;, &quot;w&quot;) do io
   println(io, &quot;\\documentclass[varwidth=20cm,crop=true]{standalone}&quot;)
   println(io, &quot;\\usepackage{longtable}&quot;)
@@ -154,45 +154,45 @@ end</code></pre><p><img src="alpha2.svg" alt/></p><h3 id="Joining-tables-1"><a c
 pretty_stats(stdout, df)</code></pre><pre><code class="language-none">┌────────┬───────────┬───────────┬───────────┬───────────┬───────────┬───────────┐
 │     id │   f_alpha │   t_alpha │    f_beta │    t_beta │   f_gamma │   t_gamma │
 ├────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│      1 │ -6.89e-01 │  6.24e+01 │ -8.35e-01 │  4.26e+01 │  1.00e+00 │  3.49e+02 │
-│      2 │ -7.63e-01 │  3.53e+02 │  5.92e-01 │  4.27e+02 │  1.56e+00 │  1.48e+02 │
-│      3 │  3.97e-01 │  7.68e+02 │  5.44e-01 │  4.68e+02 │  1.76e+00 │  1.71e+02 │
-│      4 │  8.12e-01 │  4.31e+01 │ -7.12e-01 │  2.89e+02 │  2.42e+00 │  3.08e+02 │
-│      5 │ -3.46e-01 │  2.68e+02 │  1.41e-01 │  2.73e+02 │  5.85e-01 │  5.21e+02 │
-│      6 │ -1.88e-01 │  6.68e+01 │  1.39e+00 │  5.96e+02 │  1.88e+00 │  7.02e+02 │
-│      7 │ -1.61e+00 │  1.57e+02 │ -4.59e-01 │  8.85e+02 │ -2.43e+00 │  8.28e+02 │
-│      8 │ -2.48e+00 │  6.05e+02 │ -6.57e-01 │  1.48e+02 │ -1.07e+00 │  7.98e+02 │
-│      9 │  2.28e+00 │  1.36e+02 │ -5.10e-01 │  8.77e+02 │ -1.35e-01 │  7.88e+02 │
-│     10 │  2.20e-01 │  8.38e+02 │ -4.83e-01 │  1.61e+02 │ -9.41e-01 │  6.48e+02 │
+│      1 │ -6.89e-01 │  6.24e+01 │  5.77e-01 │  4.83e+02 │  1.75e-01 │  4.39e+02 │
+│      2 │ -7.63e-01 │  3.53e+02 │  8.91e-01 │  6.65e+02 │ -1.52e+00 │  2.80e+02 │
+│      3 │  3.97e-01 │  7.68e+02 │ -2.29e+00 │  8.42e+02 │  4.42e-01 │  3.40e+02 │
+│      4 │  8.12e-01 │  4.31e+01 │ -1.17e+00 │  1.69e+02 │  1.68e+00 │  2.37e+02 │
+│      5 │ -3.46e-01 │  2.68e+02 │ -8.80e-01 │  9.39e+02 │  2.38e-01 │  7.36e+01 │
+│      6 │ -1.88e-01 │  6.68e+01 │ -4.94e-01 │  7.84e+02 │  2.31e+00 │  1.13e+02 │
+│      7 │ -1.61e+00 │  1.57e+02 │  5.12e-01 │  5.06e+02 │ -8.19e-02 │  8.85e+02 │
+│      8 │ -2.48e+00 │  6.05e+02 │ -7.59e-01 │  6.22e+02 │  1.34e+00 │  5.15e+02 │
+│      9 │  2.28e+00 │  1.36e+02 │ -7.68e-01 │  3.07e+02 │  1.22e+00 │  6.93e+02 │
+│     10 │  2.20e-01 │  8.38e+02 │ -3.03e-02 │  7.96e+02 │ -1.22e+00 │  8.50e+02 │
 └────────┴───────────┴───────────┴───────────┴───────────┴───────────┴───────────┘</code></pre><p>The column <code>:id</code> is used as guide on where to join. In addition, we may have repeated columns between the solvers. We convery that information with argument <code>invariant_cols</code>.</p><pre><code class="language-julia">df = join(stats, [:f, :t], invariant_cols=[:name])
 pretty_stats(stdout, df)</code></pre><pre><code class="language-none">┌────────┬─────────┬───────────┬───────────┬───────────┬───────────┬───────────┬───────────┐
 │     id │    name │   f_alpha │   t_alpha │    f_beta │    t_beta │   f_gamma │   t_gamma │
 ├────────┼─────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│      1 │ prob001 │ -6.89e-01 │  6.24e+01 │ -8.35e-01 │  4.26e+01 │  1.00e+00 │  3.49e+02 │
-│      2 │ prob002 │ -7.63e-01 │  3.53e+02 │  5.92e-01 │  4.27e+02 │  1.56e+00 │  1.48e+02 │
-│      3 │ prob003 │  3.97e-01 │  7.68e+02 │  5.44e-01 │  4.68e+02 │  1.76e+00 │  1.71e+02 │
-│      4 │ prob004 │  8.12e-01 │  4.31e+01 │ -7.12e-01 │  2.89e+02 │  2.42e+00 │  3.08e+02 │
-│      5 │ prob005 │ -3.46e-01 │  2.68e+02 │  1.41e-01 │  2.73e+02 │  5.85e-01 │  5.21e+02 │
-│      6 │ prob006 │ -1.88e-01 │  6.68e+01 │  1.39e+00 │  5.96e+02 │  1.88e+00 │  7.02e+02 │
-│      7 │ prob007 │ -1.61e+00 │  1.57e+02 │ -4.59e-01 │  8.85e+02 │ -2.43e+00 │  8.28e+02 │
-│      8 │ prob008 │ -2.48e+00 │  6.05e+02 │ -6.57e-01 │  1.48e+02 │ -1.07e+00 │  7.98e+02 │
-│      9 │ prob009 │  2.28e+00 │  1.36e+02 │ -5.10e-01 │  8.77e+02 │ -1.35e-01 │  7.88e+02 │
-│     10 │ prob010 │  2.20e-01 │  8.38e+02 │ -4.83e-01 │  1.61e+02 │ -9.41e-01 │  6.48e+02 │
+│      1 │ prob001 │ -6.89e-01 │  6.24e+01 │  5.77e-01 │  4.83e+02 │  1.75e-01 │  4.39e+02 │
+│      2 │ prob002 │ -7.63e-01 │  3.53e+02 │  8.91e-01 │  6.65e+02 │ -1.52e+00 │  2.80e+02 │
+│      3 │ prob003 │  3.97e-01 │  7.68e+02 │ -2.29e+00 │  8.42e+02 │  4.42e-01 │  3.40e+02 │
+│      4 │ prob004 │  8.12e-01 │  4.31e+01 │ -1.17e+00 │  1.69e+02 │  1.68e+00 │  2.37e+02 │
+│      5 │ prob005 │ -3.46e-01 │  2.68e+02 │ -8.80e-01 │  9.39e+02 │  2.38e-01 │  7.36e+01 │
+│      6 │ prob006 │ -1.88e-01 │  6.68e+01 │ -4.94e-01 │  7.84e+02 │  2.31e+00 │  1.13e+02 │
+│      7 │ prob007 │ -1.61e+00 │  1.57e+02 │  5.12e-01 │  5.06e+02 │ -8.19e-02 │  8.85e+02 │
+│      8 │ prob008 │ -2.48e+00 │  6.05e+02 │ -7.59e-01 │  6.22e+02 │  1.34e+00 │  5.15e+02 │
+│      9 │ prob009 │  2.28e+00 │  1.36e+02 │ -7.68e-01 │  3.07e+02 │  1.22e+00 │  6.93e+02 │
+│     10 │ prob010 │  2.20e-01 │  8.38e+02 │ -3.03e-02 │  7.96e+02 │ -1.22e+00 │  8.50e+02 │
 └────────┴─────────┴───────────┴───────────┴───────────┴───────────┴───────────┴───────────┘</code></pre><p><code>join</code> also accepts <code>hdr_override</code> for changing the column name before appending <code>_solver</code>.</p><pre><code class="language-julia">hdr_override = Dict(:name =&gt; &quot;Name&quot;, :f =&gt; &quot;f(x)&quot;, :t =&gt; &quot;Time&quot;)
 df = join(stats, [:f, :t], invariant_cols=[:name], hdr_override=hdr_override)
 pretty_stats(stdout, df)</code></pre><pre><code class="language-none">┌────────┬─────────┬────────────┬────────────┬───────────┬───────────┬────────────┬────────────┐
 │     id │    name │ f(x)_alpha │ Time_alpha │ f(x)_beta │ Time_beta │ f(x)_gamma │ Time_gamma │
 ├────────┼─────────┼────────────┼────────────┼───────────┼───────────┼────────────┼────────────┤
-│      1 │ prob001 │  -6.89e-01 │   6.24e+01 │ -8.35e-01 │  4.26e+01 │   1.00e+00 │   3.49e+02 │
-│      2 │ prob002 │  -7.63e-01 │   3.53e+02 │  5.92e-01 │  4.27e+02 │   1.56e+00 │   1.48e+02 │
-│      3 │ prob003 │   3.97e-01 │   7.68e+02 │  5.44e-01 │  4.68e+02 │   1.76e+00 │   1.71e+02 │
-│      4 │ prob004 │   8.12e-01 │   4.31e+01 │ -7.12e-01 │  2.89e+02 │   2.42e+00 │   3.08e+02 │
-│      5 │ prob005 │  -3.46e-01 │   2.68e+02 │  1.41e-01 │  2.73e+02 │   5.85e-01 │   5.21e+02 │
-│      6 │ prob006 │  -1.88e-01 │   6.68e+01 │  1.39e+00 │  5.96e+02 │   1.88e+00 │   7.02e+02 │
-│      7 │ prob007 │  -1.61e+00 │   1.57e+02 │ -4.59e-01 │  8.85e+02 │  -2.43e+00 │   8.28e+02 │
-│      8 │ prob008 │  -2.48e+00 │   6.05e+02 │ -6.57e-01 │  1.48e+02 │  -1.07e+00 │   7.98e+02 │
-│      9 │ prob009 │   2.28e+00 │   1.36e+02 │ -5.10e-01 │  8.77e+02 │  -1.35e-01 │   7.88e+02 │
-│     10 │ prob010 │   2.20e-01 │   8.38e+02 │ -4.83e-01 │  1.61e+02 │  -9.41e-01 │   6.48e+02 │
+│      1 │ prob001 │  -6.89e-01 │   6.24e+01 │  5.77e-01 │  4.83e+02 │   1.75e-01 │   4.39e+02 │
+│      2 │ prob002 │  -7.63e-01 │   3.53e+02 │  8.91e-01 │  6.65e+02 │  -1.52e+00 │   2.80e+02 │
+│      3 │ prob003 │   3.97e-01 │   7.68e+02 │ -2.29e+00 │  8.42e+02 │   4.42e-01 │   3.40e+02 │
+│      4 │ prob004 │   8.12e-01 │   4.31e+01 │ -1.17e+00 │  1.69e+02 │   1.68e+00 │   2.37e+02 │
+│      5 │ prob005 │  -3.46e-01 │   2.68e+02 │ -8.80e-01 │  9.39e+02 │   2.38e-01 │   7.36e+01 │
+│      6 │ prob006 │  -1.88e-01 │   6.68e+01 │ -4.94e-01 │  7.84e+02 │   2.31e+00 │   1.13e+02 │
+│      7 │ prob007 │  -1.61e+00 │   1.57e+02 │  5.12e-01 │  5.06e+02 │  -8.19e-02 │   8.85e+02 │
+│      8 │ prob008 │  -2.48e+00 │   6.05e+02 │ -7.59e-01 │  6.22e+02 │   1.34e+00 │   5.15e+02 │
+│      9 │ prob009 │   2.28e+00 │   1.36e+02 │ -7.68e-01 │  3.07e+02 │   1.22e+00 │   6.93e+02 │
+│     10 │ prob010 │   2.20e-01 │   8.38e+02 │ -3.03e-02 │  7.96e+02 │  -1.22e+00 │   8.50e+02 │
 └────────┴─────────┴────────────┴────────────┴───────────┴───────────┴────────────┴────────────┘</code></pre><pre><code class="language-julia">hdr_override = Dict(:name =&gt; &quot;Name&quot;, :f =&gt; &quot;\\(f(x)\\)&quot;, :t =&gt; &quot;Time&quot;)
 df = join(stats, [:f, :t], invariant_cols=[:name], hdr_override=hdr_override)
 open(&quot;alpha3.tex&quot;, &quot;w&quot;) do io
@@ -211,4 +211,4 @@ Plots.svg(p, &quot;profile2&quot;)</code></pre><p><img src="../profile2.svg" alt
 costs = [df -&gt; .!solved(df) * Inf + df.t, df -&gt; .!solved(df) * Inf + df.iter]
 costnames = [&quot;Time&quot;, &quot;Iterations&quot;]
 p = profile_solvers(stats, costs, costnames)
-Plots.svg(p, &quot;profile3&quot;)</code></pre><p><img src="../profile3.svg" alt/></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../">« Home</a><a class="docs-footer-nextpage" href="../api/">API »</a></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Sunday 21 March 2021 15:32">Sunday 21 March 2021</span>. Using Julia version 1.5.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+Plots.svg(p, &quot;profile3&quot;)</code></pre><p><img src="../profile3.svg" alt/></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../">« Home</a><a class="docs-footer-nextpage" href="../api/">API »</a></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Tuesday 13 April 2021 22:46">Tuesday 13 April 2021</span>. Using Julia version 1.6.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
