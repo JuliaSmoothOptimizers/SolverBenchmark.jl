@@ -9,7 +9,7 @@ using JLD2
 using PrettyTables
 
 using NLPModels
-using SolverTools
+using SolverCore
 
 # reexport PrettyTable table formats for convenience
 export unicode, ascii_dots, ascii_rounded, borderless, compact,

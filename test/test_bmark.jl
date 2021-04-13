@@ -1,7 +1,7 @@
 using DataFrames
 using Logging
 using NLPModels, ADNLPModels
-using SolverTools
+using SolverCore
 
 include("dummy_solver.jl")
 
