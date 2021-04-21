@@ -9,7 +9,6 @@ makedocs(
   sitename = "SolverBenchmark.jl",
   pages = ["Home" => "index.md",
            "Tutorial" => "tutorial.md",
-           "API" => "api.md",
            "Reference" => "reference.md",
           ]
 )
