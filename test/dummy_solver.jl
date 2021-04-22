@@ -1,18 +1,39 @@
 using LinearAlgebra
 
-function dummy_solver(nlp :: AbstractNLPModel;
-                      x :: AbstractVector = nlp.meta.x0,
-                      atol :: Real = sqrt(eps(eltype(x))),
-                      rtol :: Real = sqrt(eps(eltype(x))),
-                      max_eval :: Int = 1000,
-                      max_time :: Float64 = 30.0,
-                     )
+mutable struct DummySolver{T, S} <: AbstractOptSolver{T, S}
+  initialized::Bool
+  params::Dict
+  workspace
+end
+
+function DummySolver{T, S}(
+  meta::AbstractNLPModelMeta;
+  x0::S = meta.x0,
+  kwargs...,
+) where {T, S}
+  solver = DummySolver{T, S}(
+    true,
+    Dict(),
+    ( # workspace
+    ),
+  )
+  solver
+end
+
+function SolverCore.solve!(
+  solver::DummySolver{T, S},
+  nlp :: AbstractNLPModel;
+  x :: S = nlp.meta.x0,
+  atol :: Real = sqrt(eps(eltype(x))),
+  rtol :: Real = sqrt(eps(eltype(x))),
+  max_eval :: Int = 1000,
+  max_time :: Float64 = 30.0,
+) where {T, S}
 
   start_time = time()
   elapsed_time = 0.0
 
   nvar, ncon = nlp.meta.nvar, nlp.meta.ncon
-  T = eltype(x)
 
   cx = ncon > 0 ? cons(nlp, x) : zeros(T, 0)
   gx = grad(nlp, x)
@@ -63,9 +84,9 @@ function dummy_solver(nlp :: AbstractNLPModel;
     :max_eval
   end
 
-  return GenericExecutionStats(:unknown, nlp,
-                               objective=fx, dual_feas=norm(dual), primal_feas=norm(cx),
-                               multipliers=y, multipliers_L=zeros(T, nvar), multipliers_U=zeros(T, nvar),
-                               elapsed_time=elapsed_time, solution=x, iter=iter
-                              )
+  return OptSolverOutput(:unknown, x, nlp,
+                         objective=fx, dual_feas=norm(dual), primal_feas=norm(cx),
+                         multipliers=y, multipliers_L=zeros(T, nvar), multipliers_U=zeros(T, nvar),
+                         elapsed_time=elapsed_time, iter=iter
+                        )
 end

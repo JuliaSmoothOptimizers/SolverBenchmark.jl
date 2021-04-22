@@ -1,5 +1,75 @@
 export solve_problems
 
+function solve_problems(
+  ::Type{Solver},
+  problems::AbstractArray{Problem};
+  solver_logger::AbstractLogger = NullLogger(),
+  reset_problem::Bool = true,
+  skipif=x -> false,
+  kwargs...
+) where {Solver <: AbstractSolver, Problem}
+  # Setting up columns
+  ## Basic
+  col_types = [Int, String]
+  col_names = [:id, :name]
+
+  ## problem specific (nvar, ncon for NLP; nrow, ncol for LinAlg)
+  p_types, p_names, p_foo = SolverCore.problem_info(Problem)
+  append!(col_types, p_types)
+  append!(col_names, p_names)
+
+  ## output fields
+  Output = solver_output_type(Solver)
+  output_types = fieldtypes(Output)
+  idx = findall(output_types .<: Union{Number,Symbol,AbstractString})
+  output_types = output_types[idx]
+  output_names = fieldnames(Output)[idx]
+  append!(col_types, output_types)
+  append!(col_names, output_names)
+
+  ## output specific (counters)
+  o_types, o_names, o_foo = SolverCore.output_info(Problem)
+  append!(col_types, o_types)
+  append!(col_names, o_names)
+
+
+  stats = DataFrame(col_types, col_names, 0)
+
+  for (id, problem) in enumerate(problems)
+    reset_problem && reset_problem!(problem)
+
+    skipthis = skipif(problem)
+    if skipthis
+      # TODO: !prune
+      finalize(problem)
+    else
+      try
+        solver = Solver(problem; kwargs...)
+        output = with_logger(NullLogger()) do
+          solve!(solver, problem; kwargs...)
+        end
+        row = [
+          id;
+          SolverCore.problem_name(problem);
+          p_foo(problem);
+          [getfield(output, f) for f in output_names];
+          o_foo(output);
+        ]
+        push!(stats, row)
+      catch e
+        @error "caught exception" e
+        rethrow(e)
+        # TODO: add row
+      finally
+        finalize(problem)
+      end
+    end
+
+  end
+
+  return stats
+end
+
 """
     solve_problems(solver, problems; kwargs...)
 
@@ -26,7 +96,7 @@ benchmark (default: `[:name, :nvar, :ncon, :status, :elapsed_time, :objective, :
 #### Return value
 * a `DataFrame` where each row is a problem, minus the skipped ones if `prune` is true.
 """
-function solve_problems(solver, problems;
+function old_solve_problems(Solver, problems;
                         solver_logger :: AbstractLogger=NullLogger(),
                         reset_problem :: Bool = true,
                         skipif :: Function=x->false,

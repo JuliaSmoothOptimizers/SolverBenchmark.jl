@@ -8,7 +8,6 @@ using DataFrames
 using JLD2
 using PrettyTables
 
-using NLPModels
 using SolverCore
 
 # reexport PrettyTable table formats for convenience
