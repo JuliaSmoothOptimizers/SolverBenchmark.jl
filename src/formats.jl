@@ -31,7 +31,7 @@ Pretty-print a DataFrame using PrettyTables.
 All other keyword arguments are passed directly to `pretty_table`.
 In particular,
 
-* use `tf=markdown` to display a Markdown table;
+* use `tf=tf_markdown` to display a Markdown table;
 * do not use this function for LaTeX output; use `pretty_latex_stats` instead;
 * any PrettyTables highlighters can be given, but see the predefined `passfail_highlighter` and `gradient_highlighter`.
 """

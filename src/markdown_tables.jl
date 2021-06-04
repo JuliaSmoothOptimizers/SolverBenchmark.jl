@@ -40,7 +40,7 @@ Keyword arguments:
 """
 function markdown_table(io :: IO, df :: DataFrame; hl=passfail_highlighter(df), kwargs...)
   header, table = format_table(df, MDformat; kwargs...)
-  pretty_table(io, table, header, tf=markdown, highlighters=hl)
+  pretty_table(io, table, header, tf=tf_markdown, highlighters=hl)
 end
 
 markdown_table(df :: DataFrame; kwargs...) = markdown_table(stdout, df; kwargs...)

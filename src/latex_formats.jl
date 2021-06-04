@@ -161,7 +161,17 @@ function pretty_latex_stats(io::IO, df::DataFrame;
 
   # by default, PrettyTables wants to boldface headers
   # that won't work if we put any math headers
-  tf = LatexTableFormat(latex_simple; header_envs=[])
+  tf = LatexTableFormat(
+    top_line       = "\\hline",
+    header_line    = "\\hline",
+    mid_line       = "\\hline",
+    bottom_line    = "\\hline",
+    left_vline     = "|",
+    mid_vline      = "|",
+    right_vline    = "|",
+    header_envs    = [],
+    subheader_envs = ["texttt"],
+  )
 
   # pretty_table expects a tuple of formatters
   pretty_table(io, df, header,
