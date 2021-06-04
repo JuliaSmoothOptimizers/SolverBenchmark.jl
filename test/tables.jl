@@ -26,7 +26,7 @@ function test_tables()
     header = Dict(:status => "flag", :f => "f(x)", :t => "time")
     fmts = Dict(:t => "%.2f")
     io = IOBuffer()
-    pretty_stats(io, df[!, cols], col_formatters=fmts, hdr_override=header, tf=markdown)
+    pretty_stats(io, df[!, cols], col_formatters=fmts, hdr_override=header, tf=tf_markdown)
     @test all(chomp.(split(alpha_md)) .== chomp.(split(String(take!(io)))))
   end
 
@@ -53,7 +53,7 @@ function test_tables()
 
   @testset "joined results in markdown format" begin
     io = IOBuffer()
-    pretty_stats(io, df, tf=markdown)
+    pretty_stats(io, df, tf=tf_markdown)
     @test all(chomp.(split(joined_md)) .== chomp.(split(String(take!(io)))))
   end
 
@@ -61,8 +61,8 @@ function test_tables()
     df = DataFrame(A = [1.0, missing, 3.0], B = [missing, 1, 3],
                    C = [missing, "a", "b"], D = [missing, missing, :notmiss])
     io = IOBuffer()
-    pretty_stats(io, df, tf=markdown)
-    pretty_stats(stdout, df, tf=markdown)
+    pretty_stats(io, df, tf=tf_markdown)
+    pretty_stats(stdout, df, tf=tf_markdown)
     println(missing_md)
     @test all(chomp.(split(missing_md)) .== chomp.(split(String(take!(io)))))
     io = IOBuffer()

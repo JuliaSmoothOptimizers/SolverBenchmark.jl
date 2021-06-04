@@ -13,7 +13,7 @@ using SolverCore
 
 # reexport PrettyTable table formats for convenience
 export unicode, ascii_dots, ascii_rounded, borderless, compact,
-       markdown, matrix, mysql, simple, unicode_rounded
+       tf_markdown, matrix, mysql, simple, unicode_rounded
 
 # Tables
 include("formats.jl")
