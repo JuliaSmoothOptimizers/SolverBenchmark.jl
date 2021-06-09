@@ -174,8 +174,8 @@ function pretty_latex_stats(io::IO, df::DataFrame;
   )
 
   # pretty_table expects a tuple of formatters
-  pretty_table(io, df, header,
-               backend=:latex, table_type=:longtable, tf=tf, nosubheader=true,
+  pretty_table(io, df, header=header,
+               backend=Val(:latex), table_type=:longtable, tf=tf, nosubheader=true,
                longtable_footer="{\\bfseries Continued on next page}",
                formatters=tuple(pt_formatters...); kwargs...)
 end
