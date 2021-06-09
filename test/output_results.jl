@@ -15,6 +15,9 @@ alpha_md = raw"""|        flag |    name |      f(x) |   time |   iter |
 alpha_tex = raw"""\begin{longtable}{rrrrr}
 \hline
 flag & name & \(f(x)\) & time & iter \\\hline
+\endfirsthead
+\hline
+flag & name & \(f(x)\) & time & iter \\\hline
 \endhead
 \hline
 \multicolumn{5}{r}{{\bfseries Continued on next page}}\\
@@ -53,6 +56,9 @@ alpha_txt = raw"""┌─────────────┬─────�
 alpha_hi_tex = raw"""\begin{longtable}{rrrrr}
 \hline
 flag & name & \(f(x)\) & time & iter \\\hline
+\endfirsthead
+\hline
+flag & name & \(f(x)\) & time & iter \\\hline
 \endhead
 \hline
 \multicolumn{5}{r}{{\bfseries Continued on next page}}\\
@@ -73,6 +79,9 @@ first\_order & prob009 & \( 2.46\)e\(+00\) & \( 5.88\)e\(+02\) & \(     3\) \\
 """
 
 joined_tex = raw"""\begin{longtable}{rrrrrrrrrrr}
+\hline
+id & name & flag\_alpha & f\_alpha & t\_alpha & flag\_beta & f\_beta & t\_beta & flag\_gamma & f\_gamma & t\_gamma \\\hline
+\endfirsthead
 \hline
 id & name & flag\_alpha & f\_alpha & t\_alpha & flag\_beta & f\_beta & t\_beta & flag\_gamma & f\_gamma & t\_gamma \\\hline
 \endhead
@@ -116,6 +125,9 @@ missing_md = raw"""|         A |       B |       C |       D |
 """
 
 missing_ltx = raw"""\begin{longtable}{rrrr}
+\hline
+A & B & C & D \\\hline
+\endfirsthead
 \hline
 A & B & C & D \\\hline
 \endhead
