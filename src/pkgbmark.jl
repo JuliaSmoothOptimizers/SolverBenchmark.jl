@@ -37,7 +37,7 @@ function bmark_results_to_dataframes(results::PkgBenchmark.BenchmarkResults)
 
   stats = Dict{Symbol, DataFrame}()
   for solver in solvers
-    stats[Symbol(solver)] = DataFrame(types, names, 0)
+    stats[Symbol(solver)] = DataFrame(names .=> [T[] for T in types])
   end
 
   for entry in entries
