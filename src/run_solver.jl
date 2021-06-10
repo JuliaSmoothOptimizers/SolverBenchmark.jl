@@ -40,7 +40,7 @@ function solve_problems(solver, problems;
   ncounters = length(f_counters) + length(fnls_counters)
   types = [Int; String;   Int;   Int;   Int;  Symbol;    Float64;       Float64;   Int;    Float64;      Float64; fill(Int, ncounters); String]
   names = [:id;  :name; :nvar; :ncon; :nequ; :status; :objective; :elapsed_time; :iter; :dual_feas; :primal_feas; f_counters; fnls_counters; :extrainfo]
-  stats = DataFrame(types, names, 0)
+  stats = DataFrame(names .=> [T[] for T in types])
 
   specific = Symbol[]
 
