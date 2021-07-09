@@ -63,14 +63,14 @@ Inputs:
 - `judgement::BenchmarkJudgement`: the result of, e.g.,
 
       commit = benchmarkpkg(mypkg)  # benchmark a commit or pull request
-      master = benchmarkpkg(mypkg, "master")  # baseline benchmark
-      judgement = judge(commit, master)
+      main = benchmarkpkg(mypkg, "main")  # baseline benchmark
+      judgement = judge(commit, main)
 
 Output:
 - `stats::Dict{Symbol,Dict{Symbol,DataFrame}}`: a dictionary of
     `Dict{Symbol,DataFrame}`s containing the target and baseline benchmark results.
     The elements of this dictionary are the same as those returned by
-    `bmark_results_to_dataframes(master)` and `bmark_results_to_dataframes(commit)`.
+    `bmark_results_to_dataframes(main)` and `bmark_results_to_dataframes(commit)`.
 """
 function judgement_results_to_dataframes(judgement::PkgBenchmark.BenchmarkJudgement)
   target_stats = bmark_results_to_dataframes(judgement.target_results)
@@ -105,8 +105,8 @@ Inputs:
 - `judgement::BenchmarkJudgement`: the result of, e.g.,
 
       commit = benchmarkpkg(mypkg)  # benchmark a commit or pull request
-      master = benchmarkpkg(mypkg, "master")  # baseline benchmark
-      judgement = judge(commit, master)
+      main = benchmarkpkg(mypkg, "main")  # baseline benchmark
+      judgement = judge(commit, main)
 
 """
 function profile_package(judgement::PkgBenchmark.BenchmarkJudgement)
