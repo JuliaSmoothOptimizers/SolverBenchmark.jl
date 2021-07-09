@@ -26,9 +26,9 @@ function test_pkgbmark()
   @test typeof(p) <: Plots.Plot
 
   repo = LibGit2.GitRepo(joinpath(@__DIR__, ".."))
-  LibGit2.lookup_branch(repo, "master") === nothing && LibGit2.branch!(repo, "master", force=true)
-  master = PkgBenchmark.benchmarkpkg("SolverBenchmark", "master", script=joinpath(@__DIR__, "bmark_suite.jl"))
-  judgement = PkgBenchmark.judge(results, master)
+  LibGit2.lookup_branch(repo, "main") === nothing && LibGit2.branch!(repo, "main", force=true)
+  main = PkgBenchmark.benchmarkpkg("SolverBenchmark", "main", script=joinpath(@__DIR__, "bmark_suite.jl"))
+  judgement = PkgBenchmark.judge(results, main)
   stats = judgement_results_to_dataframes(judgement)
   @info stats
   @test length(keys(stats)) == 2
