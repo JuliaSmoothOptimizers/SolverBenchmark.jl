@@ -1,5 +1,5 @@
 import BenchmarkProfiles: performance_profile
-using Plots
+using BenchmarkProfiles, Plots
 
 export performance_profile, profile_solvers
 
@@ -22,7 +22,7 @@ function performance_profile(stats::Dict{Symbol,DataFrame}, cost::Function, args
   solvers = keys(stats)
   dfs = (stats[s] for s in solvers)
   P = hcat([cost(df) for df in dfs]...)
-  performance_profile(P, string.(solvers), args...; kwargs...)
+  performance_profile(PlotsBackend(), P, string.(solvers), args...; kwargs...)
 end
 
 """
@@ -55,7 +55,7 @@ function profile_solvers(stats::Dict{Symbol,DataFrame},
                         )
   solvers = collect(keys(stats))
   dfs = (stats[solver] for solver in solvers)
-  Ps = [hcat([cost(df) for df in dfs]...) for cost in costs]
+  Ps = [hcat([Float64.(cost(df)) for df in dfs]...) for cost in costs]
 
   nprobs = size(stats[first(solvers)], 1)
   nsolvers = length(solvers)
@@ -64,10 +64,10 @@ function profile_solvers(stats::Dict{Symbol,DataFrame},
   colors = get_color_palette(:auto, nsolvers)
 
   # profiles with all solvers
-  ps = [performance_profile(Ps[1], string.(solvers), palette=colors, title=costnames[1], legend=:bottomright)]
+  ps = [performance_profile(PlotsBackend(), Ps[1], string.(solvers), palette=colors, title=costnames[1], legend=:bottomright)]
   nsolvers > 2 && xlabel!(ps[1], "")
   for k = 2 : ncosts
-    p = performance_profile(Ps[k], string.(solvers), palette=colors, title=costnames[k], legend=false)
+    p = performance_profile(PlotsBackend(), Ps[k], string.(solvers), palette=colors, title=costnames[k], legend=false)
     nsolvers > 2 && xlabel!(p, "")
     ylabel!(p, "")
     push!(ps, p)
@@ -81,14 +81,14 @@ function profile_solvers(stats::Dict{Symbol,DataFrame},
         ipairs += 1
         pair = [solvers[i], solvers[j]]
         dfs = (stats[solver] for solver in pair)
-        Ps = [hcat([cost(df) for df in dfs]...) for cost in costs]
+        Ps = [hcat([Float64.(cost(df)) for df in dfs]...) for cost in costs]
 
         clrs = [colors[i], colors[j]]
-        p = performance_profile(Ps[1], string.(pair), palette=clrs, legend=:bottomright)
+        p = performance_profile(PlotsBackend(), Ps[1], string.(pair), palette=clrs, legend=:bottomright)
         ipairs < npairs && xlabel!(p, "")
         push!(ps, p)
         for k = 2 : length(Ps)
-          p = performance_profile(Ps[k], string.(pair), palette=clrs, legend=false)
+          p = performance_profile(PlotsBackend(), Ps[k], string.(pair), palette=clrs, legend=false)
           ipairs < npairs && xlabel!(p, "")
           ylabel!(p, "")
           push!(ps, p)
