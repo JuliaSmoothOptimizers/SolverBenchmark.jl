@@ -253,13 +253,13 @@ This does not take into account that the solvers have failed for a few problems
 (according to column :status). The next profile takes that into account.
 
 ```@setup ex1
-cost(df) = (df.status .!= :success) * Inf + df.t
+cost(df) = (df.status .!= :first_order) * Inf + df.t
 p = performance_profile(stats, cost)
 Plots.svg(p, "profile2")
 ```
 
 ```
-cost(df) = (df.status .!= :success) * Inf + df.t
+cost(df) = (df.status .!= :first_order) * Inf + df.t
 p = performance_profile(stats, cost)
 Plots.svg(p, "profile2")
 ```
@@ -273,7 +273,7 @@ profiles, accepting multiple costs and doing 1 vs 1 comparisons in addition to t
 traditional performance profile.
 
 ```@setup ex1
-solved(df) = (df.status .== :success)
+solved(df) = (df.status .== :first_order)
 costs = [df -> .!solved(df) * Inf + df.t, df -> .!solved(df) * Inf + df.iter]
 costnames = ["Time", "Iterations"]
 p = profile_solvers(stats, costs, costnames)
@@ -281,7 +281,7 @@ Plots.svg(p, "profile3")
 ```
 
 ```
-solved(df) = (df.status .== :success)
+solved(df) = (df.status .== :first_order)
 costs = [df -> .!solved(df) * Inf + df.t, df -> .!solved(df) * Inf + df.iter]
 costnames = ["Time", "Iterations"]
 p = profile_solvers(stats, costs, costnames)
