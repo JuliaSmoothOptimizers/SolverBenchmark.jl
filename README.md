@@ -7,7 +7,8 @@ If you use SolverBenchmark.jl in your work, please cite using the format given i
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3948381.svg)](https://doi.org/10.5281/zenodo.3948381)
 ![CI](https://github.com/JuliaSmoothOptimizers/SolverBenchmark.jl/workflows/CI/badge.svg?branch=main)
 [![Build Status](https://api.cirrus-ci.com/github/JuliaSmoothOptimizers/SolverBenchmark.jl.svg)](https://cirrus-ci.com/github/JuliaSmoothOptimizers/SolverBenchmark.jl)
-[![](https://img.shields.io/badge/docs-latest-3f51b5.svg)](https://JuliaSmoothOptimizers.github.io/SolverBenchmark.jl/latest)
+[![](https://img.shields.io/badge/docs-stable-3f51b5.svg)](https://JuliaSmoothOptimizers.github.io/SolverBenchmark.jl/stable)
+[![](https://img.shields.io/badge/docs-dev-3f51b5.svg)](https://JuliaSmoothOptimizers.github.io/SolverBenchmark.jl/dev)
 [![codecov](https://codecov.io/gh/JuliaSmoothOptimizers/SolverBenchmark.jl/branch/main/graph/badge.svg?token=E0srGT31Xi)](https://codecov.io/gh/JuliaSmoothOptimizers/SolverBenchmark.jl)
 
 This package provides general tools for benchmarking solvers, focusing on the following
