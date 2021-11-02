@@ -25,7 +25,7 @@ SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 
 [compat]
 BenchmarkProfiles = "0.2.0, 0.3.0"
-BenchmarkTools = "^0.4.2, 0.5"
+BenchmarkTools = "^0.4.2, 0.5, 1.2"
 ColorSchemes = "^3.9"
 DataFrames = "^0.21, 1.0"
 GitHub = "^5.0.2"
