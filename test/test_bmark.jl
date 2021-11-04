@@ -46,6 +46,8 @@ function test_bmark()
     end
 
     statuses, avgs = quick_summary(stats)
+    
+    pretty_stats(stats[:dummy])
   end
 
   @testset "Testing logging" begin
