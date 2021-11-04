@@ -65,8 +65,10 @@ function solve_problems(solver, problems;
         end
         if first_problem
           for (k,v) in s.solver_specific
-            insertcols!(stats, ncol(stats)+1, k => Vector{Union{typeof(v),Missing}}())
-            push!(specific, k)
+            #if !(typeof(v) <: AbstractVector)
+              insertcols!(stats, ncol(stats)+1, k => Vector{Union{typeof(v),Missing}}())
+              push!(specific, k)
+            #end
           end
 
           @info log_header(colstats, types[col_idx], hdr_override=info_hdr_override)

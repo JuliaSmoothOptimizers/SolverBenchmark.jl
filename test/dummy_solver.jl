@@ -66,6 +66,7 @@ function dummy_solver(nlp :: AbstractNLPModel;
   return GenericExecutionStats(:unknown, nlp,
                                objective=fx, dual_feas=norm(dual), primal_feas=norm(cx),
                                multipliers=y, multipliers_L=zeros(T, nvar), multipliers_U=zeros(T, nvar),
-                               elapsed_time=elapsed_time, solution=x, iter=iter
+                               elapsed_time=elapsed_time, solution=x, iter=iter,
+                               solver_specific = Dict(:multiplier => y)
                               )
 end
