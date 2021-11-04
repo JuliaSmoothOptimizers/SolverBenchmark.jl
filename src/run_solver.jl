@@ -33,8 +33,6 @@ function solve_problems(solver, problems;
                         colstats :: Vector{Symbol} = [:name, :nvar, :ncon, :status, :elapsed_time, :objective, :dual_feas, :primal_feas],
                         info_hdr_override :: Dict{Symbol,String} = Dict{Symbol,String}(),
                         prune :: Bool=true, kwargs...)
-  solverstr = split(string(solver), ".")[end]
-
   f_counters = collect(fieldnames(Counters))
   fnls_counters = collect(fieldnames(NLSCounters))[2:end] # Excludes :counters
   ncounters = length(f_counters) + length(fnls_counters)
