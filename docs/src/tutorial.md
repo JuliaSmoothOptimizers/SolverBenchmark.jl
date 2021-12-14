@@ -288,7 +288,7 @@ p = profile_solvers(stats, costs, costnames)
 Plots.svg(p, "profile3")
 ```
 ### Example of benchmark running 
-Here is a useful tutorial on how to use the benchmark with specific solver.
+Here is a useful tutorial on how to use the benchmark with specific solver:
 [Run a benchmark with OptimizationProblems](https://juliasmoothoptimizers.github.io/OptimizationProblems.jl/dev/benchmark/)
 In the tutorial they cover how to use the problems from OptimizationProblems to run a benchmark for unconstrained problems. 
 
