@@ -4,10 +4,10 @@ using LaTeXTabulars
 for (typ, fmt) in default_formatters
   safe = Symbol("safe_latex_$typ")
   @eval begin
-    LTXformat(x :: $typ) = @sprintf($fmt, x) |> $safe
+    LTXformat(x::$typ) = @sprintf($fmt, x) |> $safe
   end
 end
-LTXformat(x :: Missing) = "NA"
+LTXformat(x::Missing) = "NA"
 
 @doc """
     LTXformat(x)
@@ -52,13 +52,12 @@ Keyword arguments:
 We recommend using the `safe_latex_foo` functions when overriding formats, unless
 you're sure you don't need them.
 """
-function latex_table(io :: IO, df :: DataFrame; kwargs...)
+function latex_table(io::IO, df::DataFrame; kwargs...)
   header, table, _ = format_table(df, LTXformat; kwargs...)  # ignore highlighter
-  latex_tabular(io, LongTable("l" * "r"^(length(header)-1), header),
-                [table, Rule()])
+  latex_tabular(io, LongTable("l" * "r"^(length(header) - 1), header), [table, Rule()])
   nothing
 end
 
-latex_table(df :: DataFrame; kwargs...) = latex_table(stdout, df; kwargs...)
+latex_table(df::DataFrame; kwargs...) = latex_table(stdout, df; kwargs...)
 
 Base.@deprecate latex_table pretty_latex_stats false

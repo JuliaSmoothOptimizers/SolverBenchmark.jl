@@ -4,8 +4,8 @@ function test_profiles()
   @info "Generating performance profiles"
   @info "Cost: t"
   unicodeplots()
-  p = performance_profile(stats, df->df.t);
-  p = profile_solvers(stats, [df->df.t, df->df.iter], ["Time", "Iterations"])
+  p = performance_profile(stats, df -> df.t)
+  p = profile_solvers(stats, [df -> df.t, df -> df.iter], ["Time", "Iterations"])
   nothing
 end
 

@@ -1,10 +1,7 @@
 export pretty_stats
 
-const default_formatters = Dict(AbstractFloat => "%9.2e",
-                                Signed => "%6d",
-                                AbstractString => "%15s",
-                                Symbol => "%15s",
-                               )
+const default_formatters =
+  Dict(AbstractFloat => "%9.2e", Signed => "%6d", AbstractString => "%15s", Symbol => "%15s")
 
 """
     pretty_stats(df; kwargs...)
@@ -35,10 +32,13 @@ In particular,
 * do not use this function for LaTeX output; use `pretty_latex_stats` instead;
 * any PrettyTables highlighters can be given, but see the predefined `passfail_highlighter` and `gradient_highlighter`.
 """
-function pretty_stats(io::IO, df::DataFrame;
-                      col_formatters=default_formatters,
-                      hdr_override :: Dict{Symbol,String} = Dict{Symbol,String}(),
-                      kwargs...)
+function pretty_stats(
+  io::IO,
+  df::DataFrame;
+  col_formatters = default_formatters,
+  hdr_override::Dict{Symbol, String} = Dict{Symbol, String}(),
+  kwargs...,
+)
   kwargs = Dict(kwargs)
   pt_formatters = []
 
@@ -56,7 +56,7 @@ function pretty_stats(io::IO, df::DataFrame;
 
   # merge default and user-specified column formatters
   df_names = propertynames(df)
-  for col = 1 : length(df_names)
+  for col = 1:length(df_names)
     name = df_names[col]
     if name ∈ keys(col_formatters)
       push!(pt_formatters, ft_printf(col_formatters[name], col))
@@ -77,9 +77,14 @@ function pretty_stats(io::IO, df::DataFrame;
   :nosubheader ∈ keys(kwargs) && pop!(kwargs, :nosubheader)
 
   # pretty_table expects a tuple of formatters
-  pretty_table(io, df, header=header,
-               formatters=tuple(pt_formatters...), nosubheader=true; kwargs...)
+  pretty_table(
+    io,
+    df,
+    header = header,
+    formatters = tuple(pt_formatters...),
+    nosubheader = true;
+    kwargs...,
+  )
 end
 
 pretty_stats(df::DataFrame; kwargs...) = pretty_stats(stdout, df; kwargs...)
-

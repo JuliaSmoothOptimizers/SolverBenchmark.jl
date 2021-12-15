@@ -75,11 +75,10 @@ Output:
 function judgement_results_to_dataframes(judgement::PkgBenchmark.BenchmarkJudgement)
   target_stats = bmark_results_to_dataframes(judgement.target_results)
   baseline_stats = bmark_results_to_dataframes(judgement.baseline_results)
-  Dict{Symbol, Dict{Symbol,DataFrame}}(
-    k => Dict{Symbol,DataFrame}(
-           :target => target_stats[k],
-           :baseline => baseline_stats[k])
-    for k ∈ keys(target_stats))
+  Dict{Symbol, Dict{Symbol, DataFrame}}(
+    k => Dict{Symbol, DataFrame}(:target => target_stats[k], :baseline => baseline_stats[k]) for
+    k ∈ keys(target_stats)
+  )
 end
 
 """
@@ -92,8 +91,13 @@ Inputs:
 """
 function profile_solvers(results::PkgBenchmark.BenchmarkResults)
   # guard against zero gctimes
-  costs = [df -> df[!, :time], df -> df[!, :memory], df -> df[!, :gctime] .+ 1, df -> df[!, :allocations]]
-  profile_solvers(bmark_results_to_dataframes(results), costs, ["time", "memory", "gctime+1", "allocations"])
+  costs =
+    [df -> df[!, :time], df -> df[!, :memory], df -> df[!, :gctime] .+ 1, df -> df[!, :allocations]]
+  profile_solvers(
+    bmark_results_to_dataframes(results),
+    costs,
+    ["time", "memory", "gctime+1", "allocations"],
+  )
 end
 
 """
@@ -111,11 +115,16 @@ Inputs:
 """
 function profile_package(judgement::PkgBenchmark.BenchmarkJudgement)
   # guard against zero gctimes
-  costs = [df -> df[!, :time], df -> df[!, :memory], df -> df[!, :gctime] .+ 1, df -> df[!, :allocations]]
+  costs =
+    [df -> df[!, :time], df -> df[!, :memory], df -> df[!, :gctime] .+ 1, df -> df[!, :allocations]]
   judgement_dataframes = judgement_results_to_dataframes(judgement)
   Dict{Symbol, Plots.Plot}(
-    k => profile_solvers(judgement_dataframes[k], costs, ["time", "memory", "gctime+1", "allocations"])
-    for k ∈ keys(judgement_dataframes))
+    k => profile_solvers(
+      judgement_dataframes[k],
+      costs,
+      ["time", "memory", "gctime+1", "allocations"],
+    ) for k ∈ keys(judgement_dataframes)
+  )
 end
 
 """
@@ -137,20 +146,21 @@ function to_gist(results::PkgBenchmark.BenchmarkResults, p)
   svgfilecontents = escape_string(read(svgfilename, String))
 
   gist_json = JSON.parse(
-  """
-  {
-    "description": "Benchmarks uploaded by SolverBenchmark.jl",
-    "public": true,
-    "files": {
-        "bmark.md": {
-          "content": "$(escape_string(sprint(PkgBenchmark.export_markdown, results; context=stdout)))"
-        },
-        "bmark.svg": {
-          "content": "$(svgfilecontents)"
-        }
+    """
+    {
+      "description": "Benchmarks uploaded by SolverBenchmark.jl",
+      "public": true,
+      "files": {
+          "bmark.md": {
+            "content": "$(escape_string(sprint(PkgBenchmark.export_markdown, results; context=stdout)))"
+          },
+          "bmark.svg": {
+            "content": "$(svgfilecontents)"
+          }
+      }
     }
-  }
-  """)
+    """,
+  )
 
   # Need to add GITHUB_AUTH to your .bashrc
   myauth = GitHub.authenticate(ENV["GITHUB_AUTH"])

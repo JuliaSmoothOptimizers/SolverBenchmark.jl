@@ -20,15 +20,16 @@ Keyword arguments:
 Output:
 - `df::DataFrame`: Resulting dataframe.
 """
-function join(stats::Dict{Symbol,DataFrame},
-              cols::Array{Symbol,1};
-              invariant_cols::Array{Symbol,1} = Symbol[],
-              hdr_override::Dict{Symbol,String} = Dict{Symbol,String}(),
-             )
+function join(
+  stats::Dict{Symbol, DataFrame},
+  cols::Array{Symbol, 1};
+  invariant_cols::Array{Symbol, 1} = Symbol[],
+  hdr_override::Dict{Symbol, String} = Dict{Symbol, String}(),
+)
   length(cols) == 0 && error("cols can't be empty")
-  if !all(:id in propertynames(df) for (s,df) in stats)
+  if !all(:id in propertynames(df) for (s, df) in stats)
     error("Missing column :id in some DataFrame")
-  elseif !all(setdiff(cols, propertynames(df)) == [] for (s,df) in stats)
+  elseif !all(setdiff(cols, propertynames(df)) == [] for (s, df) in stats)
     error("Not all DataFrames have all columns given by `cols`")
   end
 
@@ -56,7 +57,7 @@ function join(stats::Dict{Symbol,DataFrame},
   end
 
   for (s, dfs) in stats
-    df = innerjoin(df, rename(c->rename_f(c, s), dfs[!, cols]), on=:id, makeunique=true)
+    df = innerjoin(df, rename(c -> rename_f(c, s), dfs[!, cols]), on = :id, makeunique = true)
   end
 
   return df

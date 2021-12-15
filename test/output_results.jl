@@ -103,7 +103,8 @@ id & name & flag\_alpha & f\_alpha & t\_alpha & flag\_beta & f\_beta & t\_beta &
 \end{longtable}
 """
 
-joined_md = raw"""|     id |    name |  flag_alpha |   f_alpha |   t_alpha |   flag_beta |    f_beta |    t_beta |  flag_gamma |   f_gamma |   t_gamma |
+joined_md =
+  raw"""|     id |    name |  flag_alpha |   f_alpha |   t_alpha |   flag_beta |    f_beta |    t_beta |  flag_gamma |   f_gamma |   t_gamma |
 |--------|---------|-------------|-----------|-----------|-------------|-----------|-----------|-------------|-----------|-----------|
 |      1 | prob001 |     failure |  1.11e+00 |  5.88e+02 |     failure |  1.11e+00 |  5.88e+02 |     failure |  1.11e+00 |  5.88e+02 |
 |      2 | prob002 |     failure |  1.22e+00 |  9.51e+02 |     failure |  1.22e+00 |  9.51e+02 |     failure |  1.22e+00 |  9.51e+02 |
@@ -141,4 +142,3 @@ A & B & C & D \\\hline
 \( 3.00\)e\(+00\) & \(     3\) & b & notmiss \\\hline
 \end{longtable}
 """
-

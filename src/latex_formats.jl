@@ -7,9 +7,9 @@ Generate a PrettyTables LaTeX formatter for signed integers.
 """
 function safe_latex_Signed_col(col::Integer)
   return (s, i, j) -> begin
-                        j !== col && return s
-                        return ismissing(s) ? " "^10 : safe_latex_Signed(s)
-                      end
+    j !== col && return s
+    return ismissing(s) ? " "^10 : safe_latex_Signed(s)
+  end
 end
 
 """
@@ -28,9 +28,9 @@ Replaces `_` with `\\_`.
 """
 function safe_latex_AbstractString_col(col::Integer)
   return (s, i, j) -> begin
-                        j !== col && return s
-                        ismissing(s) ? " " : safe_latex_AbstractString(s)
-                      end
+    j !== col && return s
+    ismissing(s) ? " " : safe_latex_AbstractString(s)
+  end
 end
 
 """
@@ -48,9 +48,9 @@ Generate a PrettyTables LaTeX formatter for symbols.
 """
 function safe_latex_Symbol_col(col::Integer)
   return (s, i, j) -> begin
-                        j !== col && return s
-                        safe_latex_Symbol(s)
-                      end
+    j !== col && return s
+    safe_latex_Symbol(s)
+  end
 end
 
 """
@@ -69,9 +69,9 @@ Generate a PrettyTables LaTeX formatter for real numbers.
 function safe_latex_AbstractFloat_col(col::Integer)
   # by this point, the table value should already have been converted to a string
   return (s, i, j) -> begin
-                        j != col && return s
-                        return ismissing(s) ? " "^17 : safe_latex_AbstractFloat(s)
-                      end
+    j != col && return s
+    return ismissing(s) ? " "^17 : safe_latex_AbstractFloat(s)
+  end
 end
 
 """
@@ -95,10 +95,12 @@ function safe_latex_AbstractFloat(s::AbstractString)
   end
 end
 
-safe_latex_formatters = Dict(AbstractFloat => safe_latex_AbstractFloat_col,
-                             Signed => safe_latex_Signed_col,
-                             AbstractString => safe_latex_AbstractString_col,
-                             Symbol => safe_latex_Symbol_col)
+safe_latex_formatters = Dict(
+  AbstractFloat => safe_latex_AbstractFloat_col,
+  Signed => safe_latex_Signed_col,
+  AbstractString => safe_latex_AbstractString_col,
+  Symbol => safe_latex_Symbol_col,
+)
 
 """
     pretty_latex_stats(df; kwargs...)
@@ -113,10 +115,13 @@ See the `pretty_stats` documentation. Specific settings in this method are:
 
 See the PrettyTables documentation for more information.
 """
-function pretty_latex_stats(io::IO, df::DataFrame;
-                            col_formatters=default_formatters,
-                            hdr_override :: Dict{Symbol,String} = Dict{Symbol,String}(),
-                            kwargs...)
+function pretty_latex_stats(
+  io::IO,
+  df::DataFrame;
+  col_formatters = default_formatters,
+  hdr_override::Dict{Symbol, String} = Dict{Symbol, String}(),
+  kwargs...,
+)
   kwargs = Dict(kwargs)
   pt_formatters = []
 
@@ -134,7 +139,7 @@ function pretty_latex_stats(io::IO, df::DataFrame;
 
   # merge default and user-specified column formatters
   df_names = propertynames(df)
-  for col = 1 : length(df_names)
+  for col = 1:length(df_names)
     name = df_names[col]
     typ = Missings.nonmissingtype(eltype(df[!, name]))
     styp = supertype(typ)
@@ -151,7 +156,10 @@ function pretty_latex_stats(io::IO, df::DataFrame;
   # set header
   header = String[]
   for name ∈ df_names
-    push!(header, name ∈ keys(hdr_override) ? hdr_override[name] : (String(name) |> safe_latex_AbstractString))
+    push!(
+      header,
+      name ∈ keys(hdr_override) ? hdr_override[name] : (String(name) |> safe_latex_AbstractString),
+    )
   end
 
   # force a few options
@@ -162,23 +170,30 @@ function pretty_latex_stats(io::IO, df::DataFrame;
   # by default, PrettyTables wants to boldface headers
   # that won't work if we put any math headers
   tf = LatexTableFormat(
-    top_line       = "\\hline",
-    header_line    = "\\hline",
-    mid_line       = "\\hline",
-    bottom_line    = "\\hline",
-    left_vline     = "|",
-    mid_vline      = "|",
-    right_vline    = "|",
-    header_envs    = [],
+    top_line = "\\hline",
+    header_line = "\\hline",
+    mid_line = "\\hline",
+    bottom_line = "\\hline",
+    left_vline = "|",
+    mid_vline = "|",
+    right_vline = "|",
+    header_envs = [],
     subheader_envs = ["texttt"],
   )
 
   # pretty_table expects a tuple of formatters
-  pretty_table(io, df, header=header,
-               backend=Val(:latex), table_type=:longtable, tf=tf, nosubheader=true,
-               longtable_footer="{\\bfseries Continued on next page}",
-               formatters=tuple(pt_formatters...); kwargs...)
+  pretty_table(
+    io,
+    df,
+    header = header,
+    backend = Val(:latex),
+    table_type = :longtable,
+    tf = tf,
+    nosubheader = true,
+    longtable_footer = "{\\bfseries Continued on next page}",
+    formatters = tuple(pt_formatters...);
+    kwargs...,
+  )
 end
 
 pretty_latex_stats(df::DataFrame; kwargs...) = pretty_latex_stats(stdout, df; kwargs...)
-

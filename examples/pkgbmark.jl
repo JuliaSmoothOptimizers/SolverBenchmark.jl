@@ -7,9 +7,9 @@ pyplot()  # recommended!
 using PlotThemes
 theme(:juno)
 
-common_plot_args = Dict{Symbol,Any}(
+common_plot_args = Dict{Symbol, Any}(
   :linewidth => 2,
-  :alpha => .75,
+  :alpha => 0.75,
   :titlefontsize => 8,
   :legendfontsize => 8,
   :xtickfontsize => 6,

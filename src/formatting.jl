@@ -23,21 +23,24 @@ Outputs:
 - `header::Array{String,1}`: header vector.
 - `table::Array{String,2}`: formatted table.
 """
-function format_table(df :: DataFrame, formatter :: Function;
-                      cols :: Array{Symbol,1} = propertynames(df),
-                      ignore_missing_cols :: Bool = false,
-                      fmt_override :: Dict{Symbol,F} = Dict{Symbol,Function}(),
-                      hdr_override :: Dict{Symbol,String} = Dict{Symbol,String}(),
-                     ) where F <: Function
+function format_table(
+  df::DataFrame,
+  formatter::Function;
+  cols::Array{Symbol, 1} = propertynames(df),
+  ignore_missing_cols::Bool = false,
+  fmt_override::Dict{Symbol, F} = Dict{Symbol, Function}(),
+  hdr_override::Dict{Symbol, String} = Dict{Symbol, String}(),
+) where {F <: Function}
   if ignore_missing_cols
-    cols = filter(c->hasproperty(df, c), cols)
+    cols = filter(c -> hasproperty(df, c), cols)
   elseif !all(hasproperty(df, c) for c in cols)
     missing_cols = setdiff(cols, propertynames(df))
     @error("There are no columns `" * join(missing_cols, ", ") * "` in dataframe")
     throw(BoundsError)
   end
 
-  string_cols = [map(haskey(fmt_override, col) ? fmt_override[col] : formatter, df[!, col]) for col in cols]
+  string_cols =
+    [map(haskey(fmt_override, col) ? fmt_override[col] : formatter, df[!, col]) for col in cols]
   table = hcat(string_cols...)
 
   header = [haskey(hdr_override, c) ? hdr_override[c] : formatter(c) for c in cols]
@@ -46,4 +49,3 @@ function format_table(df :: DataFrame, formatter :: Function;
 end
 
 Base.@deprecate format_table pretty_stats false
-

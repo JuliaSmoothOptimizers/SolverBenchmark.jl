@@ -15,8 +15,7 @@ Any keyword argument accepted by `solve_problems`
 #### Return value
 A Dict{Symbol, AbstractExecutionStats} of statistics.
 """
-function bmark_solvers(solvers :: Dict{Symbol,<: Any}, args...;
-                       kwargs...)
+function bmark_solvers(solvers::Dict{Symbol, <:Any}, args...; kwargs...)
   stats = Dict{Symbol, DataFrame}()
   for (name, solver) in solvers
     @debug "running" name solver
