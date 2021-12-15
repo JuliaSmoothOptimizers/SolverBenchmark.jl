@@ -1,6 +1,5 @@
 export save_stats, load_stats, count_unique, quick_summary
 
-
 """
     save_stats(stats, filename; kwargs...)
 
@@ -21,7 +20,12 @@ Write the benchmark statistics `stats` to a file named `filename`.
 This method returns an error if `filename` exists and `force==false`.
 On success, it returns the value of `jldopen(filename, "w")`.
 """
-function save_stats(stats::Dict{Symbol,DataFrame}, filename::AbstractString; force::Bool=false, key::String="stats")
+function save_stats(
+  stats::Dict{Symbol, DataFrame},
+  filename::AbstractString;
+  force::Bool = false,
+  key::String = "stats",
+)
   isfile(filename) && !force && error("$filename already exists; use `force=true` to overwrite")
   jldopen(filename, "w") do file
     file[key] = stats
@@ -45,7 +49,7 @@ end
 A `Dict{Symbol,DataFrame}` containing the statistics stored in file `filename`.
 The user should `import DataFrames` before calling `load_stats`.
 """
-function load_stats(filename::AbstractString; key::String="stats")
+function load_stats(filename::AbstractString; key::String = "stats")
   jldopen(filename) do file
     file[key]
   end
@@ -75,7 +79,7 @@ Example: the snippet
 displays the number of occurrences of each final status for each solver in `stats`.
 """
 function count_unique(X)
-  vals = Dict{eltype(X),Int}()
+  vals = Dict{eltype(X), Int}()
   for x ∈ X
     vals[x] = x ∈ keys(vals) ? (vals[x] + 1) : 1
   end
@@ -113,18 +117,19 @@ Example: the snippet
 
 displays quick summary and averages for each solver.
 """
-function quick_summary(stats::Dict{Symbol,DataFrame};
-                       cols::Vector{Symbol}=[:iter, :neval_obj, :neval_grad, :neval_hess, :neval_hprod, :elapsed_time])
+function quick_summary(
+  stats::Dict{Symbol, DataFrame};
+  cols::Vector{Symbol} = [:iter, :neval_obj, :neval_grad, :neval_hess, :neval_hprod, :elapsed_time],
+)
   nproblems = size(stats[first(keys(stats))], 1)
-  statuses = Dict{Symbol,Dict{Symbol,Int}}()
-  avgs = Dict{Symbol,Dict{Symbol,Float64}}()
+  statuses = Dict{Symbol, Dict{Symbol, Int}}()
+  avgs = Dict{Symbol, Dict{Symbol, Float64}}()
   for solver ∈ keys(stats)
     statuses[solver] = count_unique(stats[solver].status)
-    avgs[solver] = Dict{Symbol,Float64}()
+    avgs[solver] = Dict{Symbol, Float64}()
     for col ∈ cols
       avgs[solver][col] = sum(stats[solver][!, col]) / nproblems
     end
   end
   statuses, avgs
 end
-

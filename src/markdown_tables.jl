@@ -1,9 +1,9 @@
 for (typ, fmt) in default_formatters
   @eval begin
-    MDformat(x :: $typ) = @sprintf($fmt, x)
+    MDformat(x::$typ) = @sprintf($fmt, x)
   end
 end
-MDformat(x :: Missing) = "NA"
+MDformat(x::Missing) = "NA"
 
 @doc """
     MDformat(x)
@@ -38,11 +38,11 @@ Keyword arguments:
 
 - all other keyword arguments are passed directly to `format_table`.
 """
-function markdown_table(io :: IO, df :: DataFrame; hl=passfail_highlighter(df), kwargs...)
+function markdown_table(io::IO, df::DataFrame; hl = passfail_highlighter(df), kwargs...)
   header, table = format_table(df, MDformat; kwargs...)
-  pretty_table(io, table, header=header, tf=tf_markdown, highlighters=hl)
+  pretty_table(io, table, header = header, tf = tf_markdown, highlighters = hl)
 end
 
-markdown_table(df :: DataFrame; kwargs...) = markdown_table(stdout, df; kwargs...)
+markdown_table(df::DataFrame; kwargs...) = markdown_table(stdout, df; kwargs...)
 
 Base.@deprecate markdown_table pretty_stats false

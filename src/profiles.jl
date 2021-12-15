@@ -18,7 +18,7 @@ Examples of cost functions:
 - `cost(df) = df.elapsed_time`: Simple `elapsed_time` cost. Assumes the solver solved the problem.
 - `cost(df) = (df.status .!= :first_order) * Inf + df.elapsed_time`: Takes into consideration the status of the solver.
 """
-function performance_profile(stats::Dict{Symbol,DataFrame}, cost::Function, args...; kwargs...)
+function performance_profile(stats::Dict{Symbol, DataFrame}, cost::Function, args...; kwargs...)
   solvers = keys(stats)
   dfs = (stats[s] for s in solvers)
   P = hcat([cost(df) for df in dfs]...)
@@ -47,12 +47,13 @@ measures given in `costs`.
 If there are more than two solvers, additional profiles are produced comparing the
 solvers two by two on each cost measure.
 """
-function profile_solvers(stats::Dict{Symbol,DataFrame},
-                         costs::Vector{<:Function},
-                         costnames::Vector{String};
-                         width::Int=400,
-                         height::Int=400
-                        )
+function profile_solvers(
+  stats::Dict{Symbol, DataFrame},
+  costs::Vector{<:Function},
+  costnames::Vector{String};
+  width::Int = 400,
+  height::Int = 400,
+)
   solvers = collect(keys(stats))
   dfs = (stats[solver] for solver in solvers)
   Ps = [hcat([Float64.(cost(df)) for df in dfs]...) for cost in costs]
@@ -64,10 +65,26 @@ function profile_solvers(stats::Dict{Symbol,DataFrame},
   colors = get_color_palette(:auto, nsolvers)
 
   # profiles with all solvers
-  ps = [performance_profile(PlotsBackend(), Ps[1], string.(solvers), palette=colors, title=costnames[1], legend=:bottomright)]
+  ps = [
+    performance_profile(
+      PlotsBackend(),
+      Ps[1],
+      string.(solvers),
+      palette = colors,
+      title = costnames[1],
+      legend = :bottomright,
+    ),
+  ]
   nsolvers > 2 && xlabel!(ps[1], "")
-  for k = 2 : ncosts
-    p = performance_profile(PlotsBackend(), Ps[k], string.(solvers), palette=colors, title=costnames[k], legend=false)
+  for k = 2:ncosts
+    p = performance_profile(
+      PlotsBackend(),
+      Ps[k],
+      string.(solvers),
+      palette = colors,
+      title = costnames[k],
+      legend = false,
+    )
     nsolvers > 2 && xlabel!(p, "")
     ylabel!(p, "")
     push!(ps, p)
@@ -76,28 +93,40 @@ function profile_solvers(stats::Dict{Symbol,DataFrame},
   if nsolvers > 2
     ipairs = 0
     # combinations of solvers 2 by 2
-    for i = 2 : nsolvers
-      for j = 1 : i-1
+    for i = 2:nsolvers
+      for j = 1:(i - 1)
         ipairs += 1
         pair = [solvers[i], solvers[j]]
         dfs = (stats[solver] for solver in pair)
         Ps = [hcat([Float64.(cost(df)) for df in dfs]...) for cost in costs]
 
         clrs = [colors[i], colors[j]]
-        p = performance_profile(PlotsBackend(), Ps[1], string.(pair), palette=clrs, legend=:bottomright)
+        p = performance_profile(
+          PlotsBackend(),
+          Ps[1],
+          string.(pair),
+          palette = clrs,
+          legend = :bottomright,
+        )
         ipairs < npairs && xlabel!(p, "")
         push!(ps, p)
-        for k = 2 : length(Ps)
-          p = performance_profile(PlotsBackend(), Ps[k], string.(pair), palette=clrs, legend=false)
+        for k = 2:length(Ps)
+          p = performance_profile(
+            PlotsBackend(),
+            Ps[k],
+            string.(pair),
+            palette = clrs,
+            legend = false,
+          )
           ipairs < npairs && xlabel!(p, "")
           ylabel!(p, "")
           push!(ps, p)
         end
       end
     end
-    p = plot(ps..., layout=(1 + ipairs, ncosts), size=(ncosts * width, (1 + ipairs) * height))
+    p = plot(ps..., layout = (1 + ipairs, ncosts), size = (ncosts * width, (1 + ipairs) * height))
   else
-    p = plot(ps..., layout=(1, ncosts), size=(ncosts * width, height))
+    p = plot(ps..., layout = (1, ncosts), size = (ncosts * width, height))
   end
   p
 end
