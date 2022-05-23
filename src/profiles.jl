@@ -53,6 +53,7 @@ function profile_solvers(
   costnames::Vector{String};
   width::Int = 400,
   height::Int = 400,
+  kwargs...
 )
   solvers = collect(keys(stats))
   dfs = (stats[solver] for solver in solvers)
@@ -124,9 +125,9 @@ function profile_solvers(
         end
       end
     end
-    p = plot(ps..., layout = (ncosts, 1 + ipairs), size = ((1 + ipairs) * height, ncosts * width))
+    p = plot(ps..., layout = (ncosts, 1 + ipairs), size = ((1 + ipairs) * height, ncosts * width); kwargs...)
   else
-    p = plot(ps..., layout = (ncosts, 1), size = (height, ncosts * width))
+    p = plot(ps..., layout = (ncosts, 1), size = (height, ncosts * width); kwargs...)
   end
   p
 end
