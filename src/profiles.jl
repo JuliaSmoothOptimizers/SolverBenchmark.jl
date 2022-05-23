@@ -124,9 +124,9 @@ function profile_solvers(
         end
       end
     end
-    p = plot(ps..., layout = (ncosts, 1 + ipairs), size = (ncosts * width, (1 + ipairs) * height))
+    p = plot(ps..., layout = (ncosts, 1 + ipairs), size = ((1 + ipairs) * height, ncosts * width))
   else
-    p = plot(ps..., layout = (ncosts, 1), size = (ncosts * width, height))
+    p = plot(ps..., layout = (ncosts, 1), size = (height, ncosts * width))
   end
   p
 end
