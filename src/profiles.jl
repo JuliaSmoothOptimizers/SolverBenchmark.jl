@@ -74,7 +74,8 @@ function profile_solvers(
       string.(solvers),
       palette = colors,
       title = costnames[1],
-      legend = :bottomright,
+      legend = :bottomright;
+      kwargs...,
     ),
   ]
   nsolvers > 2 && xlabel!(ps[1], "")
@@ -85,7 +86,8 @@ function profile_solvers(
       string.(solvers),
       palette = colors,
       title = costnames[k],
-      legend = false,
+      legend = false;
+      kwargs...,
     )
     nsolvers > 2 && xlabel!(p, "")
     ylabel!(p, "")
@@ -108,7 +110,8 @@ function profile_solvers(
           Ps[1],
           string.(pair),
           palette = clrs,
-          legend = :bottomright,
+          legend = :bottomright;
+          kwargs...,
         )
         ipairs < npairs && xlabel!(p, "")
         push!(ps, p)
@@ -118,7 +121,8 @@ function profile_solvers(
             Ps[k],
             string.(pair),
             palette = clrs,
-            legend = false,
+            legend = false;
+            kwargs...,
           )
           ipairs < npairs && xlabel!(p, "")
           ylabel!(p, "")
