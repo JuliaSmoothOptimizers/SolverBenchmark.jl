@@ -53,6 +53,7 @@ function profile_solvers(
   costnames::Vector{String};
   width::Int = 400,
   height::Int = 400,
+  user_colors = nothing,
   kwargs...
 )
   solvers = collect(keys(stats))
@@ -63,7 +64,7 @@ function profile_solvers(
   nsolvers = length(solvers)
   ncosts = length(costs)
   npairs = div(nsolvers * (nsolvers - 1), 2)
-  colors = get_color_palette(:auto, nsolvers)
+  colors = isnothing(user_colors) ? get_color_palette(:auto, nsolvers) : user_colors
 
   # profiles with all solvers
   ps = [
