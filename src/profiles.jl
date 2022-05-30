@@ -127,7 +127,12 @@ function profile_solvers(
         end
       end
     end
-    p = plot(ps..., layout = (1 + ipairs, ncosts), size = (ncosts * width, (1 + ipairs) * height); kwargs...)
+    p = plot(
+      ps...,
+      layout = (1 + ipairs, ncosts),
+      size = (ncosts * width, (1 + ipairs) * height);
+      kwargs...,
+    )
   else
     p = plot(ps..., layout = (1, ncosts), size = (ncosts * width, height); kwargs...)
   end
