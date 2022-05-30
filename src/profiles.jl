@@ -26,7 +26,7 @@ function performance_profile(stats::Dict{Symbol, DataFrame}, cost::Function, arg
 end
 
 """
-    p = profile_solvers(stats, costs, costnames)
+    p = profile_solvers(stats, costs, costnames; kwargs...)
 
 Produce performance profiles comparing `solvers` based on the data in `stats`.
 
@@ -39,6 +39,8 @@ Inputs:
 Keyword inputs:
 - `width::Int`: Width of each individual plot (Default: 400)
 - `height::Int`: Height of each individual plot (Default: 400)
+
+Additional `kwargs` are passed to the `plot` call.
 
 Output:
 A Plots.jl plot representing a set of performance profiles comparing the solvers.
@@ -53,6 +55,7 @@ function profile_solvers(
   costnames::Vector{String};
   width::Int = 400,
   height::Int = 400,
+  kwargs...,
 )
   solvers = collect(keys(stats))
   dfs = (stats[solver] for solver in solvers)
@@ -124,9 +127,9 @@ function profile_solvers(
         end
       end
     end
-    p = plot(ps..., layout = (1 + ipairs, ncosts), size = (ncosts * width, (1 + ipairs) * height))
+    p = plot(ps..., layout = (1 + ipairs, ncosts), size = (ncosts * width, (1 + ipairs) * height); kwargs...)
   else
-    p = plot(ps..., layout = (1, ncosts), size = (ncosts * width, height))
+    p = plot(ps..., layout = (1, ncosts), size = (ncosts * width, height); kwargs...)
   end
   p
 end
