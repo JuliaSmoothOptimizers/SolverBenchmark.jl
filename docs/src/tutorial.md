@@ -64,7 +64,7 @@ Alternatively, you can print to a file.
 ```@example ex1
 open("alpha.tex", "w") do io
   println(io, "\\documentclass[varwidth=20cm,crop=true]{standalone}")
-  println(io, "\\usepackage{longtable}")
+  println(io, "\\usepackage{longtable}[=v4.13]")
   println(io, "\\begin{document}")
   pretty_latex_stats(io, stats[:alpha])
   println(io, "\\end{document}")
@@ -143,7 +143,7 @@ fmt_override = Dict(:f => "%+10.3e",
 hdr_override = Dict(:name => "Name", :f => "f(x)", :t => "Time")
 open("alpha2.tex", "w") do io
   println(io, "\\documentclass[varwidth=20cm,crop=true]{standalone}")
-  println(io, "\\usepackage{longtable}")
+  println(io, "\\usepackage{longtable}[=v4.13]")
   println(io, "\\begin{document}")
   pretty_latex_stats(io,
                     df[!, [:name, :status, :f, :t, :iter]],
@@ -202,7 +202,7 @@ hdr_override = Dict(:name => "Name", :f => "\\(f(x)\\)", :t => "Time")
 df = join(stats, [:f, :t], invariant_cols=[:name], hdr_override=hdr_override)
 open("alpha3.tex", "w") do io
   println(io, "\\documentclass[varwidth=20cm,crop=true]{standalone}")
-  println(io, "\\usepackage{longtable}")
+  println(io, "\\usepackage{longtable}[=v4.13]")
   println(io, "\\begin{document}")
   pretty_latex_stats(io, df)
   println(io, "\\end{document}")
