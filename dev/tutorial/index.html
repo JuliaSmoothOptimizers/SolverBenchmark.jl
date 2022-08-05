@@ -53,7 +53,7 @@ pretty_stats(stats[:alpha])</code></pre><pre><code class="language-none">┌─�
   \(    10\) &amp; prob010 &amp; first\_order &amp; \( 7.89\)e\(-02\) &amp; \( 2.31\)e\(+02\) &amp; \(    30\) &amp; \(-8.39\)e\(-01\) \\\hline
 \end{longtable}</code></pre><p>Alternatively, you can print to a file.</p><pre><code class="language-julia">open(&quot;alpha.tex&quot;, &quot;w&quot;) do io
   println(io, &quot;\\documentclass[varwidth=20cm,crop=true]{standalone}&quot;)
-  println(io, &quot;\\usepackage{longtable}&quot;)
+  println(io, &quot;\\usepackage{longtable}[=v4.13]&quot;)
   println(io, &quot;\\begin{document}&quot;)
   pretty_latex_stats(io, stats[:alpha])
   println(io, &quot;\\end{document}&quot;)
@@ -136,7 +136,7 @@ pretty_stats(df[!, [:name, :f, :t]],
 hdr_override = Dict(:name =&gt; &quot;Name&quot;, :f =&gt; &quot;f(x)&quot;, :t =&gt; &quot;Time&quot;)
 open(&quot;alpha2.tex&quot;, &quot;w&quot;) do io
   println(io, &quot;\\documentclass[varwidth=20cm,crop=true]{standalone}&quot;)
-  println(io, &quot;\\usepackage{longtable}&quot;)
+  println(io, &quot;\\usepackage{longtable}[=v4.13]&quot;)
   println(io, &quot;\\begin{document}&quot;)
   pretty_latex_stats(io,
                     df[!, [:name, :status, :f, :t, :iter]],
@@ -200,7 +200,7 @@ pretty_stats(stdout, df)</code></pre><pre><code class="language-none">┌──�
 df = join(stats, [:f, :t], invariant_cols=[:name], hdr_override=hdr_override)
 open(&quot;alpha3.tex&quot;, &quot;w&quot;) do io
   println(io, &quot;\\documentclass[varwidth=20cm,crop=true]{standalone}&quot;)
-  println(io, &quot;\\usepackage{longtable}&quot;)
+  println(io, &quot;\\usepackage{longtable}[=v4.13]&quot;)
   println(io, &quot;\\begin{document}&quot;)
   pretty_latex_stats(io, df)
   println(io, &quot;\\end{document}&quot;)
@@ -214,4 +214,4 @@ Plots.svg(p, &quot;profile2&quot;)</code></pre><p><img src="../profile2.svg" alt
 costs = [df -&gt; .!solved(df) * Inf + df.t, df -&gt; .!solved(df) * Inf + df.iter]
 costnames = [&quot;Time&quot;, &quot;Iterations&quot;]
 p = profile_solvers(stats, costs, costnames)
-Plots.svg(p, &quot;profile3&quot;)</code></pre><p><img src="../profile3.svg" alt/></p><h3 id="Example-of-benchmark-running-1"><a class="docs-heading-anchor" href="#Example-of-benchmark-running-1">Example of benchmark running</a><a class="docs-heading-anchor-permalink" href="#Example-of-benchmark-running-1" title="Permalink"></a></h3><p>Here is a useful tutorial on how to use the benchmark with specific solver: <a href="https://juliasmoothoptimizers.github.io/OptimizationProblems.jl/dev/benchmark/">Run a benchmark with OptimizationProblems</a> The tutorial covers how to use the problems from <code>OptimizationProblems</code> to run a benchmark for unconstrained optimization.</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../">« Home</a><a class="docs-footer-nextpage" href="../reference/">Reference »</a></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Friday 8 July 2022 16:07">Friday 8 July 2022</span>. Using Julia version 1.7.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+Plots.svg(p, &quot;profile3&quot;)</code></pre><p><img src="../profile3.svg" alt/></p><h3 id="Example-of-benchmark-running-1"><a class="docs-heading-anchor" href="#Example-of-benchmark-running-1">Example of benchmark running</a><a class="docs-heading-anchor-permalink" href="#Example-of-benchmark-running-1" title="Permalink"></a></h3><p>Here is a useful tutorial on how to use the benchmark with specific solver: <a href="https://juliasmoothoptimizers.github.io/OptimizationProblems.jl/dev/benchmark/">Run a benchmark with OptimizationProblems</a> The tutorial covers how to use the problems from <code>OptimizationProblems</code> to run a benchmark for unconstrained optimization.</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../">« Home</a><a class="docs-footer-nextpage" href="../reference/">Reference »</a></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Friday 5 August 2022 19:09">Friday 5 August 2022</span>. Using Julia version 1.7.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
