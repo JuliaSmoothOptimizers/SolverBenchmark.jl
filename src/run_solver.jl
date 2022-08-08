@@ -128,6 +128,12 @@ function solve_problems(
 
           first_problem = false
         end
+        counters_list = problem isa AbstractNLSModel ?
+          [getfield(problem.counters.counters, f) for f in f_counters] :
+          [getfield(problem.counters, f) for f in f_counters]
+        nls_counters_list = problem isa AbstractNLSModel ?
+          [getfield(problem.counters, f) for f in fnls_counters] :
+          zeros(Int, length(fnls_counters))
         push!(
           stats,
           [
@@ -138,8 +144,8 @@ function solve_problems(
             s.iter
             s.dual_feas
             s.primal_feas
-            [getfield(s.counters.counters, f) for f in f_counters]
-            [getfield(s.counters, f) for f in fnls_counters]
+            counters_list
+            nls_counters_list
             ""
             [s.solver_specific[k] for k in specific]
           ],
