@@ -21,4 +21,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
           GKSwstype: "100" #https://discourse.julialang.org/t/generation-of-documentation-fails-qt-qpa-xcb-could-not-connect-to-display/60988
-        run: julia --project=docs --color=yes docs/make.jl
+        run: |
+          wget -q https://github.com/rstudio/tinytex-releases/releases/download/v2022.08/TinyTeX-1-v2022.08.tar.gz
+          tar zxf TinyTeX-1-v2022.08.tar.gz
+          export PATH=$PWD/.TinyTeX/bin/x86_64-linux:$PATH
+          sudo apt-get install -y pdf2svg
+          tlmgr install standalone varwidth
+          pip install matplotlib  # for PyPlot
+          julia --project=docs --color=yes docs/make.jl
