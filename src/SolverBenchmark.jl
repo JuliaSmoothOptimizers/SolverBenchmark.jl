@@ -1,5 +1,6 @@
 module SolverBenchmark
 
+using Distributed
 using Logging
 using Printf
 
