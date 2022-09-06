@@ -18,11 +18,17 @@ Examples of cost functions:
 - `cost(df) = df.elapsed_time`: Simple `elapsed_time` cost. Assumes the solver solved the problem.
 - `cost(df) = (df.status .!= :first_order) * Inf + df.elapsed_time`: Takes into consideration the status of the solver.
 """
-function performance_profile(stats::Dict{Symbol, DataFrame}, cost::Function, args...; kwargs...)
+function performance_profile(
+  stats::Dict{Symbol, DataFrame},
+  cost::Function,
+  args...;
+  b::BenchmarkProfiles.AbstractBackend = PlotsBackend(),
+  kwargs...,
+)
   solvers = keys(stats)
   dfs = (stats[s] for s in solvers)
   P = hcat([cost(df) for df in dfs]...)
-  performance_profile(PlotsBackend(), P, string.(solvers), args...; kwargs...)
+  performance_profile(b, P, string.(solvers), args...; kwargs...)
 end
 
 """
@@ -55,6 +61,7 @@ function profile_solvers(
   costnames::Vector{String};
   width::Int = 400,
   height::Int = 400,
+  b::BenchmarkProfiles.AbstractBackend = PlotsBackend(),
   kwargs...,
 )
   solvers = collect(keys(stats))
@@ -70,7 +77,7 @@ function profile_solvers(
   # profiles with all solvers
   ps = [
     performance_profile(
-      PlotsBackend(),
+      b,
       Ps[1],
       string.(solvers),
       palette = colors,
@@ -81,7 +88,7 @@ function profile_solvers(
   nsolvers > 2 && xlabel!(ps[1], "")
   for k = 2:ncosts
     p = performance_profile(
-      PlotsBackend(),
+      b,
       Ps[k],
       string.(solvers),
       palette = colors,
@@ -105,7 +112,7 @@ function profile_solvers(
 
         clrs = [colors[i], colors[j]]
         p = performance_profile(
-          PlotsBackend(),
+          b,
           Ps[1],
           string.(pair),
           palette = clrs,
@@ -115,7 +122,7 @@ function profile_solvers(
         push!(ps, p)
         for k = 2:length(Ps)
           p = performance_profile(
-            PlotsBackend(),
+            b,
             Ps[k],
             string.(pair),
             palette = clrs,
