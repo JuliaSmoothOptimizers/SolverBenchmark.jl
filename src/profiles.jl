@@ -4,7 +4,7 @@ using BenchmarkProfiles, Plots
 export performance_profile, profile_solvers
 
 """
-    performance_profile(stats, cost)
+    performance_profile(stats, cost, args...; b = PlotsBackend(), kwargs...)
 
 Produce a performance profile comparing solvers in `stats` using the `cost` function.
 
@@ -13,6 +13,7 @@ Inputs:
 - `cost::Function`: cost function applyed to each `df`. Should return a vector with the cost of solving the problem at each row;
   - 0 cost is not allowed;
   - If the solver did not solve the problem, return Inf or a negative number.
+- `b::BenchmarkProfiles.AbstractBackend` : backend used for the plot.
 
 Examples of cost functions:
 - `cost(df) = df.elapsed_time`: Simple `elapsed_time` cost. Assumes the solver solved the problem.
@@ -32,7 +33,9 @@ function performance_profile(
 end
 
 """
-    p = profile_solvers(stats, costs, costnames; kwargs...)
+    p = profile_solvers(stats, costs, costnames;
+                        width = 400, height = 400,
+                        b = PlotsBackend(), kwargs...)
 
 Produce performance profiles comparing `solvers` based on the data in `stats`.
 
@@ -45,6 +48,7 @@ Inputs:
 Keyword inputs:
 - `width::Int`: Width of each individual plot (Default: 400)
 - `height::Int`: Height of each individual plot (Default: 400)
+- `b::BenchmarkProfiles.AbstractBackend` : backend used for the plot.
 
 Additional `kwargs` are passed to the `plot` call.
 
