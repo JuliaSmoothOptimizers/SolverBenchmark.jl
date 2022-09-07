@@ -5,6 +5,7 @@ using Printf, Random, Test
 using DataFrames
 
 # test dependencies
+using PGFPlotsX, UnicodePlots
 using Plots
 
 # this package
