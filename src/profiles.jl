@@ -115,23 +115,11 @@ function profile_solvers(
         Ps = [hcat([Float64.(cost(df)) for df in dfs]...) for cost in costs]
 
         clrs = [colors[i], colors[j]]
-        p = performance_profile(
-          b,
-          Ps[1],
-          string.(pair),
-          palette = clrs,
-          legend = :bottomright,
-        )
+        p = performance_profile(b, Ps[1], string.(pair), palette = clrs, legend = :bottomright)
         ipairs < npairs && xlabel!(p, "")
         push!(ps, p)
         for k = 2:length(Ps)
-          p = performance_profile(
-            b,
-            Ps[k],
-            string.(pair),
-            palette = clrs,
-            legend = false,
-          )
+          p = performance_profile(b, Ps[k], string.(pair), palette = clrs, legend = false)
           ipairs < npairs && xlabel!(p, "")
           ylabel!(p, "")
           push!(ps, p)
