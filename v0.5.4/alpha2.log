@@ -1,0 +1,117 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.8.1)  10 SEP 2022 03:16
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**alpha2.tex
+(./alpha2.tex
+LaTeX2e <2022-06-01> patch level 5
+L3 programming layer <2022-07-15> (/home/runner/work/SolverBenchmark.jl/SolverBenchmark.jl/.TinyTeX/texmf-dist/tex/latex/standalone/standalone.cls
+Document Class: standalone 2018/03/26 v1.3a Class to compile TeX sub-files standalone
+(/home/runner/work/SolverBenchmark.jl/SolverBenchmark.jl/.TinyTeX/texmf-dist/tex/latex/tools/shellesc.sty
+Package: shellesc 2019/11/08 v1.0c unified shell escape interface for LaTeX
+Package shellesc Info: Restricted shell escape enabled on input line 77.
+) (/home/runner/work/SolverBenchmark.jl/SolverBenchmark.jl/.TinyTeX/texmf-dist/tex/generic/iftex/ifluatex.sty
+Package: ifluatex 2019/10/25 v1.5 ifluatex legacy package. Use iftex instead.
+(/home/runner/work/SolverBenchmark.jl/SolverBenchmark.jl/.TinyTeX/texmf-dist/tex/generic/iftex/iftex.sty
+Package: iftex 2022/02/03 v1.0f TeX engine tests
+)) (/home/runner/work/SolverBenchmark.jl/SolverBenchmark.jl/.TinyTeX/texmf-dist/tex/latex/xkeyval/xkeyval.sty
+Package: xkeyval 2022/06/16 v2.9 package option processing (HA)
+(/home/runner/work/SolverBenchmark.jl/SolverBenchmark.jl/.TinyTeX/texmf-dist/tex/generic/xkeyval/xkeyval.tex (/home/runner/work/SolverBenchmark.jl/SolverBenchmark.jl/.TinyTeX/texmf-dist/tex/generic/xkeyval/xkvutils.tex
+\XKV@toks=\toks16
+\XKV@tempa@toks=\toks17
+(/home/runner/work/SolverBenchmark.jl/SolverBenchmark.jl/.TinyTeX/texmf-dist/tex/generic/xkeyval/keyval.tex))
+\XKV@depth=\count185
+File: xkeyval.tex 2014/12/03 v2.7a key=value parser (HA)
+))
+\sa@internal=\count186
+\c@sapage=\count187
+(/home/runner/work/SolverBenchmark.jl/SolverBenchmark.jl/.TinyTeX/texmf-dist/tex/latex/standalone/standalone.cfg
+File: standalone.cfg 2018/03/26 v1.3a Default configuration file for 'standalone' class
+) (/home/runner/work/SolverBenchmark.jl/SolverBenchmark.jl/.TinyTeX/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2021/10/04 v1.4n Standard LaTeX document class
+(/home/runner/work/SolverBenchmark.jl/SolverBenchmark.jl/.TinyTeX/texmf-dist/tex/latex/base/size10.clo
+File: size10.clo 2021/10/04 v1.4n Standard LaTeX file (size option)
+)
+\c@part=\count188
+\c@section=\count189
+\c@subsection=\count190
+\c@subsubsection=\count191
+\c@paragraph=\count192
+\c@subparagraph=\count193
+\c@figure=\count194
+\c@table=\count195
+\abovecaptionskip=\skip47
+\belowcaptionskip=\skip48
+\bibindent=\dimen138
+) (/home/runner/work/SolverBenchmark.jl/SolverBenchmark.jl/.TinyTeX/texmf-dist/tex/latex/varwidth/varwidth.sty
+Package: varwidth 2009/03/30 ver 0.92;  Variable-width minipages
+\@vwid@box=\box51
+\sift@deathcycles=\count196
+\@vwid@loff=\dimen139
+\@vwid@roff=\dimen140
+)
+\sa@box=\box52
+) (/home/runner/work/SolverBenchmark.jl/SolverBenchmark.jl/.TinyTeX/texmf-dist/tex/latex/tools/longtable.sty
+Rollback for package 'longtable' requested -> version 'v4.13'.
+         This corresponds to the release introduced on 2020-01-02.
+(/home/runner/work/SolverBenchmark.jl/SolverBenchmark.jl/.TinyTeX/texmf-dist/tex/latex/tools/longtable-2020-01-07.sty
+Package: longtable 2020/01/07 v4.13 Multi-page Table package (DPC)
+\LTleft=\skip49
+\LTright=\skip50
+\LTpre=\skip51
+\LTpost=\skip52
+\LTchunksize=\count197
+\LTcapwidth=\dimen141
+\LT@head=\box53
+\LT@firsthead=\box54
+\LT@foot=\box55
+\LT@lastfoot=\box56
+\LT@cols=\count198
+\LT@rows=\count199
+\c@LT@tables=\count266
+\c@LT@chunks=\count267
+\LT@p@ftn=\toks18
+)) (/home/runner/work/SolverBenchmark.jl/SolverBenchmark.jl/.TinyTeX/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
+File: l3backend-pdftex.def 2022-07-01 L3 backend support: PDF output (pdfTeX)
+\l__color_backend_stack_int=\count268
+\l__pdf_internal_box=\box57
+) (./alpha2.aux)
+\openout1 = `alpha2.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 3.
+LaTeX Font Info:    ... okay on input line 3.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 3.
+LaTeX Font Info:    ... okay on input line 3.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 3.
+LaTeX Font Info:    ... okay on input line 3.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 3.
+LaTeX Font Info:    ... okay on input line 3.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 3.
+LaTeX Font Info:    ... okay on input line 3.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 3.
+LaTeX Font Info:    ... okay on input line 3.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 3.
+LaTeX Font Info:    ... okay on input line 3.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 16.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 16.
+[1
+
+{/home/runner/work/SolverBenchmark.jl/SolverBenchmark.jl/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] (./alpha2.aux) ) 
+Here is how much of TeX's memory you used:
+ 1196 strings out of 479983
+ 24142 string characters out of 5887787
+ 323222 words of memory out of 5000000
+ 19437 multiletter control sequences out of 15000+600000
+ 469567 words of font info for 29 fonts, out of 8000000 for 9000
+ 14 hyphenation exceptions out of 8191
+ 55i,7n,71p,215b,279s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</home/runner/work/SolverBenchmark.jl/SolverBenchmark.jl/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></home/runner/work/SolverBenchmark.jl/SolverBenchmark.jl/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></home/runner/work/SolverBenchmark.jl/SolverBenchmark.jl/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
+Output written on alpha2.pdf (1 page, 33199 bytes).
+PDF statistics:
+ 23 PDF objects out of 1000 (max. 8388607)
+ 13 compressed objects within 1 object stream
+ 0 named destinations out of 1000 (max. 500000)
+ 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+
