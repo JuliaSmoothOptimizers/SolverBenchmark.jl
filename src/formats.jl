@@ -3,6 +3,11 @@ export pretty_stats
 const default_formatters =
   Dict(AbstractFloat => "%9.2e", Signed => "%6d", AbstractString => "%15s", Symbol => "%15s")
 
+abstract_supertype(T::DataType) = T == Symbol ? T : supertype(T)
+abstract_supertype(::Type{<:AbstractFloat}) = AbstractFloat
+abstract_supertype(::Type{<:AbstractString}) = AbstractString
+# abstract_supertype(String15) = AbstractString but supertype(String15) = InlineString
+
 """
     pretty_stats(df; kwargs...)
 
@@ -62,8 +67,8 @@ function pretty_stats(
       push!(pt_formatters, ft_printf(col_formatters[name], col))
     else
       typ = Missings.nonmissingtype(eltype(df[!, name]))
-      styp = supertype(typ)
-      push!(pt_formatters, ft_printf(default_formatters[typ == Symbol ? typ : styp], col))
+      used_format_type = abstract_supertype(typ)
+      push!(pt_formatters, ft_printf(default_formatters[used_format_type], col))
     end
   end
 
