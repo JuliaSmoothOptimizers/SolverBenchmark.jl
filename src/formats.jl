@@ -6,7 +6,6 @@ const default_formatters =
 abstract_supertype(T::DataType) = T == Symbol ? T : supertype(T)
 abstract_supertype(::Type{<:AbstractFloat}) = AbstractFloat
 abstract_supertype(::Type{<:AbstractString}) = AbstractString
-# abstract_supertype(String15) = AbstractString but supertype(String15) = InlineString
 
 """
     pretty_stats(df; kwargs...)
