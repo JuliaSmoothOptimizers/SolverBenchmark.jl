@@ -147,9 +147,10 @@ function pretty_latex_stats(
       push!(pt_formatters, ft_printf(col_formatters[name], col))
     else
       # be careful because supertype(Symbol) = Any
-      push!(pt_formatters, ft_printf(default_formatters[typ == Symbol ? typ : styp], col))
+      used_format_type = abstract_supertype(typ)
+      push!(pt_formatters, ft_printf(default_formatters[used_format_type], col))
       # add LaTeX-specific formatters to make our table pretty
-      push!(pt_formatters, safe_latex_formatters[typ == Symbol ? typ : styp](col))
+      push!(pt_formatters, safe_latex_formatters[used_format_type](col))
     end
   end
 
