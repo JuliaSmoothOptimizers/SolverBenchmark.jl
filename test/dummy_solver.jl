@@ -64,8 +64,8 @@ function dummy_solver(
   end
 
   return GenericExecutionStats(
-    :unknown,
     nlp,
+    status = status,
     objective = fx,
     dual_feas = norm(dual),
     primal_feas = norm(cx),
