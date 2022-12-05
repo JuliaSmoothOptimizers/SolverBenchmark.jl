@@ -3,7 +3,7 @@ using Logging
 using NLPModels, ADNLPModels
 using SolverCore
 
-include("dummy_solver.jl")
+import SolverCore.dummy_solver
 
 mutable struct CallableSolver end
 
