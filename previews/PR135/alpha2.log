@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.8.1)  21 NOV 2022 13:57
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.8.1)  5 DEC 2022 13:28
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -96,17 +96,9 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <7> on input line 16.
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <5> on input line 16.
-
-Package longtable Warning: Column widths have changed
-(longtable)                in table 1 on input line 26.
-
 [1
 
-{/home/runner/work/SolverBenchmark.jl/SolverBenchmark.jl/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-
-Package longtable Warning: Table widths have changed. Rerun LaTeX.
-
-(./alpha2.aux) ) 
+{/home/runner/work/SolverBenchmark.jl/SolverBenchmark.jl/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] (./alpha2.aux) ) 
 Here is how much of TeX's memory you used:
  1196 strings out of 479983
  24142 string characters out of 5887787
@@ -116,7 +108,7 @@ Here is how much of TeX's memory you used:
  14 hyphenation exceptions out of 8191
  55i,7n,71p,215b,279s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </home/runner/work/SolverBenchmark.jl/SolverBenchmark.jl/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></home/runner/work/SolverBenchmark.jl/SolverBenchmark.jl/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></home/runner/work/SolverBenchmark.jl/SolverBenchmark.jl/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
-Output written on alpha2.pdf (1 page, 33202 bytes).
+Output written on alpha2.pdf (1 page, 33199 bytes).
 PDF statistics:
  23 PDF objects out of 1000 (max. 8388607)
  13 compressed objects within 1 object stream
