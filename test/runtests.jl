@@ -1,5 +1,5 @@
 # stdlib imports
-using Printf, Random, Test
+using LinearAlgebra, Printf, Random, Test
 
 # dependencies imports
 using DataFrames
