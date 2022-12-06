@@ -3,12 +3,12 @@ using Logging
 using NLPModels, ADNLPModels
 using SolverCore
 
-include("dummy_solver.jl")
+import SolverCore.dummy_solver
 
 mutable struct CallableSolver end
 
 function (solver::CallableSolver)(nlp::AbstractNLPModel; kwargs...)
-  return GenericExecutionStats(:unknown, nlp)
+  return GenericExecutionStats(nlp)
 end
 
 function test_bmark()
