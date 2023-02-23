@@ -88,6 +88,7 @@ function solve_problems(
 
   first_problem = true
   for (id, problem) in enumerate(problems)
+    isa(problem, JuMP.Model) && (problem = NLPModelsJuMP.MathOptNLPModel(problem))
     if reset_problem
       reset!(problem)
     end

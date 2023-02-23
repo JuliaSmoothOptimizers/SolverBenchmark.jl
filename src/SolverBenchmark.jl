@@ -9,6 +9,7 @@ using JLD2
 using PrettyTables
 
 using NLPModels
+using JuMP, NLPModelsJuMP
 using SolverCore
 
 # reexport PrettyTable table formats for convenience
