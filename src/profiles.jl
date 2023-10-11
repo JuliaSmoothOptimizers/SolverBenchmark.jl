@@ -1,5 +1,5 @@
 import BenchmarkProfiles: performance_profile
-using BenchmarkProfiles, Plots
+using BenchmarkProfiles, Plots, CSV
 
 export performance_profile, profile_solvers
 
@@ -136,4 +136,122 @@ function profile_solvers(
     p = plot(ps..., layout = (1, ncosts), size = (ncosts * width, height); kwargs...)
   end
   p
+end
+
+"""
+    get_profile_solvers_data(stats, costs; kwargs)
+
+Exports performance profiles plot data comparing `solvers` based on the data in `stats` in a .csv file.
+Data are padded with NaN to ensure .csv consistency.
+
+Inputs:
+- `stats::Dict{Symbol,DataFrame}`: a dictionary of `DataFrame`s containing the
+    benchmark results per solver (e.g., produced by `bmark_results_to_dataframes()`)
+- `costs::Vector{Function}`: a vector of functions specifying the measures to use in the profiles
+
+Keyword arguments:
+`kwargs` are passed to `BenchmarkProfiles.performance_profile_data()`.
+
+Output:
+x_mat, y_mat: vector #costs elements containing matrices of #problems x #solvers containing the x and y coordinate of the plots. 
+"""
+function get_profile_solvers_data(
+  stats::Dict{Symbol, DataFrame},
+  costs::Vector{<:Function},
+  kwargs...
+  )
+
+  solvers = collect(keys(stats))
+  dfs = (stats[solver] for solver in solvers)
+  Ps = [hcat([Float64.(cost(df)) for df in dfs]...) for cost in costs]
+ 
+  nprobs = size(stats[first(solvers)], 1)
+  nsolvers = length(solvers)
+  ncosts = length(costs)
+  npairs = div(nsolvers * (nsolvers - 1), 2)
+  x_data, y_data = performance_profile_data(Ps[1],kwargs...)
+  max_length = max([length(d) for d in x_data]...)
+  for i in eachindex(x_data)
+    append!(x_data[i],[NaN for i=1:nprobs-length(x_data[i])])
+    append!(y_data[i],[NaN for i=1:nprobs-length(y_data[i])])
+  end
+  x_mat = [hcat(x_data...)]
+  y_mat = [hcat(y_data...)]
+  for k in 2:ncosts
+    x_data, y_data = performance_profile_data(Ps[k],kwargs...)
+    max_length = max(max_length,max([length(d) for d in x_data]...))
+    for i in eachindex(x_data)
+      append!(x_data[i],[NaN for i=1:nprobs-length(x_data[i])])
+      append!(y_data[i],[NaN for i=1:nprobs-length(y_data[i])])
+    end
+    push!(x_mat, hcat(x_data...))
+    push!(y_mat, hcat(y_data...))
+  end
+  return x_mat, y_mat
+end
+
+"""
+    export_profile_solvers_data(stats, costs, costnames, filename; one_file=true, two_by_two=false, kwargs...)
+
+Exports performance profiles plot data comparing `solvers` based on the data in `stats` in a .csv file.
+Data are padded with NaN to ensure .csv consistency.
+
+Inputs:
+- `stats::Dict{Symbol,DataFrame}`: a dictionary of `DataFrame`s containing the
+    benchmark results per solver (e.g., produced by `bmark_results_to_dataframes()`)
+- `costs::Vector{Function}`: a vector of functions specifying the measures to use in the profiles
+- `costnames::Vector{String}`: names to be used as titles of the profiles.
+- `filename::String`: path to the export file. Do not add .csv extention to the file name.
+
+Keyword arguments:
+- one_file::Bool: export one file per cost
+Additional `kwargs` are passed to `BenchmarkProfiles.performance_profile_data()`.
+
+Output:
+File(s) containing profile data in .csv format.
+* If one_file=true, returns one file containing the data for all solvers and cost. 
+  Columns are cost1_solver1_x, cost1_solver1_y, cost1_solver2_x, ... cost2_solver1_x, cost2_solver1_y, ...
+* If one_file=false, returns as many files as the number of cost. 
+  The names of the files contain the name of the cost, and the columns are
+  solver1_x, solver1_y, solver2_x, ...
+"""
+function export_profile_solvers_data(
+  stats::Dict{Symbol, DataFrame},
+  costs::Vector{<:Function},
+  costnames::Vector{String},
+  filename::String;
+  one_file=true,
+  two_by_two=false,
+  kwargs...
+  )
+  solvers = collect(keys(stats))
+  nprobs = size(stats[first(solvers)], 1)
+  nsolvers = length(solvers)
+  ncosts = length(costs)
+  solver_names = String.(keys(stats))
+  
+  x_mat, y_mat = get_profile_solvers_data(stats,costs)
+  if one_file
+    header = vcat([vcat([[cname*"_"*sname*"_x",cname*"_"*sname*"_y"] for sname in solver_names]...) for cname in costnames]...)
+    x_mat = hcat(x_mat...)
+    y_mat = hcat(y_mat...)
+    ncol = size(x_mat)[2]
+    nrow = size(x_mat)[1]
+    data = Matrix{Float64}(undef,nrow,ncol*2)
+    for i =0:ncol-1
+      data[:,2*i+1] .= x_mat[:,i+1]
+      data[:,2*i+2] .= y_mat[:,i+1]
+    end
+    CSV.write(filename*".csv",Tables.table(data),header=header)
+  else
+    header = vcat([[sname*"_x",sname*"_y"] for sname in solver_names]...)
+    data = Matrix{Float64}(undef,nprobs,nsolvers*2)
+    for k in eachindex(costs)
+      for i =0:nsolvers-1
+        data[:,2*i+1] .= x_mat[k][:,i+1]
+        data[:,2*i+2] .= y_mat[k][:,i+1]
+      end
+      CSV.write(filename*"$(costnames[k]).csv",Tables.table(data),header=header)
+    end 
+  end
 end
