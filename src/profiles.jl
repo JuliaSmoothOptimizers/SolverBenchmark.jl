@@ -158,31 +158,30 @@ x_mat, y_mat: vector #costs elements containing matrices of #problems x #solvers
 function get_profile_solvers_data(
   stats::Dict{Symbol, DataFrame},
   costs::Vector{<:Function},
-  kwargs...
-  )
-
+  kwargs...,
+)
   solvers = collect(keys(stats))
   dfs = (stats[solver] for solver in solvers)
   Ps = [hcat([Float64.(cost(df)) for df in dfs]...) for cost in costs]
- 
+
   nprobs = size(stats[first(solvers)], 1)
   nsolvers = length(solvers)
   ncosts = length(costs)
   npairs = div(nsolvers * (nsolvers - 1), 2)
-  x_data, y_data = performance_profile_data(Ps[1],kwargs...)
+  x_data, y_data = performance_profile_data(Ps[1], kwargs...)
   max_length = max([length(d) for d in x_data]...)
   for i in eachindex(x_data)
-    append!(x_data[i],[NaN for i=1:nprobs-length(x_data[i])])
-    append!(y_data[i],[NaN for i=1:nprobs-length(y_data[i])])
+    append!(x_data[i], [NaN for i = 1:(nprobs - length(x_data[i]))])
+    append!(y_data[i], [NaN for i = 1:(nprobs - length(y_data[i]))])
   end
   x_mat = [hcat(x_data...)]
   y_mat = [hcat(y_data...)]
-  for k in 2:ncosts
-    x_data, y_data = performance_profile_data(Ps[k],kwargs...)
-    max_length = max(max_length,max([length(d) for d in x_data]...))
+  for k = 2:ncosts
+    x_data, y_data = performance_profile_data(Ps[k], kwargs...)
+    max_length = max(max_length, max([length(d) for d in x_data]...))
     for i in eachindex(x_data)
-      append!(x_data[i],[NaN for i=1:nprobs-length(x_data[i])])
-      append!(y_data[i],[NaN for i=1:nprobs-length(y_data[i])])
+      append!(x_data[i], [NaN for i = 1:(nprobs - length(x_data[i]))])
+      append!(y_data[i], [NaN for i = 1:(nprobs - length(y_data[i]))])
     end
     push!(x_mat, hcat(x_data...))
     push!(y_mat, hcat(y_data...))
@@ -220,38 +219,44 @@ function export_profile_solvers_data(
   costs::Vector{<:Function},
   costnames::Vector{String},
   filename::String;
-  one_file=true,
-  two_by_two=false,
-  kwargs...
-  )
+  one_file = true,
+  two_by_two = false,
+  kwargs...,
+)
   solvers = collect(keys(stats))
   nprobs = size(stats[first(solvers)], 1)
   nsolvers = length(solvers)
   ncosts = length(costs)
   solver_names = String.(keys(stats))
-  
-  x_mat, y_mat = get_profile_solvers_data(stats,costs)
+
+  x_mat, y_mat = get_profile_solvers_data(stats, costs)
   if one_file
-    header = vcat([vcat([[cname*"_"*sname*"_x",cname*"_"*sname*"_y"] for sname in solver_names]...) for cname in costnames]...)
+    header = vcat(
+      [
+        vcat(
+          [[cname * "_" * sname * "_x", cname * "_" * sname * "_y"] for sname in solver_names]...,
+        ) for cname in costnames
+      ]...,
+    )
     x_mat = hcat(x_mat...)
     y_mat = hcat(y_mat...)
     ncol = size(x_mat)[2]
     nrow = size(x_mat)[1]
-    data = Matrix{Float64}(undef,nrow,ncol*2)
-    for i =0:ncol-1
-      data[:,2*i+1] .= x_mat[:,i+1]
-      data[:,2*i+2] .= y_mat[:,i+1]
+    data = Matrix{Float64}(undef, nrow, ncol * 2)
+    for i = 0:(ncol - 1)
+      data[:, 2 * i + 1] .= x_mat[:, i + 1]
+      data[:, 2 * i + 2] .= y_mat[:, i + 1]
     end
-    CSV.write(filename*".csv",Tables.table(data),header=header)
+    CSV.write(filename * ".csv", Tables.table(data), header = header)
   else
-    header = vcat([[sname*"_x",sname*"_y"] for sname in solver_names]...)
-    data = Matrix{Float64}(undef,nprobs,nsolvers*2)
+    header = vcat([[sname * "_x", sname * "_y"] for sname in solver_names]...)
+    data = Matrix{Float64}(undef, nprobs, nsolvers * 2)
     for k in eachindex(costs)
-      for i =0:nsolvers-1
-        data[:,2*i+1] .= x_mat[k][:,i+1]
-        data[:,2*i+2] .= y_mat[k][:,i+1]
+      for i = 0:(nsolvers - 1)
+        data[:, 2 * i + 1] .= x_mat[k][:, i + 1]
+        data[:, 2 * i + 2] .= y_mat[k][:, i + 1]
       end
-      CSV.write(filename*"$(costnames[k]).csv",Tables.table(data),header=header)
-    end 
+      CSV.write(filename * "$(costnames[k]).csv", Tables.table(data), header = header)
+    end
   end
 end
