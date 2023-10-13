@@ -1,7 +1,7 @@
 import BenchmarkProfiles: performance_profile
 using BenchmarkProfiles, Plots, CSV
 
-export performance_profile, profile_solvers
+export performance_profile, profile_solvers, export_profile_solvers_data
 
 """
     performance_profile(stats, cost, args...; b = PlotsBackend(), kwargs...)
@@ -153,7 +153,7 @@ Keyword arguments:
 `kwargs` are passed to `BenchmarkProfiles.performance_profile_data()`.
 
 Output:
-x_mat, y_mat: vector #costs elements containing matrices of #problems x #solvers containing the x and y coordinate of the plots. 
+x_mat, y_mat: vector #costs elements containing matrices containing the x and y coordinate of the plots. Matrices are padded with NaN if necessary (plots do not have the same number of points).
 """
 function get_profile_solvers_data(
   stats::Dict{Symbol, DataFrame},
@@ -170,7 +170,7 @@ function get_profile_solvers_data(
   ncosts = length(costs)
   npairs = div(nsolvers * (nsolvers - 1), 2)
   x_data, y_data = performance_profile_data(Ps[1],kwargs...)
-  max_length = max([length(d) for d in x_data]...)
+  nmaxrow = maximum(length.(x_data))
   for i in eachindex(x_data)
     append!(x_data[i],[NaN for i=1:nprobs-length(x_data[i])])
     append!(y_data[i],[NaN for i=1:nprobs-length(y_data[i])])
@@ -179,7 +179,7 @@ function get_profile_solvers_data(
   y_mat = [hcat(y_data...)]
   for k in 2:ncosts
     x_data, y_data = performance_profile_data(Ps[k],kwargs...)
-    max_length = max(max_length,max([length(d) for d in x_data]...))
+    nmaxrow = max(nmaxrow,maximum(length.(x_data)))
     for i in eachindex(x_data)
       append!(x_data[i],[NaN for i=1:nprobs-length(x_data[i])])
       append!(y_data[i],[NaN for i=1:nprobs-length(y_data[i])])
@@ -187,7 +187,7 @@ function get_profile_solvers_data(
     push!(x_mat, hcat(x_data...))
     push!(y_mat, hcat(y_data...))
   end
-  return x_mat, y_mat
+  return [m[1:nmaxrow,:] for m in x_mat], [m[1:nmaxrow,:] for m in y_mat]
 end
 
 """
@@ -221,7 +221,6 @@ function export_profile_solvers_data(
   costnames::Vector{String},
   filename::String;
   one_file=true,
-  two_by_two=false,
   kwargs...
   )
   solvers = collect(keys(stats))
@@ -251,7 +250,7 @@ function export_profile_solvers_data(
         data[:,2*i+1] .= x_mat[k][:,i+1]
         data[:,2*i+2] .= y_mat[k][:,i+1]
       end
-      CSV.write(filename*"$(costnames[k]).csv",Tables.table(data),header=header)
+      CSV.write(filename*"_$(costnames[k]).csv",Tables.table(data),header=header)
     end 
   end
 end

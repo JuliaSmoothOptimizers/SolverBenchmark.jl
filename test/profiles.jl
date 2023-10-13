@@ -18,6 +18,19 @@ function test_profiles()
       b = SolverBenchmark.BenchmarkProfiles.PGFPlotsXBackend(),
     )
   end
+  @info "Exporting perfomance profiles"
+  filename = "profiles"
+  @show stats
+  export_profile_solvers_data(stats,[df -> df.t, df -> df.iter],["Time", "Iterations"],"profiles")
+  @test isfile(filename * ".csv")
+  rm(filename * ".csv")
+
+  export_profile_solvers_data(stats,[df -> df.t, df -> df.iter],["Time", "Iterations"],"profiles",one_file=false)
+  @test isfile(filename * "_Time.csv")
+  @test isfile(filename * "_Iterations.csv")
+  rm(filename * "_Time.csv")
+  rm(filename * "_Iterations.csv")
+
   nothing
 end
 
