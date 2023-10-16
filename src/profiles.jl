@@ -86,7 +86,7 @@ function profile_solvers(
       string.(solvers),
       palette = colors,
       title = costnames[1],
-      legend = :bottomright,
+      legend = :bottomright
     ),
   ]
   nsolvers > 2 && xlabel!(ps[1], "")
@@ -157,7 +157,7 @@ x_mat, y_mat: vector #costs elements containing matrices containing the x and y 
 """
 function get_profile_solvers_data(
   stats::Dict{Symbol, DataFrame},
-  costs::Vector{<:Function},
+  costs::Vector{<:Function};
   kwargs...
   )
 
@@ -169,7 +169,7 @@ function get_profile_solvers_data(
   nsolvers = length(solvers)
   ncosts = length(costs)
   npairs = div(nsolvers * (nsolvers - 1), 2)
-  x_data, y_data = performance_profile_data(Ps[1],kwargs...)
+  x_data, y_data = performance_profile_data(Ps[1]; kwargs...)
   nmaxrow = maximum(length.(x_data))
   for i in eachindex(x_data)
     append!(x_data[i],[NaN for i=1:nprobs-length(x_data[i])])
@@ -178,7 +178,7 @@ function get_profile_solvers_data(
   x_mat = [hcat(x_data...)]
   y_mat = [hcat(y_data...)]
   for k in 2:ncosts
-    x_data, y_data = performance_profile_data(Ps[k],kwargs...)
+    x_data, y_data = performance_profile_data(Ps[k];kwargs...)
     nmaxrow = max(nmaxrow,maximum(length.(x_data)))
     for i in eachindex(x_data)
       append!(x_data[i],[NaN for i=1:nprobs-length(x_data[i])])
@@ -204,7 +204,9 @@ Inputs:
 - `filename::String`: path to the export file. Do not add .csv extention to the file name.
 
 Keyword arguments:
-- one_file::Bool: export one file per cost
+- `one_file::Bool`: export one file per cost if false, otherwise profiles for all costs are exported in a single file
+- `header::Vector{Vector{String}}`: Contains .csv file(s) column names for each files. Example for two costs exported in two files and two solvers "alpha" and "beta": `[ ["alpha_x","alpha_y","beta_x","beta_y"] for _=1:2]`. Note that `header` value does not change columns order in .csv exported files (see Output). 
+
 Additional `kwargs` are passed to `BenchmarkProfiles.performance_profile_data()`.
 
 Output:
@@ -220,6 +222,7 @@ function export_profile_solvers_data(
   costs::Vector{<:Function},
   costnames::Vector{String},
   filename::String;
+  header = Vector{Vector{String}}[];
   one_file=true,
   kwargs...
   )
@@ -228,10 +231,15 @@ function export_profile_solvers_data(
   nsolvers = length(solvers)
   ncosts = length(costs)
   solver_names = String.(keys(stats))
+  csv_header = Vector{String}[]
   
-  x_mat, y_mat = get_profile_solvers_data(stats,costs)
+  x_mat, y_mat = get_profile_solvers_data(stats,costs;kwargs)
   if one_file
-    header = vcat([vcat([[cname*"_"*sname*"_x",cname*"_"*sname*"_y"] for sname in solver_names]...) for cname in costnames]...)
+    if isempty(header) 
+      csv_header = vcat([vcat([[cname*"_"*sname*"_x",cname*"_"*sname*"_y"] for sname in solver_names]...) for cname in costnames]...)
+    else 
+      csv_header = header[1]
+    end
     x_mat = hcat(x_mat...)
     y_mat = hcat(y_mat...)
     ncol = size(x_mat)[2]
@@ -243,9 +251,12 @@ function export_profile_solvers_data(
     end
     CSV.write(filename*".csv",Tables.table(data),header=header)
   else
-    header = vcat([[sname*"_x",sname*"_y"] for sname in solver_names]...)
+    csv_header = vcat([[sname*"_x",sname*"_y"] for sname in solver_names]...)
     data = Matrix{Float64}(undef,nprobs,nsolvers*2)
     for k in eachindex(costs)
+      if !isempty(header)
+        csv_header = header[k]
+      end
       for i =0:nsolvers-1
         data[:,2*i+1] .= x_mat[k][:,i+1]
         data[:,2*i+2] .= y_mat[k][:,i+1]
