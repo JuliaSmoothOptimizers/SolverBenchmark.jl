@@ -222,7 +222,7 @@ function export_profile_solvers_data(
   costs::Vector{<:Function},
   costnames::Vector{String},
   filename::String;
-  header = Vector{Vector{String}}[];
+  header::Vector{Vector{String}}=[],
   one_file=true,
   kwargs...
   )
@@ -233,7 +233,7 @@ function export_profile_solvers_data(
   solver_names = String.(keys(stats))
   csv_header = Vector{String}[]
   
-  x_mat, y_mat = get_profile_solvers_data(stats,costs;kwargs)
+  x_mat, y_mat = get_profile_solvers_data(stats,costs;kwargs...)
   if one_file
     if isempty(header) 
       csv_header = vcat([vcat([[cname*"_"*sname*"_x",cname*"_"*sname*"_y"] for sname in solver_names]...) for cname in costnames]...)
