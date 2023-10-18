@@ -222,7 +222,7 @@ function export_profile_solvers_data(
   costs::Vector{<:Function},
   costnames::Vector{String},
   filename::String;
-  header::Vector{Vector{String}}=[],
+  header=[],
   one_file=true,
   kwargs...
   )
@@ -249,7 +249,7 @@ function export_profile_solvers_data(
       data[:,2*i+1] .= x_mat[:,i+1]
       data[:,2*i+2] .= y_mat[:,i+1]
     end
-    CSV.write(filename*".csv",Tables.table(data),header=header)
+    CSV.write(filename*".csv",Tables.table(data),header=csv_header)
   else
     csv_header = vcat([[sname*"_x",sname*"_y"] for sname in solver_names]...)
     data = Matrix{Float64}(undef,nprobs,nsolvers*2)
@@ -261,7 +261,7 @@ function export_profile_solvers_data(
         data[:,2*i+1] .= x_mat[k][:,i+1]
         data[:,2*i+2] .= y_mat[k][:,i+1]
       end
-      CSV.write(filename*"_$(costnames[k]).csv",Tables.table(data),header=header)
+      CSV.write(filename*"_$(costnames[k]).csv",Tables.table(data),header=csv_header)
     end 
   end
 end
