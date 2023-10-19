@@ -220,16 +220,15 @@ File(s) containing profile data in .csv format.
 function export_profile_solvers_data(
   stats::Dict{Symbol, DataFrame},
   costs::Vector{<:Function},
-  costnames::Vector{String},
+  costnames::S,
   filename::String;
-  header=[],
+  header = [],
   one_file=true,
   kwargs...
-  )
+  ) where {S <: Vector{String}}
   solvers = collect(keys(stats))
   nprobs = size(stats[first(solvers)], 1)
   nsolvers = length(solvers)
-  ncosts = length(costs)
   solver_names = String.(keys(stats))
   csv_header = Vector{String}[]
   
@@ -238,7 +237,7 @@ function export_profile_solvers_data(
     if isempty(header) 
       csv_header = vcat([vcat([[cname*"_"*sname*"_x",cname*"_"*sname*"_y"] for sname in solver_names]...) for cname in costnames]...)
     else 
-      csv_header = header[1]
+      csv_header = vcat(header...)
     end
     x_mat = hcat(x_mat...)
     y_mat = hcat(y_mat...)
