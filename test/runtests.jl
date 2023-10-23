@@ -13,6 +13,6 @@ using SolverBenchmark
 
 include("data.jl")
 include("tables.jl")
-include("profiles.jl")
 include("pkgbmark.jl")
 include("test_bmark.jl")
+include("profiles.jl")
