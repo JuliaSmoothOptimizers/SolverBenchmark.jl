@@ -8,7 +8,7 @@ PyPlot = "d330b81b-6aea-500a-939a-2ce795aea3ee"
 
 [compat]
 DataFrames = "1"
-Documenter = "~0.24"
+Documenter = "1"
 LaTeXTabulars = "^0.1.0"
 Plots = "1"
 PrettyTables = "1.0"
