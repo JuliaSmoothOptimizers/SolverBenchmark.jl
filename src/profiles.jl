@@ -139,7 +139,7 @@ function profile_solvers(
 end
 
 """
-    get_profile_solvers_data(stats, costs; kwargs)
+    get_profile_solvers_data(stats, costs; kwargs...)
 
 Exports performance profiles plot data comparing `solvers` based on the data in `stats` in a .csv file.
 Data are padded with NaN to ensure .csv consistency.
