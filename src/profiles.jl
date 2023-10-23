@@ -201,7 +201,7 @@ Inputs:
     benchmark results per solver (e.g., produced by `bmark_results_to_dataframes()`)
 - `costs::Vector{Function}`: a vector of functions specifying the measures to use in the profiles
 - `costnames::Vector{String}`: names to be used as titles of the profiles.
-- `filename::String`: path to the export file. Do not add .csv extention to the file name.
+- `filename::String`: path to the export file without the .csv extention.
 
 Keyword arguments:
 - `one_file::Bool`: export one file per cost if false, otherwise profiles for all costs are exported in a single file
