@@ -152,7 +152,8 @@ Inputs:
 Keyword arguments are passed to `BenchmarkProfiles.performance_profile_data()`.
 
 Output:
-x_mat, y_mat: vector #costs elements containing matrices containing the x and y coordinate of the plots. Matrices are padded with NaN if necessary (plots do not have the same number of points).
+x_mat, y_mat: vectors #costs elements containing matrices containing the x and y coordinate of the plots.
+Matrices are padded with NaN if necessary, e.g., plots do not have the same number of points.
 """
 function get_profile_solvers_data(
   stats::Dict{Symbol, DataFrame},
