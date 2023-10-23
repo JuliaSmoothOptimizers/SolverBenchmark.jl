@@ -142,7 +142,6 @@ end
     get_profile_solvers_data(stats, costs; kwargs...)
 
 Exports performance profiles plot data comparing `solvers` based on the data in `stats` in a .csv file.
-Data are padded with NaN to ensure .csv consistency.
 
 Inputs:
 - `stats::Dict{Symbol,DataFrame}`: a dictionary of `DataFrame`s containing the
@@ -152,8 +151,8 @@ Inputs:
 Keyword arguments are passed to `BenchmarkProfiles.performance_profile_data()`.
 
 Output:
-x_mat, y_mat: vectors #costs elements containing matrices containing the x and y coordinate of the plots.
-Matrices are padded with NaN if necessary, e.g., plots do not have the same number of points.
+x_mat, y_mat: vectors which elements are matrices containing the x and y coordinate of the plots. Each matrix correspond to a cost, matrices columns correspond to solvers.
+Matrices are padded with NaN if necessary (happens if plots do not have the same number of points).
 """
 function get_profile_solvers_data(
   stats::Dict{Symbol, DataFrame},
