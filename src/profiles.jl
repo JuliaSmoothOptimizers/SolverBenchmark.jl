@@ -86,7 +86,7 @@ function profile_solvers(
       string.(solvers),
       palette = colors,
       title = costnames[1],
-      legend = :bottomright
+      legend = :bottomright,
     ),
   ]
   nsolvers > 2 && xlabel!(ps[1], "")
