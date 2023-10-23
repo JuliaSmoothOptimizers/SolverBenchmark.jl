@@ -149,8 +149,7 @@ Inputs:
     benchmark results per solver (e.g., produced by `bmark_results_to_dataframes()`)
 - `costs::Vector{Function}`: a vector of functions specifying the measures to use in the profiles
 
-Keyword arguments:
-`kwargs` are passed to `BenchmarkProfiles.performance_profile_data()`.
+Keyword arguments are passed to `BenchmarkProfiles.performance_profile_data()`.
 
 Output:
 x_mat, y_mat: vector #costs elements containing matrices containing the x and y coordinate of the plots. Matrices are padded with NaN if necessary (plots do not have the same number of points).
