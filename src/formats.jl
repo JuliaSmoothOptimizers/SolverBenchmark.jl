@@ -81,14 +81,7 @@ function pretty_stats(
   :nosubheader ∈ keys(kwargs) && pop!(kwargs, :nosubheader)
 
   # pretty_table expects a tuple of formatters
-  pretty_table(
-    io,
-    df,
-    header = header,
-    formatters = tuple(pt_formatters...),
-    nosubheader = true;
-    kwargs...,
-  )
+  pretty_table(io, df, header = header, formatters = tuple(pt_formatters...); kwargs...)
 end
 
 pretty_stats(df::DataFrame; kwargs...) = pretty_stats(stdout, df; kwargs...)

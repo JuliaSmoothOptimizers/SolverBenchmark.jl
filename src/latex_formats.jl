@@ -1,5 +1,7 @@
 export pretty_latex_stats
 
+StringOrLaTeXString = Union{String, LaTeXString}
+
 """
     safe_latex_Signed_col(col::Integer)
 
@@ -18,7 +20,7 @@ end
 Format the string representation of signed integers for output in a LaTeX table.
 Encloses `s` in `\\(` and `\\)`.
 """
-safe_latex_Signed(s::AbstractString) = "\\(" * s * "\\)"
+safe_latex_Signed(s::AbstractString) = LaTeXString("\\(" * string(s) * "\\)")
 
 """
     safe_latex_AbstractString_col(col:::Integer)
@@ -39,7 +41,13 @@ end
 Format a string for output in a LaTeX table.
 Escapes underscores.
 """
-safe_latex_AbstractString(s::AbstractString) = replace(s, "_" => "\\_")
+function safe_latex_AbstractString(s::AbstractString)
+  if occursin("_", s)
+    LaTeXString(replace(s, "_" => "\\_"))
+  else
+    LaTeXString(s)
+  end
+end
 
 """
     safe_latex_Symbol_col(col::Integer)
@@ -84,14 +92,14 @@ are wrapped in math delimiters.
 Otherwise, the entire float is wrapped in math delimiters.
 """
 function safe_latex_AbstractFloat(s::AbstractString)
-  strip(s) == "Inf" && return "\\(\\infty\\)"
-  strip(s) == "-Inf" && return "\\(-\\infty\\)"
+  strip(s) == "Inf" && return LaTeXString("\\(\\infty\\)")
+  strip(s) == "-Inf" && return LaTeXString("\\(-\\infty\\)")
   strip(s) == "NaN" && return s
   if occursin('e', s)
     mantissa, exponent = split(s, 'e')
-    return "\\(" * mantissa * "\\)e\\(" * exponent * "\\)"
+    return LaTeXString("\\(" * string(mantissa) * "\\)e\\(" * string(exponent) * "\\)")
   else
-    return "\\(" * s * "\\)"
+    return LaTeXString("\\(" * string(s) * "\\)")
   end
 end
 
@@ -155,11 +163,11 @@ function pretty_latex_stats(
   end
 
   # set header
-  header = String[]
+  header = StringOrLaTeXString[]
   for name ∈ df_names
     push!(
       header,
-      name ∈ keys(hdr_override) ? hdr_override[name] : (String(name) |> safe_latex_AbstractString),
+      (name ∈ keys(hdr_override) ? hdr_override[name] : String(name)) |> safe_latex_AbstractString,
     )
   end
 
@@ -190,7 +198,7 @@ function pretty_latex_stats(
     backend = Val(:latex),
     table_type = :longtable,
     tf = tf,
-    nosubheader = true,
+    vlines = :none,
     longtable_footer = "{\\bfseries Continued on next page}",
     formatters = tuple(pt_formatters...);
     kwargs...,

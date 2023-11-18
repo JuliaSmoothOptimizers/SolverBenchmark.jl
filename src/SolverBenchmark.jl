@@ -6,6 +6,7 @@ using Printf
 using ColorSchemes
 using DataFrames
 using JLD2
+using LaTeXStrings
 using PrettyTables
 
 using NLPModels

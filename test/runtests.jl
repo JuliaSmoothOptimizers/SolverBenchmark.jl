@@ -1,11 +1,16 @@
 # stdlib imports
-using LinearAlgebra, Printf, Random, Test
+using LinearAlgebra
+using Printf
+using Random
+using Test
 
 # dependencies imports
 using DataFrames
+using LaTeXStrings
 
 # test dependencies
-using PGFPlotsX, UnicodePlots
+using PGFPlotsX
+using UnicodePlots
 using Plots
 
 # this package
