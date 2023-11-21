@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Tutorial · SolverBenchmark.jl</title><meta name="title" content="Tutorial · SolverBenchmark.jl"/><meta property="og:title" content="Tutorial · SolverBenchmark.jl"/><meta property="twitter:title" content="Tutorial · SolverBenchmark.jl"/><meta name="description" content="Documentation for SolverBenchmark.jl."/><meta property="og:description" content="Documentation for SolverBenchmark.jl."/><meta property="twitter:description" content="Documentation for SolverBenchmark.jl."/><script data-outdated-warner src="../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../search_index.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script><link href="../assets/style.css" rel="stylesheet" type="text/css"/></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../"><img src="../assets/logo.png" alt="SolverBenchmark.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../">SolverBenchmark.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../">Home</a></li><li class="is-active"><a class="tocitem" href>Tutorial</a><ul class="internal"><li><a class="tocitem" href="#Tables"><span>Tables</span></a></li><li><a class="tocitem" href="#Profiles"><span>Profiles</span></a></li></ul></li><li><a class="tocitem" href="../reference/">Reference</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Tutorial</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Tutorial</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/JuliaSmoothOptimizers/SolverBenchmark.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-navbar-link" href="https://github.com/JuliaSmoothOptimizers/SolverBenchmark.jl/blob/main/docs/src/tutorial.md" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Tutorial"><a class="docs-heading-anchor" href="#Tutorial">Tutorial</a><a id="Tutorial-1"></a><a class="docs-heading-anchor-permalink" href="#Tutorial" title="Permalink"></a></h1><p>In this tutorial we illustrate the main uses of <code>SolverBenchmark</code>.</p><p>First, let&#39;s create fake data. It is imperative that the data for each solver be stored in <code>DataFrame</code>s, and the collection of different solver must be stored in a dictionary of <code>Symbol</code> to <code>DataFrame</code>.</p><p>In our examples we&#39;ll use the following data.</p><pre><code class="language-julia hljs">using DataFrames, Printf, Random
+
+Random.seed!(0)
+
+n = 10
+names = [:alpha, :beta, :gamma]
+stats = Dict(name =&gt; DataFrame(:id =&gt; 1:n,
+         :name =&gt; [@sprintf(&quot;prob%03d&quot;, i) for i = 1:n],
+         :status =&gt; map(x -&gt; x &lt; 0.75 ? :first_order : :failure, rand(n)),
+         :f =&gt; randn(n),
+         :t =&gt; 1e-3 .+ rand(n) * 1000,
+         :iter =&gt; rand(10:10:100, n),
+         :irrelevant =&gt; randn(n)) for name in names)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">Dict{Symbol, DataFrames.DataFrame} with 3 entries:
+  :alpha =&gt; <span class="sgr1">10×7 DataFrame</span>…
+  :beta  =&gt; <span class="sgr1">10×7 DataFrame</span>…
+  :gamma =&gt; <span class="sgr1">10×7 DataFrame</span>…</code></pre><p>The data consists of a (fake) run of three solvers <code>alpha</code>, <code>beta</code> and <code>gamma</code>. Each solver has a column <code>id</code>, which is necessary for joining the solvers (names can be repeated), and columns <code>name</code>, <code>status</code>, <code>f</code>, <code>t</code> and <code>iter</code> corresponding to problem results. There is also a column <code>irrelevant</code> with extra information that will not be used to produce our benchmarks.</p><p>Here are the statistics of solver <code>alpha</code>:</p><pre><code class="language-julia hljs">stats[:alpha]</code></pre><div><div style = "float: left;"><span>10×7 DataFrame</span></div><div style = "clear: both;"></div></div><div class = "data-frame" style = "overflow-x: scroll;"><table class = "data-frame" style = "margin-bottom: 6px;"><thead><tr class = "header"><th class = "rowNumber" style = "font-weight: bold; text-align: right;">Row</th><th style = "text-align: left;">id</th><th style = "text-align: left;">name</th><th style = "text-align: left;">status</th><th style = "text-align: left;">f</th><th style = "text-align: left;">t</th><th style = "text-align: left;">iter</th><th style = "text-align: left;">irrelevant</th></tr><tr class = "subheader headerLastRow"><th class = "rowNumber" style = "font-weight: bold; text-align: right;"></th><th title = "Int64" style = "text-align: left;">Int64</th><th title = "String" style = "text-align: left;">String</th><th title = "Symbol" style = "text-align: left;">Symbol</th><th title = "Float64" style = "text-align: left;">Float64</th><th title = "Float64" style = "text-align: left;">Float64</th><th title = "Int64" style = "text-align: left;">Int64</th><th title = "Float64" style = "text-align: left;">Float64</th></tr></thead><tbody><tr><td class = "rowNumber" style = "font-weight: bold; text-align: right;">1</td><td style = "text-align: right;">1</td><td style = "text-align: left;">prob001</td><td style = "text-align: left;">first_order</td><td style = "text-align: right;">-0.0242466</td><td style = "text-align: right;">677.623</td><td style = "text-align: right;">60</td><td style = "text-align: right;">-1.15534</td></tr><tr><td class = "rowNumber" style = "font-weight: bold; text-align: right;">2</td><td style = "text-align: right;">2</td><td style = "text-align: left;">prob002</td><td style = "text-align: left;">first_order</td><td style = "text-align: right;">-0.384201</td><td style = "text-align: right;">645.643</td><td style = "text-align: right;">90</td><td style = "text-align: right;">-1.35454</td></tr><tr><td class = "rowNumber" style = "font-weight: bold; text-align: right;">3</td><td style = "text-align: right;">3</td><td style = "text-align: left;">prob003</td><td style = "text-align: left;">failure</td><td style = "text-align: right;">0.578679</td><td style = "text-align: right;">634.037</td><td style = "text-align: right;">50</td><td style = "text-align: right;">-0.117157</td></tr><tr><td class = "rowNumber" style = "font-weight: bold; text-align: right;">4</td><td style = "text-align: right;">4</td><td style = "text-align: left;">prob004</td><td style = "text-align: left;">failure</td><td style = "text-align: right;">1.46765</td><td style = "text-align: right;">559.585</td><td style = "text-align: right;">70</td><td style = "text-align: right;">1.15241</td></tr><tr><td class = "rowNumber" style = "font-weight: bold; text-align: right;">5</td><td style = "text-align: right;">5</td><td style = "text-align: left;">prob005</td><td style = "text-align: left;">first_order</td><td style = "text-align: right;">-1.76643</td><td style = "text-align: right;">567.557</td><td style = "text-align: right;">10</td><td style = "text-align: right;">-0.0381476</td></tr><tr><td class = "rowNumber" style = "font-weight: bold; text-align: right;">6</td><td style = "text-align: right;">6</td><td style = "text-align: left;">prob006</td><td style = "text-align: left;">first_order</td><td style = "text-align: right;">0.608755</td><td style = "text-align: right;">343.518</td><td style = "text-align: right;">20</td><td style = "text-align: right;">-1.00298</td></tr><tr><td class = "rowNumber" style = "font-weight: bold; text-align: right;">7</td><td style = "text-align: right;">7</td><td style = "text-align: left;">prob007</td><td style = "text-align: left;">first_order</td><td style = "text-align: right;">-0.140199</td><td style = "text-align: right;">426.141</td><td style = "text-align: right;">10</td><td style = "text-align: right;">-0.79729</td></tr><tr><td class = "rowNumber" style = "font-weight: bold; text-align: right;">8</td><td style = "text-align: right;">8</td><td style = "text-align: left;">prob008</td><td style = "text-align: left;">failure</td><td style = "text-align: right;">0.835692</td><td style = "text-align: right;">621.998</td><td style = "text-align: right;">20</td><td style = "text-align: right;">0.744854</td></tr><tr><td class = "rowNumber" style = "font-weight: bold; text-align: right;">9</td><td style = "text-align: right;">9</td><td style = "text-align: left;">prob009</td><td style = "text-align: left;">first_order</td><td style = "text-align: right;">-0.929152</td><td style = "text-align: right;">148.249</td><td style = "text-align: right;">40</td><td style = "text-align: right;">0.795775</td></tr><tr><td class = "rowNumber" style = "font-weight: bold; text-align: right;">10</td><td style = "text-align: right;">10</td><td style = "text-align: left;">prob010</td><td style = "text-align: left;">first_order</td><td style = "text-align: right;">0.0788921</td><td style = "text-align: right;">230.955</td><td style = "text-align: right;">30</td><td style = "text-align: right;">-0.839227</td></tr></tbody></table></div><h2 id="Tables"><a class="docs-heading-anchor" href="#Tables">Tables</a><a id="Tables-1"></a><a class="docs-heading-anchor-permalink" href="#Tables" title="Permalink"></a></h2><p>The first thing we may want to do is produce a table for each solver. Notice that the solver result is already a DataFrame, so there are a few options available in other packages, as well as simply printing the DataFrame. Our concern here is two-fold: producing publication-ready LaTeX tables, and web-ready markdown tables.</p><p>The simplest use is <code>pretty_stats(io, dataframe)</code>. By default, <code>io</code> is <code>stdout</code>:</p><pre><code class="language-julia hljs">using SolverBenchmark
+
+pretty_stats(stats[:alpha])</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">┌────────┬─────────┬─────────────┬───────────┬───────────┬────────┬────────────┐
+│<span class="sgr1">     id │    name │      status │         f │         t │   iter │ irrelevant │
+├────────┼─────────┼─────────────┼───────────┼───────────┼────────┼────────────┤
+│      1 │ prob001 │ first_order │ -2.42e-02 │  6.78e+02 │     60 │  -1.16e+00 │
+│      2 │ prob002 │ first_order │ -3.84e-01 │  6.46e+02 │     90 │  -1.35e+00 │
+│      3 │ prob003 │     failure │  5.79e-01 │  6.34e+02 │     50 │  -1.17e-01 │
+│      4 │ prob004 │     failure │  1.47e+00 │  5.60e+02 │     70 │   1.15e+00 │
+│      5 │ prob005 │ first_order │ -1.77e+00 │  5.68e+02 │     10 │  -3.81e-02 │
+│      6 │ prob006 │ first_order │  6.09e-01 │  3.44e+02 │     20 │  -1.00e+00 │
+│      7 │ prob007 │ first_order │ -1.40e-01 │  4.26e+02 │     10 │  -7.97e-01 │
+│      8 │ prob008 │     failure │  8.36e-01 │  6.22e+02 │     20 │   7.45e-01 │
+│      9 │ prob009 │ first_order │ -9.29e-01 │  1.48e+02 │     40 │   7.96e-01 │
+│     10 │ prob010 │ first_order │  7.89e-02 │  2.31e+02 │     30 │  -8.39e-01 │
+└────────┴─────────┴─────────────┴───────────┴───────────┴────────┴────────────┘</span></code></pre><p>Printing is LaTeX format is achieved with <code>pretty_latex_stats</code>:</p><pre><code class="language-julia hljs">pretty_latex_stats(stats[:alpha])</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">\begin{longtable}{rrrrrrr}
+  \hline
+  id &amp; name &amp; status &amp; f &amp; t &amp; iter &amp; irrelevant \\\hline
+  \endfirsthead
+  \hline
+  id &amp; name &amp; status &amp; f &amp; t &amp; iter &amp; irrelevant \\\hline
+  \endhead
+  \hline
+  \multicolumn{7}{r}{{\bfseries Continued on next page}}\\
+  \hline
+  \endfoot
+  \endlastfoot
+  \(     1\) &amp; prob001 &amp; first\_order &amp; \(-2.42\)e\(-02\) &amp; \( 6.78\)e\(+02\) &amp; \(    60\) &amp; \(-1.16\)e\(+00\) \\
+  \(     2\) &amp; prob002 &amp; first\_order &amp; \(-3.84\)e\(-01\) &amp; \( 6.46\)e\(+02\) &amp; \(    90\) &amp; \(-1.35\)e\(+00\) \\
+  \(     3\) &amp; prob003 &amp; failure &amp; \( 5.79\)e\(-01\) &amp; \( 6.34\)e\(+02\) &amp; \(    50\) &amp; \(-1.17\)e\(-01\) \\
+  \(     4\) &amp; prob004 &amp; failure &amp; \( 1.47\)e\(+00\) &amp; \( 5.60\)e\(+02\) &amp; \(    70\) &amp; \( 1.15\)e\(+00\) \\
+  \(     5\) &amp; prob005 &amp; first\_order &amp; \(-1.77\)e\(+00\) &amp; \( 5.68\)e\(+02\) &amp; \(    10\) &amp; \(-3.81\)e\(-02\) \\
+  \(     6\) &amp; prob006 &amp; first\_order &amp; \( 6.09\)e\(-01\) &amp; \( 3.44\)e\(+02\) &amp; \(    20\) &amp; \(-1.00\)e\(+00\) \\
+  \(     7\) &amp; prob007 &amp; first\_order &amp; \(-1.40\)e\(-01\) &amp; \( 4.26\)e\(+02\) &amp; \(    10\) &amp; \(-7.97\)e\(-01\) \\
+  \(     8\) &amp; prob008 &amp; failure &amp; \( 8.36\)e\(-01\) &amp; \( 6.22\)e\(+02\) &amp; \(    20\) &amp; \( 7.45\)e\(-01\) \\
+  \(     9\) &amp; prob009 &amp; first\_order &amp; \(-9.29\)e\(-01\) &amp; \( 1.48\)e\(+02\) &amp; \(    40\) &amp; \( 7.96\)e\(-01\) \\
+  \(    10\) &amp; prob010 &amp; first\_order &amp; \( 7.89\)e\(-02\) &amp; \( 2.31\)e\(+02\) &amp; \(    30\) &amp; \(-8.39\)e\(-01\) \\\hline
+\end{longtable}</code></pre><p>Alternatively, you can print to a file.</p><pre><code class="language-julia hljs">open(&quot;alpha.tex&quot;, &quot;w&quot;) do io
+  println(io, &quot;\\documentclass[varwidth=20cm,crop=true]{standalone}&quot;)
+  println(io, &quot;\\usepackage{longtable}[=v4.13]&quot;)
+  println(io, &quot;\\begin{document}&quot;)
+  pretty_latex_stats(io, stats[:alpha])
+  println(io, &quot;\\end{document}&quot;)
+end</code></pre><pre><code class="language-julia hljs">run(`latexmk -quiet -pdf alpha.tex`)
+run(`pdf2svg alpha.pdf alpha.svg`)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">Process(`<span class="sgr4">pdf2svg</span> <span class="sgr4">alpha.pdf</span> <span class="sgr4">alpha.svg</span>`, ProcessExited(0))</code></pre><p><img src="../alpha.svg" alt/></p><p>If only a subset of columns should be printed, the DataFrame should be indexed accordingly:</p><pre><code class="language-julia hljs">df = stats[:alpha]
+pretty_stats(df[!, [:name, :f, :t]])</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">┌─────────┬───────────┬───────────┐
+│<span class="sgr1">    name │         f │         t │
+├─────────┼───────────┼───────────┤
+│ prob001 │ -2.42e-02 │  6.78e+02 │
+│ prob002 │ -3.84e-01 │  6.46e+02 │
+│ prob003 │  5.79e-01 │  6.34e+02 │
+│ prob004 │  1.47e+00 │  5.60e+02 │
+│ prob005 │ -1.77e+00 │  5.68e+02 │
+│ prob006 │  6.09e-01 │  3.44e+02 │
+│ prob007 │ -1.40e-01 │  4.26e+02 │
+│ prob008 │  8.36e-01 │  6.22e+02 │
+│ prob009 │ -9.29e-01 │  1.48e+02 │
+│ prob010 │  7.89e-02 │  2.31e+02 │
+└─────────┴───────────┴───────────┘</span></code></pre><p>Markdown tables may be generated by supplying the PrettyTables <code>tf</code> keyword argument to specify the table format:</p><pre><code class="language-julia hljs">pretty_stats(df[!, [:name, :f, :t]], tf=tf_markdown)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">|<span class="sgr1">    name |         f |         t |
+|---------|-----------|-----------|
+| prob001 | -2.42e-02 |  6.78e+02 |
+| prob002 | -3.84e-01 |  6.46e+02 |
+| prob003 |  5.79e-01 |  6.34e+02 |
+| prob004 |  1.47e+00 |  5.60e+02 |
+| prob005 | -1.77e+00 |  5.68e+02 |
+| prob006 |  6.09e-01 |  3.44e+02 |
+| prob007 | -1.40e-01 |  4.26e+02 |
+| prob008 |  8.36e-01 |  6.22e+02 |
+| prob009 | -9.29e-01 |  1.48e+02 |
+| prob010 |  7.89e-02 |  2.31e+02 |</span></code></pre><p>All values of <code>tf</code> accepted by PrettyTables may be used in SolverBenchmark.</p><p>The <code>fmt_override</code> option overrides the formatting of a specific column. The argument should be a dictionary of <code>Symbol</code> to format strings, where the format string will be applied to each element of the column.</p><p>The <code>hdr_override</code> changes the column headers.</p><pre><code class="language-julia hljs">fmt_override = Dict(:f =&gt; &quot;%+10.3e&quot;,
+                    :t =&gt; &quot;%08.2f&quot;)
+hdr_override = Dict(:name =&gt; &quot;Name&quot;, :f =&gt; &quot;f(x)&quot;, :t =&gt; &quot;Time&quot;)
+pretty_stats(stdout,
+             df[!, [:name, :f, :t]],
+             col_formatters = fmt_override,
+             hdr_override = hdr_override)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">┌─────────┬────────────┬──────────┐
+│<span class="sgr1">    Name │       f(x) │     Time │
+├─────────┼────────────┼──────────┤
+│ prob001 │ -2.425e-02 │ 00677.62 │
+│ prob002 │ -3.842e-01 │ 00645.64 │
+│ prob003 │ +5.787e-01 │ 00634.04 │
+│ prob004 │ +1.468e+00 │ 00559.59 │
+│ prob005 │ -1.766e+00 │ 00567.56 │
+│ prob006 │ +6.088e-01 │ 00343.52 │
+│ prob007 │ -1.402e-01 │ 00426.14 │
+│ prob008 │ +8.357e-01 │ 00622.00 │
+│ prob009 │ -9.292e-01 │ 00148.25 │
+│ prob010 │ +7.889e-02 │ 00230.96 │
+└─────────┴────────────┴──────────┘</span></code></pre><p>While <code>col_formatters</code> is for simple format strings, the PrettyTables API lets us define more elaborate formatters in the form of functions:</p><pre><code class="language-julia hljs">fmt_override = Dict(:f =&gt; &quot;%+10.3e&quot;,
+                    :t =&gt; &quot;%08.2f&quot;)
+hdr_override = Dict(:name =&gt; &quot;Name&quot;, :f =&gt; &quot;f(x)&quot;, :t =&gt; &quot;Time&quot;)
+pretty_stats(df[!, [:name, :f, :t]],
+             col_formatters = fmt_override,
+             hdr_override = hdr_override,
+             formatters = (v, i, j) -&gt; begin
+               if j == 3  # t is the 3rd column
+                 vi = floor(Int, v)
+                 minutes = div(vi, 60)
+                 seconds = vi % 60
+                 micros = round(Int, 1e6 * (v - vi))
+                 @sprintf(&quot;%2dm %02ds %06dμs&quot;, minutes, seconds, micros)
+               else
+                 v
+               end
+             end)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">┌─────────┬────────────┬──────────────────┐
+│<span class="sgr1">    Name │       f(x) │             Time │
+├─────────┼────────────┼──────────────────┤
+│ prob001 │ -2.425e-02 │ 11m 17s 623091μs │
+│ prob002 │ -3.842e-01 │ 10m 45s 642602μs │
+│ prob003 │ +5.787e-01 │ 10m 34s 037248μs │
+│ prob004 │ +1.468e+00 │  9m 19s 585367μs │
+│ prob005 │ -1.766e+00 │  9m 27s 556767μs │
+│ prob006 │ +6.088e-01 │  5m 43s 518002μs │
+│ prob007 │ -1.402e-01 │  7m 06s 141220μs │
+│ prob008 │ +8.357e-01 │ 10m 21s 997591μs │
+│ prob009 │ -9.292e-01 │  2m 28s 248989μs │
+│ prob010 │ +7.889e-02 │  3m 50s 955096μs │
+└─────────┴────────────┴──────────────────┘</span></code></pre><p>See the <a href="https://ronisbr.github.io/PrettyTables.jl/stable/man/formatters/">PrettyTables.jl documentation</a> for more information.</p><p>When using LaTeX format, the output must be understood by LaTeX. By default, numerical data in the table is wrapped in inline math environments. But those math environments would interfere with our formatting of the time. Thus we must first disable them for the <code>time</code> column using <code>col_formatters</code>, and then apply the PrettyTables formatter as above:</p><pre><code class="language-julia hljs">fmt_override = Dict(:f =&gt; &quot;%+10.3e&quot;,
+                    :t =&gt; &quot;%08.2f&quot;)
+hdr_override = Dict(:name =&gt; &quot;Name&quot;, :f =&gt; &quot;f(x)&quot;, :t =&gt; &quot;Time&quot;)
+open(&quot;alpha2.tex&quot;, &quot;w&quot;) do io
+  println(io, &quot;\\documentclass[varwidth=20cm,crop=true]{standalone}&quot;)
+  println(io, &quot;\\usepackage{longtable}[=v4.13]&quot;)
+  println(io, &quot;\\begin{document}&quot;)
+  pretty_latex_stats(io,
+                    df[!, [:name, :status, :f, :t, :iter]],
+                    col_formatters = Dict(:t =&gt; &quot;%f&quot;),  # disable default formatting of t
+                    formatters = (v,i,j) -&gt; begin
+                      if j == 4
+                        xi = floor(Int, v)
+                        minutes = div(xi, 60)
+                        seconds = xi % 60
+                        micros = round(Int, 1e6 * (v - xi))
+                        @sprintf(&quot;\\(%2d\\)m \\(%02d\\)s \\(%06d \\mu\\)s&quot;, minutes, seconds, micros)
+                      else
+                        v
+                      end
+                  end)
+  println(io, &quot;\\end{document}&quot;)
+end</code></pre><p><img src="../alpha2.svg" alt/></p><h3 id="Joining-tables"><a class="docs-heading-anchor" href="#Joining-tables">Joining tables</a><a id="Joining-tables-1"></a><a class="docs-heading-anchor-permalink" href="#Joining-tables" title="Permalink"></a></h3><p>In some occasions, instead of/in addition to showing individual results, we show a table with the result of multiple solvers.</p><pre><code class="language-julia hljs">df = join(stats, [:f, :t])
+pretty_stats(stdout, df)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">┌────────┬───────────┬───────────┬───────────┬───────────┬───────────┬───────────┐
+│<span class="sgr1">     id │   f_alpha │   t_alpha │    f_beta │    t_beta │   f_gamma │   t_gamma │
+├────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│      1 │ -2.42e-02 │  6.78e+02 │  5.90e-01 │  3.10e+01 │ -7.31e-01 │  5.23e+02 │
+│      2 │ -3.84e-01 │  6.46e+02 │ -9.15e-01 │  1.94e+02 │ -1.38e+00 │  4.25e+02 │
+│      3 │  5.79e-01 │  6.34e+02 │ -2.14e+00 │  5.16e+02 │  1.90e+00 │  2.48e+02 │
+│      4 │  1.47e+00 │  5.60e+02 │  4.86e-01 │  7.12e+02 │  4.77e-01 │  8.39e+02 │
+│      5 │ -1.77e+00 │  5.68e+02 │ -3.67e-01 │  1.17e+02 │  3.74e-01 │  3.24e+02 │
+│      6 │  6.09e-01 │  3.44e+02 │ -1.44e+00 │  4.79e+02 │  1.36e+00 │  1.62e+02 │
+│      7 │ -1.40e-01 │  4.26e+02 │  1.23e-01 │  6.62e+02 │  8.25e-04 │  8.83e+02 │
+│      8 │  8.36e-01 │  6.22e+02 │  2.63e-01 │  3.84e+02 │ -2.04e+00 │  2.83e+02 │
+│      9 │ -9.29e-01 │  1.48e+02 │  1.41e+00 │  1.15e+02 │  8.89e-01 │  4.88e+02 │
+│     10 │  7.89e-02 │  2.31e+02 │ -1.89e+00 │  9.90e+02 │ -3.92e-01 │  3.70e+02 │
+└────────┴───────────┴───────────┴───────────┴───────────┴───────────┴───────────┘</span></code></pre><p>The column <code>:id</code> is used as guide on where to join. In addition, we may have repeated columns between the solvers. We convery that information with argument <code>invariant_cols</code>.</p><pre><code class="language-julia hljs">df = join(stats, [:f, :t], invariant_cols=[:name])
+pretty_stats(stdout, df)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">┌────────┬─────────┬───────────┬───────────┬───────────┬───────────┬───────────┬───────────┐
+│<span class="sgr1">     id │    name │   f_alpha │   t_alpha │    f_beta │    t_beta │   f_gamma │   t_gamma │
+├────────┼─────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│      1 │ prob001 │ -2.42e-02 │  6.78e+02 │  5.90e-01 │  3.10e+01 │ -7.31e-01 │  5.23e+02 │
+│      2 │ prob002 │ -3.84e-01 │  6.46e+02 │ -9.15e-01 │  1.94e+02 │ -1.38e+00 │  4.25e+02 │
+│      3 │ prob003 │  5.79e-01 │  6.34e+02 │ -2.14e+00 │  5.16e+02 │  1.90e+00 │  2.48e+02 │
+│      4 │ prob004 │  1.47e+00 │  5.60e+02 │  4.86e-01 │  7.12e+02 │  4.77e-01 │  8.39e+02 │
+│      5 │ prob005 │ -1.77e+00 │  5.68e+02 │ -3.67e-01 │  1.17e+02 │  3.74e-01 │  3.24e+02 │
+│      6 │ prob006 │  6.09e-01 │  3.44e+02 │ -1.44e+00 │  4.79e+02 │  1.36e+00 │  1.62e+02 │
+│      7 │ prob007 │ -1.40e-01 │  4.26e+02 │  1.23e-01 │  6.62e+02 │  8.25e-04 │  8.83e+02 │
+│      8 │ prob008 │  8.36e-01 │  6.22e+02 │  2.63e-01 │  3.84e+02 │ -2.04e+00 │  2.83e+02 │
+│      9 │ prob009 │ -9.29e-01 │  1.48e+02 │  1.41e+00 │  1.15e+02 │  8.89e-01 │  4.88e+02 │
+│     10 │ prob010 │  7.89e-02 │  2.31e+02 │ -1.89e+00 │  9.90e+02 │ -3.92e-01 │  3.70e+02 │
+└────────┴─────────┴───────────┴───────────┴───────────┴───────────┴───────────┴───────────┘</span></code></pre><p><code>join</code> also accepts <code>hdr_override</code> for changing the column name before appending <code>_solver</code>.</p><pre><code class="language-julia hljs">hdr_override = Dict(:name =&gt; &quot;Name&quot;, :f =&gt; &quot;f(x)&quot;, :t =&gt; &quot;Time&quot;)
+df = join(stats, [:f, :t], invariant_cols=[:name], hdr_override=hdr_override)
+pretty_stats(stdout, df)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">┌────────┬─────────┬────────────┬────────────┬───────────┬───────────┬────────────┬────────────┐
+│<span class="sgr1">     id │    name │ f(x)_alpha │ Time_alpha │ f(x)_beta │ Time_beta │ f(x)_gamma │ Time_gamma │
+├────────┼─────────┼────────────┼────────────┼───────────┼───────────┼────────────┼────────────┤
+│      1 │ prob001 │  -2.42e-02 │   6.78e+02 │  5.90e-01 │  3.10e+01 │  -7.31e-01 │   5.23e+02 │
+│      2 │ prob002 │  -3.84e-01 │   6.46e+02 │ -9.15e-01 │  1.94e+02 │  -1.38e+00 │   4.25e+02 │
+│      3 │ prob003 │   5.79e-01 │   6.34e+02 │ -2.14e+00 │  5.16e+02 │   1.90e+00 │   2.48e+02 │
+│      4 │ prob004 │   1.47e+00 │   5.60e+02 │  4.86e-01 │  7.12e+02 │   4.77e-01 │   8.39e+02 │
+│      5 │ prob005 │  -1.77e+00 │   5.68e+02 │ -3.67e-01 │  1.17e+02 │   3.74e-01 │   3.24e+02 │
+│      6 │ prob006 │   6.09e-01 │   3.44e+02 │ -1.44e+00 │  4.79e+02 │   1.36e+00 │   1.62e+02 │
+│      7 │ prob007 │  -1.40e-01 │   4.26e+02 │  1.23e-01 │  6.62e+02 │   8.25e-04 │   8.83e+02 │
+│      8 │ prob008 │   8.36e-01 │   6.22e+02 │  2.63e-01 │  3.84e+02 │  -2.04e+00 │   2.83e+02 │
+│      9 │ prob009 │  -9.29e-01 │   1.48e+02 │  1.41e+00 │  1.15e+02 │   8.89e-01 │   4.88e+02 │
+│     10 │ prob010 │   7.89e-02 │   2.31e+02 │ -1.89e+00 │  9.90e+02 │  -3.92e-01 │   3.70e+02 │
+└────────┴─────────┴────────────┴────────────┴───────────┴───────────┴────────────┴────────────┘</span></code></pre><pre><code class="language-julia hljs">hdr_override = Dict(:name =&gt; &quot;Name&quot;, :f =&gt; &quot;\\(f(x)\\)&quot;, :t =&gt; &quot;Time&quot;)
+df = join(stats, [:f, :t], invariant_cols=[:name], hdr_override=hdr_override)
+open(&quot;alpha3.tex&quot;, &quot;w&quot;) do io
+  println(io, &quot;\\documentclass[varwidth=20cm,crop=true]{standalone}&quot;)
+  println(io, &quot;\\usepackage{longtable}[=v4.13]&quot;)
+  println(io, &quot;\\begin{document}&quot;)
+  pretty_latex_stats(io, df)
+  println(io, &quot;\\end{document}&quot;)
+end</code></pre><p><img src="../alpha3.svg" alt/></p><h2 id="Profiles"><a class="docs-heading-anchor" href="#Profiles">Profiles</a><a id="Profiles-1"></a><a class="docs-heading-anchor-permalink" href="#Profiles" title="Permalink"></a></h2><p>Performance profiles are a comparison tool developed by <a href="https://link.springer.com/article/10.1007/s101070100263/">Dolan and Moré, 2002</a> that takes into account the relative performance of a solver and whether it has achieved convergence for each problem. <code>SolverBenchmark.jl</code> uses <a href="https://github.com/JuliaSmoothOptimizers/BenchmarkProfiles.jl">BenchmarkProfiles.jl</a> for generating performance profiles from the dictionary of <code>DataFrame</code>s.</p><p>The basic usage is <code>performance_profile(stats, cost)</code>, where <code>cost</code> is a function applied to a <code>DataFrame</code> and returning a vector.</p><pre><code class="nohighlight hljs">using Plots
+pyplot()
+
+p = performance_profile(stats, df -&gt; df.t)
+Plots.svg(p, &quot;profile1&quot;)</code></pre><p><img src="../profile1.svg" alt/></p><p>Notice that we used <code>df -&gt; df.t</code> which corresponds to the column <code>:t</code> of the <code>DataFrame</code>s. This does not take into account that the solvers have failed for a few problems (according to column :status). The next profile takes that into account.</p><pre><code class="nohighlight hljs">cost(df) = (df.status .!= :first_order) * Inf + df.t
+p = performance_profile(stats, cost)
+Plots.svg(p, &quot;profile2&quot;)</code></pre><p><img src="../profile2.svg" alt/></p><h3 id="Profile-wall"><a class="docs-heading-anchor" href="#Profile-wall">Profile wall</a><a id="Profile-wall-1"></a><a class="docs-heading-anchor-permalink" href="#Profile-wall" title="Permalink"></a></h3><p>Another profile function is <code>profile_solvers</code>, which creates a wall of performance profiles, accepting multiple costs and doing 1 vs 1 comparisons in addition to the traditional performance profile.</p><pre><code class="nohighlight hljs">solved(df) = (df.status .== :first_order)
+costs = [df -&gt; .!solved(df) * Inf + df.t, df -&gt; .!solved(df) * Inf + df.iter]
+costnames = [&quot;Time&quot;, &quot;Iterations&quot;]
+p = profile_solvers(stats, costs, costnames)
+Plots.svg(p, &quot;profile3&quot;)</code></pre><p><img src="../profile3.svg" alt/></p><h3 id="Example-of-benchmark-running"><a class="docs-heading-anchor" href="#Example-of-benchmark-running">Example of benchmark running</a><a id="Example-of-benchmark-running-1"></a><a class="docs-heading-anchor-permalink" href="#Example-of-benchmark-running" title="Permalink"></a></h3><p>Here is a useful tutorial on how to use the benchmark with specific solver: <a href="https://juliasmoothoptimizers.github.io/OptimizationProblems.jl/dev/benchmark/">Run a benchmark with OptimizationProblems</a> The tutorial covers how to use the problems from <code>OptimizationProblems</code> to run a benchmark for unconstrained optimization.</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../">« Home</a><a class="docs-footer-nextpage" href="../reference/">Reference »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="auto">Automatic (OS)</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.1.2 on <span class="colophon-date" title="Tuesday 21 November 2023 15:53">Tuesday 21 November 2023</span>. Using Julia version 1.9.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
