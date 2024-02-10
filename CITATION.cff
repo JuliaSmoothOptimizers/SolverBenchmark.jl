@@ -33,5 +33,7 @@ keywords:
   - Julia
   - Nonlinear Programming
 license: MPL-2.0
+version: 0.6.0
+date-released: '2023-11-21'
 repository-code: >-
   https://github.com/JuliaSmoothOptimizers/SolverBenchmark.jl
