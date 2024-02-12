@@ -2,7 +2,7 @@
 
 ## How to Cite
 
-If you use SolverBenchmark.jl in your work, please cite using the format given in [CITATION.bib](https://github.com/JuliaSmoothOptimizers/SolverBenchmark.jl/blob/main/CITATION.bib).
+If you use SolverBenchmark.jl in your work, please cite using the format given in [CITATION.cff](https://github.com/JuliaSmoothOptimizers/SolverBenchmark.jl/blob/main/CITATION.cff).
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3948381.svg)](https://doi.org/10.5281/zenodo.3948381)
 ![CI](https://github.com/JuliaSmoothOptimizers/SolverBenchmark.jl/workflows/CI/badge.svg?branch=main)
