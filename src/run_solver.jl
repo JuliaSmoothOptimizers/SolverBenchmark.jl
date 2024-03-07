@@ -126,7 +126,7 @@ function solve_problems(
             end
           end
 
-          @info  solver_name * " " *  log_header(colstats, types[col_idx], hdr_override = info_hdr_override)
+          @info  "Solver"    * " " *  log_header(colstats, types[col_idx], hdr_override = info_hdr_override)
 
           first_problem = false
         end
