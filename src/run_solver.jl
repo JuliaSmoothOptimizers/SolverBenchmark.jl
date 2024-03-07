@@ -28,6 +28,7 @@ benchmark (default: `[:name, :nvar, :ncon, :status, :elapsed_time, :objective, :
 """
 function solve_problems(
   solver,
+  solver_name,
   problems;
   solver_logger::AbstractLogger = NullLogger(),
   reset_problem::Bool = true,
@@ -37,6 +38,7 @@ function solve_problems(
     :nvar,
     :ncon,
     :status,
+    :iter,
     :elapsed_time,
     :objective,
     :dual_feas,
@@ -124,7 +126,7 @@ function solve_problems(
             end
           end
 
-          @info log_header(colstats, types[col_idx], hdr_override = info_hdr_override)
+          @info  log_header(colstats, types[col_idx], hdr_override = info_hdr_override)
 
           first_problem = false
         end
@@ -172,7 +174,7 @@ function solve_problems(
         finalize(problem)
       end
     end
-    (skipthis && prune) || @info log_row(stats[end, col_idx])
+    (skipthis && prune) || @info solver_name * "$ " *   log_row(stats[end, col_idx])
   end
   return stats
 end
