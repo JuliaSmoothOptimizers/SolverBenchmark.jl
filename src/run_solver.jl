@@ -174,7 +174,7 @@ function solve_problems(
         finalize(problem)
       end
     end
-    (skipthis && prune) || @info solver_name * " " *   log_row(stats[end, col_idx])
+    (skipthis && prune) || @info solver_name * " " * log_row(stats[end, col_idx])
   end
   return stats
 end
