@@ -1,12 +1,13 @@
 export solve_problems
 
 """
-    solve_problems(solver, problems; kwargs...)
+    solve_problems(solver, solver_name, problems; kwargs...)
 
 Apply a solver to a set of problems.
 
 #### Arguments
 * `solver`: the function name of a solver;
+* `solver_name`: name of the solver;
 * `problems`: the set of problems to pass to the solver, as an iterable of
   `AbstractNLPModel`. It is recommended to use a generator expression (necessary for
   CUTEst problems).
