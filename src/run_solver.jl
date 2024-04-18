@@ -29,12 +29,13 @@ benchmark (default: `[:name, :nvar, :ncon, :status, :elapsed_time, :objective, :
 """
 function solve_problems(
   solver,
-  solver_name,
+  solver_name::TName,
   problems;
   solver_logger::AbstractLogger = NullLogger(),
   reset_problem::Bool = true,
   skipif::Function = x -> false,
   colstats::Vector{Symbol} = [
+    :solver_name,
     :name,
     :nvar,
     :ncon,
@@ -45,14 +46,15 @@ function solve_problems(
     :dual_feas,
     :primal_feas,
   ],
-  info_hdr_override::Dict{Symbol, String} = Dict{Symbol, String}(),
+  info_hdr_override::Dict{Symbol, String} = Dict{Symbol, String}(:solver_name => "Solver"),
   prune::Bool = true,
   kwargs...,
-)
+) where {TName}
   f_counters = collect(fieldnames(Counters))
   fnls_counters = collect(fieldnames(NLSCounters))[2:end] # Excludes :counters
   ncounters = length(f_counters) + length(fnls_counters)
   types = [
+    TName
     Int
     String
     Int
@@ -68,6 +70,7 @@ function solve_problems(
     String
   ]
   names = [
+    :solver_name
     :id
     :name
     :nvar
@@ -101,6 +104,7 @@ function solve_problems(
       prune || push!(
         stats,
         [
+          solver_name
           problem_info
           :exception
           Inf
@@ -127,7 +131,7 @@ function solve_problems(
             end
           end
 
-          @info solver_name * " " * log_header(colstats, types[col_idx], hdr_override = info_hdr_override)
+          @info log_header(colstats, types[col_idx], hdr_override = info_hdr_override)
 
           first_problem = false
         end
@@ -141,6 +145,7 @@ function solve_problems(
         push!(
           stats,
           [
+            solver_name
             problem_info
             s.status
             s.objective
@@ -159,6 +164,7 @@ function solve_problems(
         push!(
           stats,
           [
+            solver_name
             problem_info
             :exception
             Inf
@@ -175,7 +181,7 @@ function solve_problems(
         finalize(problem)
       end
     end
-    (skipthis && prune) || @info solver_name * " " * log_row(stats[end, col_idx])
+    (skipthis && prune) || @info log_row(stats[end, col_idx])
   end
   return stats
 end
