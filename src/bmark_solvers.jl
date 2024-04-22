@@ -19,7 +19,7 @@ function bmark_solvers(solvers::Dict{Symbol, <:Any}, args...; kwargs...)
   stats = Dict{Symbol, DataFrame}()
   for (name, solver) in solvers
     @info "running solver $name"
-    stats[name] = solve_problems(solver, args...; kwargs...)
+    stats[name] = solve_problems(solver, name, args...; kwargs...)
   end
   return stats
 end

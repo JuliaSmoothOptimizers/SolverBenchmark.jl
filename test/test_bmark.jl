@@ -33,12 +33,12 @@ function test_bmark()
       ),
     ]
     callable = CallableSolver()
-    stats = solve_problems(dummy_solver, problems)
+    stats = solve_problems(dummy_solver, "dummy", problems)
     @test stats isa DataFrame
-    stats = solve_problems(dummy_solver, problems, reset_problem = false)
-    stats = solve_problems(dummy_solver, problems, reset_problem = true)
+    stats = solve_problems(dummy_solver, "dummy", problems, reset_problem = false)
+    stats = solve_problems(dummy_solver, "dummy", problems, reset_problem = true)
 
-    solve_problems(callable, problems)
+    solve_problems(callable, "callable", problems)
 
     solvers = Dict(:dummy => dummy_solver, :callable => callable)
     stats = bmark_solvers(solvers, problems)
@@ -73,12 +73,13 @@ function test_bmark()
     )
     with_logger(ConsoleLogger()) do
       @info "Testing simple logger on `solve_problems`"
-      solve_problems(dummy_solver, nlps)
+      solve_problems(dummy_solver, "dummy", nlps)
       reset!.(nlps)
 
       @info "Testing logger with specific columns on `solve_problems`"
       solve_problems(
         dummy_solver,
+        "dummy",
         nlps,
         colstats = [:name, :nvar, :elapsed_time, :objective, :dual_feas],
       )
@@ -86,7 +87,7 @@ function test_bmark()
 
       @info "Testing logger with hdr_override on `solve_problems`"
       hdr_override = Dict(:dual_feas => "‖∇L(x)‖", :primal_feas => "‖c(x)‖")
-      solve_problems(dummy_solver, nlps, info_hdr_override = hdr_override)
+      solve_problems(dummy_solver, "dummy", nlps, info_hdr_override = hdr_override)
       reset!.(nlps)
     end
   end

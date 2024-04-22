@@ -1,12 +1,13 @@
 export solve_problems
 
 """
-    solve_problems(solver, problems; kwargs...)
+    solve_problems(solver, solver_name, problems; kwargs...)
 
 Apply a solver to a set of problems.
 
 #### Arguments
 * `solver`: the function name of a solver;
+* `solver_name`: name of the solver;
 * `problems`: the set of problems to pass to the solver, as an iterable of
   `AbstractNLPModel`. It is recommended to use a generator expression (necessary for
   CUTEst problems).
@@ -28,28 +29,32 @@ benchmark (default: `[:name, :nvar, :ncon, :status, :elapsed_time, :objective, :
 """
 function solve_problems(
   solver,
+  solver_name::TName,
   problems;
   solver_logger::AbstractLogger = NullLogger(),
   reset_problem::Bool = true,
   skipif::Function = x -> false,
   colstats::Vector{Symbol} = [
+    :solver_name,
     :name,
     :nvar,
     :ncon,
     :status,
+    :iter,
     :elapsed_time,
     :objective,
     :dual_feas,
     :primal_feas,
   ],
-  info_hdr_override::Dict{Symbol, String} = Dict{Symbol, String}(),
+  info_hdr_override::Dict{Symbol, String} = Dict{Symbol, String}(:solver_name => "Solver"),
   prune::Bool = true,
   kwargs...,
-)
+) where {TName}
   f_counters = collect(fieldnames(Counters))
   fnls_counters = collect(fieldnames(NLSCounters))[2:end] # Excludes :counters
   ncounters = length(f_counters) + length(fnls_counters)
   types = [
+    TName
     Int
     String
     Int
@@ -65,6 +70,7 @@ function solve_problems(
     String
   ]
   names = [
+    :solver_name
     :id
     :name
     :nvar
@@ -98,6 +104,7 @@ function solve_problems(
       prune || push!(
         stats,
         [
+          solver_name
           problem_info
           :exception
           Inf
@@ -138,6 +145,7 @@ function solve_problems(
         push!(
           stats,
           [
+            solver_name
             problem_info
             s.status
             s.objective
@@ -156,6 +164,7 @@ function solve_problems(
         push!(
           stats,
           [
+            solver_name
             problem_info
             :exception
             Inf
