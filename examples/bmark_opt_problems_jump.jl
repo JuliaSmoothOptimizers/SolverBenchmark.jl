@@ -1,10 +1,16 @@
 using JLD2, Plots
-using JSOSolvers, NLPModelsIpopt, NLPModelsJuMP, OptimizationProblems, OptimizationProblems.PureJuMP, SolverBenchmark
+using JSOSolvers,
+  NLPModelsIpopt,
+  NLPModelsJuMP,
+  OptimizationProblems,
+  OptimizationProblems.PureJuMP,
+  SolverBenchmark
 
 # define problems
 probs = OptimizationProblems.meta
 problem_names = probs[(probs.ncon .== 0) .& .!probs.has_bounds .& (5 .<= probs.nvar .<= 100), :name]
-problems = (MathOptNLPModel(eval(Meta.parse(problem))(), name = problem) for problem ∈ problem_names)
+problems =
+  (MathOptNLPModel(eval(Meta.parse(problem))(), name = problem) for problem ∈ problem_names)
 
 # define solvers
 solvers = Dict(

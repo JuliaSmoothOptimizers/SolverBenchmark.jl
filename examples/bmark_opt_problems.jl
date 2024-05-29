@@ -1,5 +1,10 @@
 using JLD2, Plots
-using ADNLPModels, JSOSolvers, NLPModelsIpopt, OptimizationProblems, OptimizationProblems.ADNLPProblems, SolverBenchmark
+using ADNLPModels,
+  JSOSolvers,
+  NLPModelsIpopt,
+  OptimizationProblems,
+  OptimizationProblems.ADNLPProblems,
+  SolverBenchmark
 
 # define problems
 probs = OptimizationProblems.meta
