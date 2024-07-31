@@ -1,7 +1,7 @@
 function get_stats_data()
   n = 10
   names = [:alpha, :beta, :gamma]
-  stats = Dict(
+  stats = OrderedDict(
     name => DataFrame(
       :id => 1:n,
       :name => [@sprintf("prob%03d", i) for i = 1:n],
