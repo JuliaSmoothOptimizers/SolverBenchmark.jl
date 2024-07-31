@@ -9,18 +9,21 @@ export performance_profile, profile_solvers
 Produce a performance profile comparing solvers in `stats` using the `cost` function.
 
 Inputs:
-- `stats::Dict{Symbol,DataFrame}`: pairs of `:solver => df`;
+- `stats::AbstractDict{Symbol,DataFrame}`: pairs of `:solver => df`;
 - `cost::Function`: cost function applyed to each `df`. Should return a vector with the cost of solving the problem at each row;
   - 0 cost is not allowed;
   - If the solver did not solve the problem, return Inf or a negative number.
 - `b::BenchmarkProfiles.AbstractBackend` : backend used for the plot.
+
+If several profiles will be produced with variants of the same solvers, `stats` may be an `OrderedDict`, as defined in the
+OrderedCollections.jl package.
 
 Examples of cost functions:
 - `cost(df) = df.elapsed_time`: Simple `elapsed_time` cost. Assumes the solver solved the problem.
 - `cost(df) = (df.status .!= :first_order) * Inf + df.elapsed_time`: Takes into consideration the status of the solver.
 """
 function performance_profile(
-  stats::Dict{Symbol, DataFrame},
+  stats::AbstractDict{Symbol, DataFrame},
   cost::Function,
   args...;
   b::BenchmarkProfiles.AbstractBackend = PlotsBackend(),
@@ -40,7 +43,7 @@ end
 Produce performance profiles comparing `solvers` based on the data in `stats`.
 
 Inputs:
-- `stats::Dict{Symbol,DataFrame}`: a dictionary of `DataFrame`s containing the
+- `stats::AbstractDict{Symbol,DataFrame}`: a dictionary of `DataFrame`s containing the
     benchmark results per solver (e.g., produced by `bmark_results_to_dataframes()`)
 - `costs::Vector{Function}`: a vector of functions specifying the measures to use in the profiles
 - `costnames::Vector{String}`: names to be used as titles of the profiles.
@@ -60,7 +63,7 @@ If there are more than two solvers, additional profiles are produced comparing t
 solvers two by two on each cost measure.
 """
 function profile_solvers(
-  stats::Dict{Symbol, DataFrame},
+  stats::AbstractDict{Symbol, DataFrame},
   costs::Vector{<:Function},
   costnames::Vector{String};
   width::Int = 400,

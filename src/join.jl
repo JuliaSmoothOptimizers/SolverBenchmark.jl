@@ -10,21 +10,21 @@ DataFrames. The resulting DataFrame will have column `id` and all columns `cols`
 each solver.
 
 Inputs:
-- `stats::Dict{Symbol,DataFrame}`: Dictionary of DataFrames per solver. Each key is a different solver;
+- `stats::AbstractDict{Symbol,DataFrame}`: Dictionary of DataFrames per solver. Each key is a different solver;
 - `cols::Array{Symbol}`: Which columns of the DataFrames.
 
 Keyword arguments:
 - `invariant_cols::Array{Symbol,1}`: Invariant columns to be added, i.e., columns that don't change depending on the solver (such as name of problem, number of variables, etc.);
-- `hdr_override::Dict{Symbol,String}`: Override header names.
+- `hdr_override::AbstractDict{Symbol,String}`: Override header names.
 
 Output:
 - `df::DataFrame`: Resulting dataframe.
 """
 function join(
-  stats::Dict{Symbol, DataFrame},
+  stats::AbstractDict{Symbol, DataFrame},
   cols::Array{Symbol, 1};
   invariant_cols::Array{Symbol, 1} = Symbol[],
-  hdr_override::Dict{Symbol, String} = Dict{Symbol, String}(),
+  hdr_override::AbstractDict{Symbol, String} = Dict{Symbol, String}(),
 )
   length(cols) == 0 && error("cols can't be empty")
   if !all(:id in propertynames(df) for (s, df) in stats)

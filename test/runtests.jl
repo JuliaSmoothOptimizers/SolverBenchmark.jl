@@ -9,6 +9,7 @@ using DataFrames
 using LaTeXStrings
 
 # test dependencies
+using OrderedCollections
 using PGFPlotsX
 using UnicodePlots
 using Plots
