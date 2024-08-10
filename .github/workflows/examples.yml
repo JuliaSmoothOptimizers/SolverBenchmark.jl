@@ -47,7 +47,8 @@ jobs:
             ${{ runner.os }}-
       - uses: julia-actions/julia-buildpkg@v1
       - run: |
-          brew install gfortran || brew reinstall gcc
+          brew install gfortran  # the compiler will be called gfortran-14 or similar
+          export PATH=$(brew --prefix gcc)/bin:$PATH  # ensure binary named "gfortran" is discoverable
         if: matrix.os == 'macOS-latest'
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3
