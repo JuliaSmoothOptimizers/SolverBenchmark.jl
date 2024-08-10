@@ -50,9 +50,9 @@ jobs:
           brew install gfortran  # the compiler will be called gfortran-14 or similar
           export PATH=$(brew --prefix gcc)/bin:$PATH  # ensure binary named "gfortran" is discoverable
         if: matrix.os == 'macOS-latest'
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-        if: matrix.os == 'macOS-latest'
+      #- name: Setup tmate session
+      # uses: mxschmitt/action-tmate@v3
+      #  if: matrix.os == 'macOS-latest'
       - run: |
           julia --project=examples -e 'using Pkg; Pkg.instantiate(); include(joinpath("examples", "bmark_cutest.jl"))'
         if: matrix.os != 'windows-latest'
