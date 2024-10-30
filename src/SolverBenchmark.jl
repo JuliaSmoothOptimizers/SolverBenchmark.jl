@@ -35,11 +35,6 @@ include("run_solver.jl")
 include("bmark_solvers.jl")
 include("bmark_utils.jl")
 
-# deprecated, remove in a future version
-include("formatting.jl")
-include("latex_tables.jl")
-include("markdown_tables.jl")
-
 # Profiles
 include("profiles.jl")
 
