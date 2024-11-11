@@ -91,6 +91,46 @@ function test_bmark()
       reset!.(nlps)
     end
   end
+
+  @testset "Test skips and exceptions" begin
+    problems = [
+      ADNLPModel(x -> sum(x .^ 2), ones(2), name = "Quadratic"),
+      ADNLPModel(
+        x -> (x[1] - 1)^2 + 4 * (x[2] - x[1]^2)^2,
+        ones(2),
+        x -> [x[1]^2 + x[2]^2 - 1],
+        [0.0],
+        [0.0],
+        name = "Cons Rosen",
+      ),
+    ]
+
+    solvers = Dict(
+      :dummy_solver_specific => 
+        nlp -> dummy_solver(
+          nlp,
+          callback = (nlp, solver, stats) -> begin
+            set_solver_specific!(stats, :foo, 1)
+          end
+        ),
+    )
+    stats = bmark_solvers(solvers, problems)
+    
+    @test stats[:dummy_solver_specific][1,:status] == :exception
+    @test stats[:dummy_solver_specific][2,:status] == :first_order
+
+    stats = bmark_solvers(
+      solvers, 
+      problems, 
+      prune = false, 
+      skipif = problem -> begin
+      return problem.meta.ncon == 0
+      end
+    )
+
+    @test stats[:dummy_solver_specific][1,:status] == :skipped
+    @test stats[:dummy_solver_specific][2,:status] == :first_order
+  end
 end
 
 test_bmark()
