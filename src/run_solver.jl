@@ -210,8 +210,9 @@ function solve_problems(
       end
     end
     ((skipthis && prune) || first_problem) || @info log_row(stats[end, col_idx])
-    !first_problem || @info log_row(Any[solver_name, problem.meta.name, problem.meta.nvar, problem.meta.ncon, :exception, 0, Inf, Inf, Inf, Inf])
-    # TODO: what if log_header override does not have the same default value ?
+    if colstats == [:solver_name, :name, :nvar, :ncon, :status, :iter, :elapsed_time, :objective, :dual_feas, :primal_feas,]
+      !first_problem || @info log_row(Any[solver_name, problem.meta.name, problem.meta.nvar, problem.meta.ncon, :exception, 0, Inf, Inf, Inf, Inf])
+    end # We don't print the first problems that have exceptions/skips when colstats is not default... 
   end
   return stats
 end
