@@ -128,7 +128,7 @@ function test_bmark()
       end
     )
 
-    @test stats[:dummy_solver_specific][1,:status] == :skipped
+    @test stats[:dummy_solver_specific][1, :extrainfo] == "skipped"
     @test stats[:dummy_solver_specific][2,:status] == :first_order
   end
 end

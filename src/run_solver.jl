@@ -93,7 +93,7 @@ function solve_problems(
   col_idx = indexin(colstats, names)
 
   first_problem = true
-  fails_since_start = String[]
+  fails_since_start = String[]  # This variable will array will prevent from pushing in stats when the variable specific has not been updated yet.
   @info log_header(colstats, types[col_idx], hdr_override = info_hdr_override)
 
   for (id, problem) in enumerate(problems)
