@@ -93,6 +93,9 @@ function solve_problems(
   col_idx = indexin(colstats, names)
 
   first_problem = true
+  fails_since_start = String[]
+  @info log_header(colstats, types[col_idx], hdr_override = info_hdr_override)
+
   for (id, problem) in enumerate(problems)
     if reset_problem
       reset!(problem)
@@ -131,7 +134,24 @@ function solve_problems(
             end
           end
 
-          @info log_header(colstats, types[col_idx], hdr_override = info_hdr_override)
+          for fail in fails_since_start
+            push!(
+            stats,
+            [
+              solver_name
+              problem_info
+              :exception
+              Inf
+              Inf
+              0
+              Inf
+              Inf
+              fill(0, ncounters)
+              fail
+              fill(missing, length(specific))
+            ],
+          )
+          end
 
           first_problem = false
         end
@@ -161,27 +181,33 @@ function solve_problems(
         )
       catch e
         @error "caught exception" e
-        push!(
-          stats,
-          [
-            solver_name
-            problem_info
-            :exception
-            Inf
-            Inf
-            0
-            Inf
-            Inf
-            fill(0, ncounters)
-            string(e)
-            fill(missing, length(specific))
-          ],
-        )
+        if !first_problem 
+          push!(
+            stats,
+            [
+              solver_name
+              problem_info
+              :exception
+              Inf
+              Inf
+              0
+              Inf
+              Inf
+              fill(0, ncounters)
+              string(e)
+              fill(missing, length(specific))
+            ],
+          )
+        else
+          push!(fails_since_start, string(e))
+        end
       finally
         finalize(problem)
       end
     end
-    (skipthis && prune) || @info log_row(stats[end, col_idx])
+    ((skipthis && prune) || first_problem) || @info log_row(stats[end, col_idx])
+    !first_problem || @info log_row(Any[solver_name, problem.meta.name, problem.meta.nvar, problem.meta.ncon, :exception, 0, Inf, Inf, Inf, Inf])
+    # TODO: what if log_header override does not have the same default value ?
   end
   return stats
 end
