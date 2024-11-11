@@ -103,6 +103,15 @@ function test_bmark()
         [0.0],
         name = "Cons Rosen",
       ),
+      ADNLPModel(
+        x -> sum(x .^ 2),
+        ones(2),
+        x -> [sum(x) - 1],
+        [0.0],
+        [0.0],
+        name = "Cons quadratic",
+      ),
+      
     ]
 
     solvers = Dict(
@@ -118,6 +127,8 @@ function test_bmark()
     
     @test stats[:dummy_solver_specific][1,:status] == :exception
     @test stats[:dummy_solver_specific][2,:status] == :first_order
+    @test stats[:dummy_solver_specific][3,:status] == :exception
+    @test size(stats[:dummy_solver_specific], 1) == 3
 
     stats = bmark_solvers(
       solvers, 
@@ -130,6 +141,8 @@ function test_bmark()
 
     @test stats[:dummy_solver_specific][1, :extrainfo] == "skipped"
     @test stats[:dummy_solver_specific][2,:status] == :first_order
+    @test stats[:dummy_solver_specific][3,:status] == :exception
+    @test size(stats[:dummy_solver_specific], 1) == 3
   end
 end
 
