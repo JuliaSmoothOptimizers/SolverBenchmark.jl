@@ -104,22 +104,26 @@ function solve_problems(
     problem_info = [id; problem.meta.name; problem.meta.nvar; problem.meta.ncon; nequ]
     skipthis = skipif(problem)
     if skipthis
-      prune || push!(
-        stats,
-        [
-          solver_name
-          problem_info
-          :exception
-          Inf
-          Inf
-          0
-          Inf
-          Inf
-          fill(0, ncounters)
-          "skipped"
-          fill(missing, length(specific))
-        ],
-      )
+      if !prune && !first_problem
+        push!(
+          stats,
+          [
+            solver_name
+            problem_info
+            :exception
+            Inf
+            Inf
+            0
+            Inf
+            Inf
+            fill(0, ncounters)
+            "skipped"
+            fill(missing, length(specific))
+          ],
+        )
+      elseif !prune && first_problem
+        push!(fails_since_start, "skipped")
+      end
       finalize(problem)
     else
       try
