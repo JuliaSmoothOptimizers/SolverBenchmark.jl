@@ -21,8 +21,8 @@ A Dict{Symbol, AbstractExecutionStats} of statistics.
 function bmark_solvers(solvers::Dict{Symbol, <:Any}, args...; kwargs...)
   stats = Dict{Symbol, DataFrame}()
   @threads for (name, solver) in collect(pairs(solvers))
-      @info "running solver $name"
-      stats[name] = solve_problems(solver, name, args...; kwargs...)
+    @info "running solver $name"
+    stats[name] = solve_problems(solver, name, args...; kwargs...)
   end
   return stats
 end
