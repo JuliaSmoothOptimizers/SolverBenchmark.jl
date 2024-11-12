@@ -1,4 +1,4 @@
-export bmark_solvers, bmark_solvers_parallel
+export bmark_solvers
 
 using Base.Threads
 using DataFrames
@@ -64,6 +64,7 @@ function bmark_solvers_parallel(solvers::Dict{Symbol, <:Any}, args...; kwargs...
       result = solve_problems(solver, name, args...; kwargs...)
 
       # Update the shared stats dictionary safely
+      # This is a workaround for the lack of thread-safe dictionaries in Julia, so if two solver finish at same time, one of them will lock the stats first then the other one will wait until the lock is released to update the stats
       lock = ReentrantLock()  # Create a lock for thread-safe dictionary update
       lock(()-> stats[name] = result)
   end
