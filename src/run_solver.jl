@@ -93,7 +93,7 @@ function solve_problems(
   col_idx = indexin(colstats, names)
 
   first_problem = true
-  fails_since_start = String[]  # This variable will array will prevent from pushing in stats when the variable specific has not been updated yet.
+  nb_unsuccessful_since_start = 0
   @info log_header(colstats, types[col_idx], hdr_override = info_hdr_override)
 
   for (id, problem) in enumerate(problems)
@@ -104,26 +104,25 @@ function solve_problems(
     problem_info = [id; problem.meta.name; problem.meta.nvar; problem.meta.ncon; nequ]
     skipthis = skipif(problem)
     if skipthis
-      if !prune && !first_problem
-        push!(
-          stats,
-          [
-            solver_name
-            problem_info
-            :exception
-            Inf
-            Inf
-            0
-            Inf
-            Inf
-            fill(0, ncounters)
-            "skipped"
-            fill(missing, length(specific))
-          ],
-        )
-      elseif !prune && first_problem
-        push!(fails_since_start, "skipped")
+      if first_problem && !prune
+        nb_unsuccessful_since_start += 1
       end
+      prune || push!(
+        stats,
+        [
+          solver_name
+          problem_info
+          :exception
+          Inf
+          Inf
+          0
+          Inf
+          Inf
+          fill(0, ncounters)
+          "skipped"
+          fill(missing, length(specific))
+        ],
+      )
       finalize(problem)
     else
       try
@@ -133,30 +132,10 @@ function solve_problems(
         if first_problem
           for (k, v) in s.solver_specific
             if !(typeof(v) <: AbstractVector)
-              insertcols!(stats, ncol(stats) + 1, k => Vector{Union{typeof(v), Missing}}())
+              insertcols!(stats, ncol(stats) + 1, k => Vector{Union{typeof(v), Missing}}(undef, nb_unsuccessful_since_start))
               push!(specific, k)
             end
-          end
-
-          for fail in fails_since_start
-            push!(
-            stats,
-            [
-              solver_name
-              problem_info
-              :exception
-              Inf
-              Inf
-              0
-              Inf
-              Inf
-              fill(0, ncounters)
-              fail
-              fill(missing, length(specific))
-            ],
-          )
-          end
-
+          end      
           first_problem = false
         end
         counters_list =
@@ -185,34 +164,30 @@ function solve_problems(
         )
       catch e
         @error "caught exception" e
-        if !first_problem 
-          push!(
-            stats,
-            [
-              solver_name
-              problem_info
-              :exception
-              Inf
-              Inf
-              0
-              Inf
-              Inf
-              fill(0, ncounters)
-              string(e)
-              fill(missing, length(specific))
-            ],
-          )
-        else
-          push!(fails_since_start, string(e))
+        if first_problem
+          nb_unsuccessful_since_start += 1
         end
+        push!(
+          stats,
+          [
+            solver_name
+            problem_info
+            :exception
+            Inf
+            Inf
+            0
+            Inf
+            Inf
+            fill(0, ncounters)
+            string(e)
+            fill(missing, length(specific))
+          ],
+        )
       finally
         finalize(problem)
       end
     end
-    ((skipthis && prune) || first_problem) || @info log_row(stats[end, col_idx])
-    if colstats == [:solver_name, :name, :nvar, :ncon, :status, :iter, :elapsed_time, :objective, :dual_feas, :primal_feas,]
-      !first_problem || @info log_row(Any[solver_name, problem.meta.name, problem.meta.nvar, problem.meta.ncon, :exception, 0, Inf, Inf, Inf, Inf])
-    end # We don't print the first problems that have exceptions/skips when colstats is not default... 
+    (skipthis && prune) || @info log_row(stats[end, col_idx])
   end
   return stats
 end
