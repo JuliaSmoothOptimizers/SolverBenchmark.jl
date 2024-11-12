@@ -1,4 +1,3 @@
-export bmark_solvers
 using Base.Threads
 using DataFrames
 
@@ -19,7 +18,8 @@ Any keyword argument accepted by `solve_problems`
 #### Return value
 A Dict{Symbol, AbstractExecutionStats} of statistics.
 """
-function bmark_solvers(solvers::Dict{Symbol, <:Any}, args...; kwargs...)
+
+function bmark_solvers_threaded(solvers::Dict{Symbol, <:Any}, args...; kwargs...)
   stats = Dict{Symbol, DataFrame}()
   @threads for (name, solver) in collect(pairs(solvers))
     @info "running solver $name"
@@ -58,6 +58,5 @@ function bmark_solvers_parallel(solvers::Dict{Symbol, <:Any}, args...; kwargs...
       @info "running solver $name on thread $(threadid())"
       stats[name] = solve_problems(solver, name, args...; kwargs...)
   end
-  
   return stats
 end
