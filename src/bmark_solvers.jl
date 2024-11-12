@@ -1,7 +1,5 @@
 export bmark_solvers
 using Base.Threads
-using DataFrames
-
 """
     bmark_solvers(solvers :: Dict{Symbol,Any}, args...; kwargs...)
 
@@ -17,7 +15,7 @@ Any keyword argument accepted by `solve_problems`
 #### Return value
 A Dict{Symbol, AbstractExecutionStats} of statistics.
 """
-function bmark_solvers_threaded(solvers::Dict{Symbol, <:Any}, args...; kwargs...)
+function bmark_solvers(solvers::Dict{Symbol, <:Any}, args...; kwargs...)
   stats = Dict{Symbol, DataFrame}()
   solver_keys = collect(keys(solvers))
   
