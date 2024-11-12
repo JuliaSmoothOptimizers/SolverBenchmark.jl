@@ -1,5 +1,4 @@
 export bmark_solvers
-
 using Base.Threads
 using DataFrames
 
@@ -18,26 +17,16 @@ Any keyword argument accepted by `solve_problems`
 #### Return value
 A Dict{Symbol, AbstractExecutionStats} of statistics.
 """
-function bmark_solvers(solvers::Dict{Symbol, <:Any}, args...; kwargs...)
+function bmark_solvers_threaded(solvers::Dict{Symbol, <:Any}, args...; kwargs...)
   stats = Dict{Symbol, DataFrame}()
-
-  # Collect solvers in a vector so we can iterate them in parallel
   solver_keys = collect(keys(solvers))
-  solver_values = collect(values(solvers))
-
-  Threads.@threads for i in eachindex(solver_keys)
+  
+  @threads for i in 1:length(solver_keys)
       name = solver_keys[i]
-      solver = solver_values[i]
-      @info "Running solver $name on thread $(threadid())"
-
-      # Compute the result for this solver
-      result = solve_problems(solver, name, args...; kwargs...)
-
-      # Update the shared stats dictionary safely
-      # This is a workaround for the lack of thread-safe dictionaries in Julia, so if two solver finish at same time, one of them will lock the stats first then the other one will wait until the lock is released to update the stats
-      lock = ReentrantLock()  # Create a lock for thread-safe dictionary update
-      lock(()-> stats[name] = result)
+      solver = solvers[name]
+      @info "running solver $name on thread $(threadid())"
+      stats[name] = solve_problems(solver, name, args...; kwargs...)
   end
-
+  
   return stats
 end
