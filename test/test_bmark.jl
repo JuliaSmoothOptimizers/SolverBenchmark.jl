@@ -118,9 +118,7 @@ function test_bmark()
       :dummy_solver_specific => 
         nlp -> dummy_solver(
           nlp,
-          callback = (nlp, solver, stats) -> begin
-            set_solver_specific!(stats, :foo, 1)
-          end
+          callback = (nlp, solver, stats) -> set_solver_specific!(stats, :foo, 1),
         ),
     )
     stats = bmark_solvers(solvers, problems)
@@ -134,9 +132,7 @@ function test_bmark()
       solvers, 
       problems, 
       prune = false, 
-      skipif = problem -> begin
-      return problem.meta.ncon == 0
-      end
+      skipif = problem -> problem.meta.ncon == 0,
     )
 
     @test stats[:dummy_solver_specific][1, :extrainfo] == "skipped"
