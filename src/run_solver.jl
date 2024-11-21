@@ -132,10 +132,14 @@ function solve_problems(
         if first_problem
           for (k, v) in s.solver_specific
             if !(typeof(v) <: AbstractVector)
-              insertcols!(stats, ncol(stats) + 1, k => Vector{Union{typeof(v), Missing}}(undef, nb_unsuccessful_since_start))
+              insertcols!(
+                stats,
+                ncol(stats) + 1,
+                k => Vector{Union{typeof(v), Missing}}(undef, nb_unsuccessful_since_start),
+              )
               push!(specific, k)
             end
-          end      
+          end
           first_problem = false
         end
         counters_list =
