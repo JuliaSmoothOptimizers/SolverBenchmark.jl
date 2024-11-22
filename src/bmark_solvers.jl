@@ -2,7 +2,7 @@ using Base.Threads
 
 export bmark_solvers
 """
-    bmark_solvers(solvers :: Dict{Symbol, <:Any}, problem_list; threads_enable=false, kwargs...)
+    bmark_solvers(solvers :: Dict{Symbol, Any}, args...; threads_enable=false, kwargs...)
 
 Run a set of solvers on a set of problems. If `threads_enable` is set to true and the number of Julia threads is greater than 1, 
 the solvers will be run in parallel using `Threads.@threads`.
@@ -22,7 +22,7 @@ Any keyword argument accepted by `solve_problems`
 A Dict{Symbol, AbstractExecutionStats} of statistics.
 """
 
-function bmark_solvers(solvers::Dict{Symbol, <:Any}, problem_list; threads_enable=false)
+function bmark_solvers(solvers::Dict{Symbol, <:Any}, args...; threads_enable=false, kwargs...)
   stats = Dict{Symbol, DataFrame}()
   
   if threads_enable
@@ -31,12 +31,12 @@ function bmark_solvers(solvers::Dict{Symbol, <:Any}, problem_list; threads_enabl
           name = keys(solvers)[i]
           solver = solvers[name]
           @info "Running solver $name on thread $(Threads.threadid())"
-          stats[name] = solve_problems(solver, name, problem_list)
+          stats[name] = solve_problems(solver, name, args...; kwargs...)
       end
   else
       for (name, solver) in solvers
           @info "Running solver $name"
-          stats[name] = solve_problems(solver, name, problem_list)
+          stats[name] = solve_problems(solver, name, args...; kwargs...)
       end
   end
   
