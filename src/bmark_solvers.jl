@@ -29,19 +29,19 @@ function bmark_solvers(solvers::Dict{Symbol, <:Any}, args...; threads_enable = f
   if threads_enable
     @info "Running with multithreading enabled"
     key_array = collect(keys(solvers))  # Convert keys to an array for indexing
-    lock = Threads.Mutex()              # Create a mutex for thread-safe access to stats
+    lock = Mutex()              # Create a mutex for thread-safe access to stats
 
-    Threads.@threads for i in eachindex(key_array)
+    @threads for i in eachindex(key_array)
       name = key_array[i]
       solver = solvers[name]
       @info "Running solver $name on thread $(Threads.threadid())"
       result = solve_problems(solver, name, args...; kwargs...)
 
-      Threads.lock(lock)              # Lock before modifying stats
+      lock(lock)              # Lock before modifying stats
       try
         stats[name] = result        # Thread-safe update
       finally
-        Threads.unlock(lock)        # unlock the mutex
+        unlock(lock)        # unlock the mutex
       end
     end
   else
