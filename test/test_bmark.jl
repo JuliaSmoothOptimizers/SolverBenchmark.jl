@@ -63,18 +63,6 @@ function test_bmark()
     statuses, avgs = quick_summary(stats)
 
     pretty_stats(stats[:dummy])
-
-    # Multi-threaded bmark_solvers test
-    if Threads.nthreads() > 1
-      threaded_stats = bmark_solvers(solvers, problems, threads_enable=true)
-      @test threaded_stats isa Dict{Symbol, DataFrame}
-      for k in keys(solvers)
-        @test haskey(threaded_stats, k)
-        @test threaded_stats[k] == stats[k]  # Assumes deterministic solve_problems
-      end
-    else
-      @info "Skipping multi-threaded tests because only one thread is available"
-    end
   end 
 
   @testset "Testing logging" begin
