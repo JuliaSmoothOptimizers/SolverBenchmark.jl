@@ -108,7 +108,7 @@ function test_bmark()
       )
 
       # Run the single-threaded version
-      single_threaded_result = bmark_solvers_signle_thread(solvers, problems)
+      single_threaded_result = bmark_solvers_single_thread(solvers, problems)
       multithreaded_result = bmark_solvers(solvers, problems)
 
       # Compare the results
