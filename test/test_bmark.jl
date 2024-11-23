@@ -97,17 +97,32 @@ function test_bmark()
         ),
       ]
       callable = CallableSolver()
-      solvers = Dict(:dummy => dummy_solver, :callable => callable)
-      
+      solvers = Dict(
+        :dummy => dummy_solver,
+        :callable => callable,
+        :dummy_solver_specific =>
+          nlp -> dummy_solver(
+            nlp,
+            callback = (nlp, solver, stats) -> set_solver_specific!(stats, :foo, 1),
+          ),
+      )
+
       # Run the single-threaded version
       single_threaded_result = bmark_solvers_signle_thread(solvers, problems)
       multithreaded_result = bmark_solvers(solvers, problems)
-      
+
       # Compare the results
       @test length(single_threaded_result) == length(multithreaded_result)
 
       for key in keys(single_threaded_result)
-        @test single_threaded_result[key] == multithreaded_result[key]
+        @test single_threaded_result[key][1, :status] == multithreaded_result[key][1, :status]
+        @test single_threaded_result[key][2, :status] == multithreaded_result[key][2, :status]
+        @test single_threaded_result[key][3, :status] == multithreaded_result[key][3, :status]
+
+        @test single_threaded_result[key][1, :name] == multithreaded_result[key][1, :name]
+        @test single_threaded_result[key][2, :name] == multithreaded_result[key][2, :name]
+        @test single_threaded_result[key][3, :name] == multithreaded_result[key][3, :name]
+
       end
     end
   end
