@@ -24,7 +24,7 @@ A Dict{Symbol, AbstractExecutionStats} of statistics.
 function bmark_solvers(solvers::Dict{Symbol, <:Any}, args...; kwargs...)
   stats = Dict{Symbol, DataFrame}()
   # Initialize the lock for thread-safe updates
-  lock = ReentrantLock()
+  my_lock = ReentrantLock()
   key_array = collect(keys(solvers))  # Convert keys to an array for indexing
 
   Threads.@threads for i in eachindex(key_array) 
@@ -33,7 +33,7 @@ function bmark_solvers(solvers::Dict{Symbol, <:Any}, args...; kwargs...)
     @info "Running solver $name on thread $(Threads.threadid())"
     result = solve_problems(solver, name, args...; kwargs...)
     # Ensure thread-safe access to `stats`
-    lock(lock) do
+    lock(my_lock) do
       stats[name] = result
     end
   end
