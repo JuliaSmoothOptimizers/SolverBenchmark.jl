@@ -12,7 +12,7 @@ function (solver::CallableSolver)(nlp::AbstractNLPModel; kwargs...)
   return GenericExecutionStats(nlp)
 end
 
-function bmark_solvers_signle_thread(solvers::Dict{Symbol, <:Any}, args...; kwargs...)
+function bmark_solvers_single_thread(solvers::Dict{Symbol, <:Any}, args...; kwargs...)
   stats = Dict{Symbol, DataFrame}()
   for (name, solver) in solvers
     @info "running solver $name"
