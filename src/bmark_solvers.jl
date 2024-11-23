@@ -2,6 +2,7 @@ using Base.Threads
 using DataFrames
 
 export bmark_solvers
+
 """
     bmark_solvers(solvers :: Dict{Symbol, Any}, args...; kwargs...)
 
