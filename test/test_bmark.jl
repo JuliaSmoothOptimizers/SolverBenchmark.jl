@@ -2,6 +2,7 @@ using DataFrames
 using Logging
 using NLPModels, ADNLPModels
 using SolverCore
+using Base.Threads
 
 import SolverCore.dummy_solver
 
@@ -9,6 +10,15 @@ mutable struct CallableSolver end
 
 function (solver::CallableSolver)(nlp::AbstractNLPModel; kwargs...)
   return GenericExecutionStats(nlp)
+end
+
+function bmark_solvers_signle_thread(solvers::Dict{Symbol, <:Any}, args...; kwargs...)
+  stats = Dict{Symbol, DataFrame}()
+  for (name, solver) in solvers
+    @info "running solver $name"
+    stats[name] = solve_problems(solver, name, args...; kwargs...)
+  end
+  return stats
 end
 
 function test_bmark()
@@ -63,8 +73,44 @@ function test_bmark()
     statuses, avgs = quick_summary(stats)
 
     pretty_stats(stats[:dummy])
-  end 
+  end
 
+  if Threads.nthreads() > 1  # if we have multi_thread
+    @testset "Multithread vs Single-Thread Consistency" begin
+      problems = [
+        ADNLPModel(x -> sum(x .^ 2), ones(2), name = "Quadratic"),
+        ADNLPModel(
+          x -> sum(x .^ 2),
+          ones(2),
+          x -> [sum(x) - 1],
+          [0.0],
+          [0.0],
+          name = "Cons quadratic",
+        ),
+        ADNLPModel(
+          x -> (x[1] - 1)^2 + 4 * (x[2] - x[1]^2)^2,
+          ones(2),
+          x -> [x[1]^2 + x[2]^2 - 1],
+          [0.0],
+          [0.0],
+          name = "Cons Rosen",
+        ),
+      ]
+      callable = CallableSolver()
+      solvers = Dict(:dummy => dummy_solver, :callable => callable)
+      
+      # Run the single-threaded version
+      single_threaded_result = bmark_solvers_signle_thread(solvers, problems)
+      multithreaded_result = bmark_solvers(solvers, problems)
+      
+      # Compare the results
+      @test length(single_threaded_result) == length(multithreaded_result)
+
+      for key in keys(single_threaded_result)
+        @test single_threaded_result[key] == multithreaded_result[key]
+      end
+    end
+  end
   @testset "Testing logging" begin
     nlps = [ADNLPModel(x -> sum(x .^ k), ones(2k), name = "Sum of power $k") for k = 2:4]
     push!(
@@ -136,6 +182,5 @@ function test_bmark()
     @test size(stats[:dummy_solver_specific], 1) == 3
   end
 end
-
 
 test_bmark()
