@@ -21,7 +21,6 @@ Any keyword argument accepted by `solve_problems`
 #### Return value
 A Dict{Symbol, AbstractExecutionStats} of statistics.
 """
-
 function bmark_solvers(solvers::Dict{Symbol, <:Any}, args...; kwargs...)
   stats = Dict{Symbol, DataFrame}()
   # Initialize the lock for thread-safe updates
