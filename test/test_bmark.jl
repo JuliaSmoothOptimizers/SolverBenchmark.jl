@@ -180,10 +180,9 @@ function test_bmark()
         ),
     )
     stats = bmark_solvers(solvers, problems)
-
-    @test stats[:dummy_solver_specific][1, :status] == :exception
-    @test stats[:dummy_solver_specific][2, :status] == :first_order
-    @test stats[:dummy_solver_specific][3, :status] == :exception
+    @test stats[:dummy_solver_specific][1,:status] == :exception
+    @test stats[:dummy_solver_specific][2,:status] == :first_order
+    @test stats[:dummy_solver_specific][3,:status] == :exception
     @test size(stats[:dummy_solver_specific], 1) == 3
 
     stats = bmark_solvers(
