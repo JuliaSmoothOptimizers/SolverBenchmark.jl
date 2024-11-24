@@ -116,7 +116,7 @@ function test_bmark()
 
       for key in keys(single_threaded_result)
         for i = 1:nrow(single_threaded_result[key])
-          for col in names(df)
+          for col in names(single_threaded_result[key])
             if col !== :elapsed_time
               @test single_threaded_result[key][i, col] == multithreaded_result[key][i, col]
             end
