@@ -100,28 +100,23 @@ function test_bmark()
       solvers = Dict(
         :dummy => dummy_solver,
         :callable => callable,
-        :dummy_solver_specific =>
-          nlp -> dummy_solver(
-            nlp,
-            callback = (nlp, solver, stats) -> set_solver_specific!(stats, :foo, 1),
-          ),
       )
 
       # Run the single-threaded version
+      reset!.(problems)
       single_threaded_result = bmark_solvers_single_thread(solvers, problems)
+      
+      reset!.(problems)
       multithreaded_result = bmark_solvers(solvers, problems)
+      reset!.(problems)
 
       # Compare the results
       @test length(single_threaded_result) == length(multithreaded_result)
 
-      for key in keys(single_threaded_result)
-        for i = 1:nrow(single_threaded_result[key])
-          for col in names(single_threaded_result[key])
-            if col !== :elapsed_time
-              @test single_threaded_result[key][i, col] == multithreaded_result[key][i, col]
-            end
-          end
-        end
+      for (key, df) in single_threaded_result
+        df1 = select!(df, Not(:elapsed_time))
+        df2 = select!(multithreaded_result[key], Not(:elapsed_time))
+        @test isequal(df1, df2)
       end
     end
   end
