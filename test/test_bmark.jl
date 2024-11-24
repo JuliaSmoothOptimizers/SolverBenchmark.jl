@@ -115,16 +115,12 @@ function test_bmark()
       @test length(single_threaded_result) == length(multithreaded_result)
 
       for key in keys(single_threaded_result)
-        # for (i, row) in enumerate(eachrow(single_threaded_result[key]))
-        for i in 1:nrow(single_threaded_result[key])
-          @test single_threaded_result[key][i,:status] == multithreaded_result[key][i, :status]
-          @test single_threaded_result[key][i,:name] == multithreaded_result[key][i, :name]
-          @test single_threaded_result[key][i,:nvar] == multithreaded_result[key][i, :nvar]
-          @test single_threaded_result[key][i,:ncon] == multithreaded_result[key][i, :ncon]
-          
-          @test single_threaded_result[key][i,:objective] ≈ multithreaded_result[key][i, :objective]
-          @test single_threaded_result[key][i,:dual_feas] ≈ multithreaded_result[key][i, :dual_feas]
-          @test single_threaded_result[key][i,:primal_feas] ≈ multithreaded_result[key][i, :primal_feas]
+        for i = 1:nrow(single_threaded_result[key])
+          for col in names(df)
+            if col !== :elapsed_time
+              @test single_threaded_result[key][i, col] == multithreaded_result[key][i, col]
+            end
+          end
         end
       end
     end
