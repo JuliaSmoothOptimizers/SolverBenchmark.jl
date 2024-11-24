@@ -100,12 +100,16 @@ function test_bmark()
       solvers = Dict(
         :dummy => dummy_solver,
         :callable => callable,
+        :dummy_solver_specific =>
+          nlp -> callable(
+            nlp,
+            callback = (nlp, solver, stats) -> set_solver_specific!(stats, :foo, 1),
+          ),
       )
 
       # Run the single-threaded version
       reset!.(problems)
       single_threaded_result = bmark_solvers_single_thread(solvers, problems)
-      
       reset!.(problems)
       multithreaded_result = bmark_solvers(solvers, problems)
       reset!.(problems)
@@ -113,9 +117,9 @@ function test_bmark()
       # Compare the results
       @test length(single_threaded_result) == length(multithreaded_result)
 
-      for (key, df) in single_threaded_result
-        df1 = select!(df, Not(:elapsed_time))
-        df2 = select!(multithreaded_result[key], Not(:elapsed_time))
+      for (mykey, df) in single_threaded_result
+        df1 = select(df, Not(:elapsed_time))
+        df2 = select(multithreaded_result[mykey], Not(:elapsed_time))
         @test isequal(df1, df2)
       end
     end
@@ -169,7 +173,7 @@ function test_bmark()
     ]
 
     solvers = Dict(
-      :dummy_solver_specific =>
+      :dummy_solver_specific => 
         nlp -> dummy_solver(
           nlp,
           callback = (nlp, solver, stats) -> set_solver_specific!(stats, :foo, 1),
@@ -182,12 +186,16 @@ function test_bmark()
     @test stats[:dummy_solver_specific][3, :status] == :exception
     @test size(stats[:dummy_solver_specific], 1) == 3
 
-    stats =
-      bmark_solvers(solvers, problems, prune = false, skipif = problem -> problem.meta.ncon == 0)
+    stats = bmark_solvers(
+      solvers, 
+      problems, 
+      prune = false, 
+      skipif = problem -> problem.meta.ncon == 0,
+    )
 
     @test stats[:dummy_solver_specific][1, :extrainfo] == "skipped"
-    @test stats[:dummy_solver_specific][2, :status] == :first_order
-    @test stats[:dummy_solver_specific][3, :status] == :exception
+    @test stats[:dummy_solver_specific][2,:status] == :first_order
+    @test stats[:dummy_solver_specific][3,:status] == :exception
     @test size(stats[:dummy_solver_specific], 1) == 3
   end
 end
