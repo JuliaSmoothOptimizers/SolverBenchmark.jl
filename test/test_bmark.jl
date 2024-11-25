@@ -97,7 +97,7 @@ function test_bmark()
     ]
     callable = CallableSolver()
     solvers = Dict(
-      :dummy => dummy_solver,
+      :dummy_1 => dummy_solver,
       :callable => callable,
       :dummy_solver_specific =>
         nlp -> dummy_solver(
