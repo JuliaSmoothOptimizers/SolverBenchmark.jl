@@ -75,53 +75,51 @@ function test_bmark()
     pretty_stats(stats[:dummy])
   end
 
-  if Threads.nthreads() > 1  # if we have multi_thread
-    @testset "Multithread vs Single-Thread Consistency" begin
-      problems = [
-        ADNLPModel(x -> sum(x .^ 2), ones(2), name = "Quadratic"),
-        ADNLPModel(
-          x -> sum(x .^ 2),
-          ones(2),
-          x -> [sum(x) - 1],
-          [0.0],
-          [0.0],
-          name = "Cons quadratic",
+  @testset "Multithread vs Single-Thread Consistency" begin
+    problems = [
+      ADNLPModel(x -> sum(x .^ 2), ones(2), name = "Quadratic"),
+      ADNLPModel(
+        x -> sum(x .^ 2),
+        ones(2),
+        x -> [sum(x) - 1],
+        [0.0],
+        [0.0],
+        name = "Cons quadratic",
+      ),
+      ADNLPModel(
+        x -> (x[1] - 1)^2 + 4 * (x[2] - x[1]^2)^2,
+        ones(2),
+        x -> [x[1]^2 + x[2]^2 - 1],
+        [0.0],
+        [0.0],
+        name = "Cons Rosen",
+      ),
+    ]
+    callable = CallableSolver()
+    solvers = Dict(
+      :dummy => dummy_solver,
+      :callable => callable,
+      :dummy_solver_specific =>
+        nlp -> dummy_solver(
+          nlp,
+          callback = (nlp, solver, stats) -> set_solver_specific!(stats, :foo, 1),
         ),
-        ADNLPModel(
-          x -> (x[1] - 1)^2 + 4 * (x[2] - x[1]^2)^2,
-          ones(2),
-          x -> [x[1]^2 + x[2]^2 - 1],
-          [0.0],
-          [0.0],
-          name = "Cons Rosen",
-        ),
-      ]
-      callable = CallableSolver()
-      solvers = Dict(
-        :dummy => dummy_solver,
-        :callable => callable,
-        :dummy_solver_specific =>
-          nlp -> callable(
-            nlp,
-            callback = (nlp, solver, stats) -> set_solver_specific!(stats, :foo, 1),
-          ),
-      )
+    )
 
-      # Run the single-threaded version
-      reset!.(problems)
-      single_threaded_result = bmark_solvers_single_thread(solvers, problems)
-      reset!.(problems)
-      multithreaded_result = bmark_solvers(solvers, problems)
-      reset!.(problems)
+    # Run the single-threaded version
+    reset!.(problems)
+    single_threaded_result = bmark_solvers_single_thread(solvers, problems)
+    reset!.(problems)
+    multithreaded_result = bmark_solvers(solvers, problems)
+    reset!.(problems)
 
-      # Compare the results
-      @test length(single_threaded_result) == length(multithreaded_result)
+    # Compare the results
+    @test length(single_threaded_result) == length(multithreaded_result)
 
-      for (mykey, df) in single_threaded_result
-        df1 = select(df, Not(:elapsed_time))
-        df2 = select(multithreaded_result[mykey], Not(:elapsed_time))
-        @test isequal(df1, df2)
-      end
+    for (mykey, df) in single_threaded_result
+      df1 = select(df, Not(:elapsed_time))
+      df2 = select(multithreaded_result[mykey], Not(:elapsed_time))
+      @test isequal(df1, df2)
     end
   end
   @testset "Testing logging" begin
