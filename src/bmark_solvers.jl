@@ -23,20 +23,22 @@ Any keyword argument accepted by `solve_problems`
 A Dict{Symbol, AbstractExecutionStats} of statistics.
 """
 function bmark_solvers(solvers::Dict{Symbol, <:Any}, args...; kwargs...)
-  stats = Dict{Symbol, DataFrame}()
-  # Initialize the lock for thread-safe updates
-  my_lock = ReentrantLock()
-  key_array = collect(keys(solvers))  # Convert keys to an array for indexing
+  tasks = Vector{Task}(undef, length(solvers))
+  names = Vector{Symbol}(undef, length(solvers))
+  idx = 0
+  for (name, solver) in solvers
+      idx += 1
+      names[idx] = name
+      tasks[idx] = Threads.@spawn begin
+          @info "running solver $name"
+          solve_problems(solver, name, args...; kwargs...)
+      end
+  end
 
-  Threads.@threads for i in eachindex(key_array) 
-    name = key_array[i]
-    solver = solvers[name]
-    @info "Running solver $name on thread $(Threads.threadid())"
-    result = solve_problems(solver, name, args...; kwargs...)
-    # Ensure thread-safe access to `stats`
-    lock(my_lock) do
-      stats[name] = result
-    end
+  stats = Dict{Symbol, DataFrame}()
+  for i in 1:length(tasks)
+      result = fetch(tasks[i])
+      stats[names[i]] = result
   end
   return stats
 end
