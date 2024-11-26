@@ -28,14 +28,9 @@ function bmark_solvers(solvers::Dict{Symbol, <:Any}, args...; kwargs...)
     for (name, solver) in solvers
         idx += 1
         names[idx] = name
-        # Make a deep copy of the problems for this task so the race condition doesn't occur
-        # local_args = deepcopy.(args)
-        local_args = args
-        local_solver = deepcopy(solver)
         tasks[idx] = Threads.@spawn begin
             @info "running solver $name"
-            # solve_problems(solver, name, local_args...; kwargs...)
-            solve_problems(local_solver, name, local_args...; kwargs...)
+            solve_problems(solver, name, args...; kwargs...)
         end
     end
 

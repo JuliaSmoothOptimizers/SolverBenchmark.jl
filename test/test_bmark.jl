@@ -76,7 +76,7 @@ function test_bmark()
   end
 
   @testset "Multithread vs Single-Thread Consistency" begin
-    problems = [
+    problems = (
       ADNLPModel(x -> sum(x .^ 2), ones(2), name = "Quadratic"),
       ADNLPModel(
         x -> sum(x .^ 2),
@@ -94,7 +94,7 @@ function test_bmark()
         [0.0],
         name = "Cons Rosen",
       ),
-    ]
+    )
     callable = CallableSolver()
     solvers = Dict(
       :dummy_1 => dummy_solver,
