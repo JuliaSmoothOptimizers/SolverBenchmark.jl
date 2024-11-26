@@ -107,11 +107,8 @@ function test_bmark()
     )
 
     # Run the single-threaded version
-    reset!.(problems)
     single_threaded_result = bmark_solvers_single_thread(solvers, problems)
-    reset!.(problems)
     multithreaded_result = bmark_solvers(solvers, problems)
-    reset!.(problems)
 
     # Compare the results
     @test length(single_threaded_result) == length(multithreaded_result)
