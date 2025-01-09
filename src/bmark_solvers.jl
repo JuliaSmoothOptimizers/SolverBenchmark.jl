@@ -36,7 +36,7 @@ function bmark_solvers(solvers::Dict{Symbol, <:Any}, args...; kwargs...)
     end
 
   stats = Dict{Symbol, DataFrame}()
-  for (name, solver) in solvers
+  @threads for (name, solver) in collect(pairs(solvers))
     @info "running solver $name"
     stats[name] = solve_problems(solver, name, args...; kwargs...)
   end
