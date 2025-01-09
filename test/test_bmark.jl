@@ -16,7 +16,7 @@ function bmark_solvers_single_thread(solvers::Dict{Symbol, <:Any}, args...; kwar
   stats = Dict{Symbol, DataFrame}()
   for (name, solver) in solvers
     @info "running solver $name"
-    stats[name] = solve_problems(solver, name, args...; kwargs...)
+    stats[name] = solve_problems(solver, name, args...; kwargs...)#TODO need to call old_SolverProblems
   end
   return stats
 end
