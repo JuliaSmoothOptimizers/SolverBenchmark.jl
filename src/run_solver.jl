@@ -93,6 +93,9 @@ function solve_problems(
   col_idx = indexin(colstats, names)
 
   first_problem = true
+  nb_unsuccessful_since_start = 0
+  @info log_header(colstats, types[col_idx], hdr_override = info_hdr_override)
+
   for (id, problem) in enumerate(problems)
     if reset_problem
       reset!(problem)
@@ -101,6 +104,9 @@ function solve_problems(
     problem_info = [id; problem.meta.name; problem.meta.nvar; problem.meta.ncon; nequ]
     skipthis = skipif(problem)
     if skipthis
+      if first_problem && !prune
+        nb_unsuccessful_since_start += 1
+      end
       prune || push!(
         stats,
         [
@@ -126,13 +132,10 @@ function solve_problems(
         if first_problem
           for (k, v) in s.solver_specific
             if !(typeof(v) <: AbstractVector)
-              insertcols!(stats, ncol(stats) + 1, k => Vector{Union{typeof(v), Missing}}())
+              insertcols!(stats, ncol(stats) + 1, k => Vector{Union{typeof(v), Missing}}(undef, nb_unsuccessful_since_start))
               push!(specific, k)
             end
-          end
-
-          @info log_header(colstats, types[col_idx], hdr_override = info_hdr_override)
-
+          end      
           first_problem = false
         end
         counters_list =
@@ -161,6 +164,9 @@ function solve_problems(
         )
       catch e
         @error "caught exception" e
+        if first_problem
+          nb_unsuccessful_since_start += 1
+        end
         push!(
           stats,
           [

@@ -2,6 +2,7 @@ using DataFrames
 using Logging
 using NLPModels, ADNLPModels
 using SolverCore
+using Base.Threads
 
 import SolverCore.dummy_solver
 
@@ -9,6 +10,15 @@ mutable struct CallableSolver end
 
 function (solver::CallableSolver)(nlp::AbstractNLPModel; kwargs...)
   return GenericExecutionStats(nlp)
+end
+
+function bmark_solvers_single_thread(solvers::Dict{Symbol, <:Any}, args...; kwargs...)
+  stats = Dict{Symbol, DataFrame}()
+  for (name, solver) in solvers
+    @info "running solver $name"
+    stats[name] = solve_problems(solver, name, args...; kwargs...)
+  end
+  return stats
 end
 
 function test_bmark()
@@ -65,6 +75,50 @@ function test_bmark()
     pretty_stats(stats[:dummy])
   end
 
+  @testset "Multithread vs Single-Thread Consistency" begin
+    problems = (
+      ADNLPModel(x -> sum(x .^ 2), ones(2), name = "Quadratic"),
+      ADNLPModel(
+        x -> sum(x .^ 2),
+        ones(2),
+        x -> [sum(x) - 1],
+        [0.0],
+        [0.0],
+        name = "Cons quadratic",
+      ),
+      ADNLPModel(
+        x -> (x[1] - 1)^2 + 4 * (x[2] - x[1]^2)^2,
+        ones(2),
+        x -> [x[1]^2 + x[2]^2 - 1],
+        [0.0],
+        [0.0],
+        name = "Cons Rosen",
+      ),
+    )
+    callable = CallableSolver()
+    solvers = Dict(
+      :dummy_1 => dummy_solver,
+      :callable => callable,
+      :dummy_solver_specific =>
+        nlp -> dummy_solver(
+          nlp,
+          callback = (nlp, solver, stats) -> set_solver_specific!(stats, :foo, 1),
+        ),
+    )
+
+    # Run the single-threaded version
+    single_threaded_result = bmark_solvers_single_thread(solvers, problems)
+    multithreaded_result = bmark_solvers(solvers, problems)
+
+    # Compare the results
+    @test length(single_threaded_result) == length(multithreaded_result)
+
+    for (mykey, df) in single_threaded_result
+      df1 = select(df, Not(:elapsed_time))
+      df2 = select(multithreaded_result[mykey], Not(:elapsed_time))
+      @test isequal(df1, df2)
+    end
+  end
   @testset "Testing logging" begin
     nlps = [ADNLPModel(x -> sum(x .^ k), ones(2k), name = "Sum of power $k") for k = 2:4]
     push!(
@@ -90,6 +144,55 @@ function test_bmark()
       solve_problems(dummy_solver, "dummy", nlps, info_hdr_override = hdr_override)
       reset!.(nlps)
     end
+  end
+
+  @testset "Test skips and exceptions" begin
+    problems = [
+      ADNLPModel(x -> sum(x .^ 2), ones(2), name = "Quadratic"),
+      ADNLPModel(
+        x -> (x[1] - 1)^2 + 4 * (x[2] - x[1]^2)^2,
+        ones(2),
+        x -> [x[1]^2 + x[2]^2 - 1],
+        [0.0],
+        [0.0],
+        name = "Cons Rosen",
+      ),
+      ADNLPModel(
+        x -> sum(x .^ 2),
+        ones(2),
+        x -> [sum(x) - 1],
+        [0.0],
+        [0.0],
+        name = "Cons quadratic",
+      ),
+      
+    ]
+
+    solvers = Dict(
+      :dummy_solver_specific => 
+        nlp -> dummy_solver(
+          nlp,
+          callback = (nlp, solver, stats) -> set_solver_specific!(stats, :foo, 1),
+        ),
+    )
+    stats = bmark_solvers(solvers, problems)
+    
+    @test stats[:dummy_solver_specific][1,:status] == :exception
+    @test stats[:dummy_solver_specific][2,:status] == :first_order
+    @test stats[:dummy_solver_specific][3,:status] == :exception
+    @test size(stats[:dummy_solver_specific], 1) == 3
+
+    stats = bmark_solvers(
+      solvers, 
+      problems, 
+      prune = false, 
+      skipif = problem -> problem.meta.ncon == 0,
+    )
+
+    @test stats[:dummy_solver_specific][1, :extrainfo] == "skipped"
+    @test stats[:dummy_solver_specific][2,:status] == :first_order
+    @test stats[:dummy_solver_specific][3,:status] == :exception
+    @test size(stats[:dummy_solver_specific], 1) == 3
   end
 end
 
