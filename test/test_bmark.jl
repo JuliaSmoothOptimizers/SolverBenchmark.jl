@@ -16,7 +16,7 @@ function bmark_solvers_single_thread(solvers::Dict{Symbol, <:Any}, args...; kwar
   stats = Dict{Symbol, DataFrame}()
   for (name, solver) in solvers
     @info "running solver $name"
-    stats[name] = solve_problems(solver, name, args...; use_thread = false, kwargs...)#TODO need to call old_SolverProblems
+    stats[name] = solve_problems(solver, name, args...; use_threads = false, kwargs...)#TODO need to call old_SolverProblems
   end
   return stats
 end
@@ -116,6 +116,9 @@ function test_bmark()
     for (mykey, df) in single_threaded_result
       df1 = select(df, Not(:elapsed_time))
       df2 = select(multithreaded_result[mykey], Not(:elapsed_time))
+      sort!(df1, [:id])
+      sort!(df2, [:id])
+
       @test isequal(df1, df2)
     end
   end
