@@ -180,7 +180,7 @@ function test_bmark()
     )
     stats = bmark_solvers(solvers, problems)
 
-    sort!(stats[:dummy_solver_specific], [:id])
+    sort!(stats[:dummy_solver_specific], [:id]) # sort by id, multi threaded may not be in order
     @test stats[:dummy_solver_specific][1,:status] == :exception
     @test stats[:dummy_solver_specific][2,:status] == :first_order
     @test stats[:dummy_solver_specific][3,:status] == :exception
