@@ -14,7 +14,7 @@ Apply a solver to a set of problems.
   CUTEst problems).
 
 #### Keyword arguments
-* `use_threads::Bool`: whether to use threads (default: `true`);
+* `use_threads::Bool`: whether to use threads (default: `false`);
 * `solver_logger::AbstractLogger`: logger wrapping the solver call (default: `NullLogger`);
 * `reset_problem::Bool`: reset the problem's counters before solving (default: `true`);
 * `skipif::Function`: function to be applied to a problem and return whether to skip it
