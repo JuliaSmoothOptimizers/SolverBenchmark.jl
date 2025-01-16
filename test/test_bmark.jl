@@ -12,15 +12,6 @@ function (solver::CallableSolver)(nlp::AbstractNLPModel; kwargs...)
   return GenericExecutionStats(nlp)
 end
 
-function bmark_solvers_single_thread(solvers::Dict{Symbol, <:Any}, args...; kwargs...)
-  stats = Dict{Symbol, DataFrame}()
-  for (name, solver) in solvers
-    @info "running solver $name"
-    stats[name] = solve_problems(solver, name, args...; use_threads = false, kwargs...)#TODO need to call old_SolverProblems
-  end
-  return stats
-end
-
 function test_bmark()
   @testset "Testing bmark" begin
     problems = [
@@ -107,8 +98,8 @@ function test_bmark()
     )
 
     # Run the single-threaded version
-    single_threaded_result = bmark_solvers_single_thread(solvers, problems)
-    multithreaded_result = bmark_solvers(solvers, problems)
+    single_threaded_result = bmark_solvers_single_thread(solvers, problems, use_threads = false)
+    multithreaded_result = bmark_solvers(solvers, problems, use_threads = true)
 
     # Compare the results
     @test length(single_threaded_result) == length(multithreaded_result)

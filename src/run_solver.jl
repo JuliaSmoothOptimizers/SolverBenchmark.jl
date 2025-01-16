@@ -33,7 +33,7 @@ function solve_problems(
     solver,
     solver_name::TName,
     problems;
-    use_threads::Bool = true,
+    use_threads::Bool = false,
     solver_logger::AbstractLogger = NullLogger(),
     reset_problem::Bool = true,
     skipif::Function = x -> false,
