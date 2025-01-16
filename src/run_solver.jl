@@ -1,4 +1,5 @@
 export solve_problems
+using Base.Threads
 
 """
     solve_problems(solver, solver_name, problems; kwargs...)
