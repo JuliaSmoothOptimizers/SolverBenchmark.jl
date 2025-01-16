@@ -2,8 +2,6 @@ using DataFrames
 using Logging
 using NLPModels, ADNLPModels
 using SolverCore
-using Base.Threads
-
 import SolverCore.dummy_solver
 
 mutable struct CallableSolver end
