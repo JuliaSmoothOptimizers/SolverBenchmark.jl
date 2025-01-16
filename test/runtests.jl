@@ -17,8 +17,9 @@ using Plots
 # this package
 using SolverBenchmark
 
-# include("data.jl")
-# include("tables.jl")
-# include("profiles.jl")
-# include("pkgbmark.jl")
+include("data.jl")
+include("tables.jl")
+include("profiles.jl")
+include("pkgbmark.jl")
 include("test_bmark.jl")
+include("CUTEst_test.jl")
