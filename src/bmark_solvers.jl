@@ -22,4 +22,4 @@ function bmark_solvers(solvers::Dict{Symbol, <:Any}, args...; kwargs...)
     stats[name] = solve_problems(solver, name, args...; kwargs...)
   end
   return stats
-end 
+end
