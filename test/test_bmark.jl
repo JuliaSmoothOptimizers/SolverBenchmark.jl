@@ -2,7 +2,6 @@ using DataFrames
 using Logging
 using NLPModels, ADNLPModels
 using SolverCore
-
 import SolverCore.dummy_solver
 
 mutable struct CallableSolver end
@@ -65,6 +64,53 @@ function test_bmark()
     pretty_stats(stats[:dummy])
   end
 
+  @testset "Multithread vs Single-Thread Consistency" begin
+    problems = (
+      ADNLPModel(x -> sum(x .^ 2), ones(2), name = "Quadratic"),
+      ADNLPModel(
+        x -> sum(x .^ 2),
+        ones(2),
+        x -> [sum(x) - 1],
+        [0.0],
+        [0.0],
+        name = "Cons quadratic",
+      ),
+      ADNLPModel(
+        x -> (x[1] - 1)^2 + 4 * (x[2] - x[1]^2)^2,
+        ones(2),
+        x -> [x[1]^2 + x[2]^2 - 1],
+        [0.0],
+        [0.0],
+        name = "Cons Rosen",
+      ),
+    )
+    callable = CallableSolver()
+    solvers = Dict(
+      :dummy_1 => dummy_solver,
+      :callable => callable,
+      :dummy_solver_specific =>
+        nlp -> dummy_solver(
+          nlp,
+          callback = (nlp, solver, stats) -> set_solver_specific!(stats, :foo, 1),
+        ),
+    )
+
+    # Run the single-threaded version
+    single_threaded_result = bmark_solvers(solvers, problems, use_threads = false)
+    multithreaded_result = bmark_solvers(solvers, problems, use_threads = true)
+
+    # Compare the results
+    @test length(single_threaded_result) == length(multithreaded_result)
+
+    for (mykey, df) in single_threaded_result
+      df1 = select(df, Not(:elapsed_time))
+      df2 = select(multithreaded_result[mykey], Not(:elapsed_time))
+      sort!(df1, [:id])
+      sort!(df2, [:id])
+
+      @test isequal(df1, df2)
+    end
+  end
   @testset "Testing logging" begin
     nlps = [ADNLPModel(x -> sum(x .^ k), ones(2k), name = "Sum of power $k") for k = 2:4]
     push!(
@@ -111,10 +157,11 @@ function test_bmark()
         [0.0],
         name = "Cons quadratic",
       ),
+      
     ]
 
     solvers = Dict(
-      :dummy_solver_specific =>
+      :dummy_solver_specific => 
         nlp -> dummy_solver(
           nlp,
           callback = (nlp, solver, stats) -> set_solver_specific!(stats, :foo, 1),
@@ -122,17 +169,22 @@ function test_bmark()
     )
     stats = bmark_solvers(solvers, problems)
 
-    @test stats[:dummy_solver_specific][1, :status] == :exception
-    @test stats[:dummy_solver_specific][2, :status] == :first_order
-    @test stats[:dummy_solver_specific][3, :status] == :exception
+    sort!(stats[:dummy_solver_specific], [:id]) # sort by id, multi threaded may not be in order
+    @test stats[:dummy_solver_specific][1,:status] == :exception
+    @test stats[:dummy_solver_specific][2,:status] == :first_order
+    @test stats[:dummy_solver_specific][3,:status] == :exception
     @test size(stats[:dummy_solver_specific], 1) == 3
 
-    stats =
-      bmark_solvers(solvers, problems, prune = false, skipif = problem -> problem.meta.ncon == 0)
+    stats = bmark_solvers(
+      solvers, 
+      problems, 
+      prune = false, 
+      skipif = problem -> problem.meta.ncon == 0,
+    )
 
     @test stats[:dummy_solver_specific][1, :extrainfo] == "skipped"
-    @test stats[:dummy_solver_specific][2, :status] == :first_order
-    @test stats[:dummy_solver_specific][3, :status] == :exception
+    @test stats[:dummy_solver_specific][2,:status] == :first_order
+    @test stats[:dummy_solver_specific][3,:status] == :exception
     @test size(stats[:dummy_solver_specific], 1) == 3
   end
 end
