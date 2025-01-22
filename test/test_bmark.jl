@@ -157,11 +157,10 @@ function test_bmark()
         [0.0],
         name = "Cons quadratic",
       ),
-      
     ]
 
     solvers = Dict(
-      :dummy_solver_specific => 
+      :dummy_solver_specific =>
         nlp -> dummy_solver(
           nlp,
           callback = (nlp, solver, stats) -> set_solver_specific!(stats, :foo, 1),
@@ -170,21 +169,17 @@ function test_bmark()
     stats = bmark_solvers(solvers, problems)
 
     sort!(stats[:dummy_solver_specific], [:id]) # sort by id, multi threaded may not be in order
-    @test stats[:dummy_solver_specific][1,:status] == :exception
-    @test stats[:dummy_solver_specific][2,:status] == :first_order
-    @test stats[:dummy_solver_specific][3,:status] == :exception
+    @test stats[:dummy_solver_specific][1, :status] == :exception
+    @test stats[:dummy_solver_specific][2, :status] == :first_order
+    @test stats[:dummy_solver_specific][3, :status] == :exception
     @test size(stats[:dummy_solver_specific], 1) == 3
 
-    stats = bmark_solvers(
-      solvers, 
-      problems, 
-      prune = false, 
-      skipif = problem -> problem.meta.ncon == 0,
-    )
+    stats =
+      bmark_solvers(solvers, problems, prune = false, skipif = problem -> problem.meta.ncon == 0)
 
     @test stats[:dummy_solver_specific][1, :extrainfo] == "skipped"
-    @test stats[:dummy_solver_specific][2,:status] == :first_order
-    @test stats[:dummy_solver_specific][3,:status] == :exception
+    @test stats[:dummy_solver_specific][2, :status] == :first_order
+    @test stats[:dummy_solver_specific][3, :status] == :exception
     @test size(stats[:dummy_solver_specific], 1) == 3
   end
 end
