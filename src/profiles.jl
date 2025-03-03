@@ -107,8 +107,8 @@ function profile_solvers(
     push!(ps, p)
   end
 
+  ipairs = 0
   if nsolvers > 2
-    ipairs = 0
     # combinations of solvers 2 by 2
     for i = 2:nsolvers
       for j = 1:(i - 1)
@@ -121,7 +121,7 @@ function profile_solvers(
         p = performance_profile(b, Ps[1], string.(pair), palette = clrs, legend = :bottomright)
         ipairs < npairs && xlabel!(p, "")
         push!(ps, p)
-        for k = 2:length(Ps)
+        for k = 2:ncosts
           p = performance_profile(b, Ps[k], string.(pair), palette = clrs, legend = false)
           ipairs < npairs && xlabel!(p, "")
           ylabel!(p, "")
@@ -129,14 +129,11 @@ function profile_solvers(
         end
       end
     end
-    p = plot(
-      ps...,
-      layout = (1 + ipairs, ncosts),
-      size = (ncosts * width, (1 + ipairs) * height);
-      kwargs...,
-    )
-  else
-    p = plot(ps..., layout = (1, ncosts), size = (ncosts * width, height); kwargs...)
   end
-  p
+  plot(
+    ps...,
+    layout = (1 + ipairs, ncosts),
+    size = (ncosts * width, (1 + ipairs) * height);
+    kwargs...,
+  )
 end
