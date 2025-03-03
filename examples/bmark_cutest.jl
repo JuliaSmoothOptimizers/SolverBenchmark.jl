@@ -3,7 +3,7 @@ using CUTEst, JSOSolvers, NLPModelsIpopt, SolverBenchmark
 
 # define problems
 # for CUTEst models, define list of models as an iterator to avoid materializing all models at once
-problem_names = CUTEst.select(max_con = 0, min_var = 50, max_var = 80, only_free_var = true)
+problem_names = CUTEst.select_sif_problems(max_con = 0, min_var = 50, max_var = 80, only_free_var = true)
 problems = (CUTEstModel(p) for p in problem_names)
 
 # define solvers
