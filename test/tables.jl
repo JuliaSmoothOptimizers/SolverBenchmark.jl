@@ -1,6 +1,6 @@
 # Test all table output
 function test_tables()
-  macro setup_data
+  macro setup_data()
     return quote
       stats = get_stats_data() # from data.jl
       include("output_results.jl")
