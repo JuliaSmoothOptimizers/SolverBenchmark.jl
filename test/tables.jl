@@ -1,13 +1,16 @@
 # Test all table output
 function test_tables()
-  example_folder = joinpath(@__DIR__, "example")
-  stats = get_stats_data() # from data.jl
-  include("output_results.jl")
-
-  df = stats[:alpha]
-  cols = [:status, :name, :f, :t, :iter]
+  macro setup_data
+    return quote
+      stats = get_stats_data() # from data.jl
+      include("output_results.jl")
+      df = stats[:alpha]
+      cols = [:status, :name, :f, :t, :iter]
+    end
+  end
 
   @testset "alpha results in latex format" begin
+    @setup_data
     header = Dict(:status => "flag", :f => "\\(f(x)\\)", :t => "time")
     io = IOBuffer()
     pretty_latex_stats(io, df[!, cols], hdr_override = header)
@@ -15,6 +18,7 @@ function test_tables()
   end
 
   @testset "alpha results in latex format with highlighting" begin
+    @setup_data
     header = Dict(:status => "flag", :f => "\\(f(x)\\)", :t => "time")
     hl = passfail_latex_highlighter(df)
     io = IOBuffer()
@@ -23,6 +27,7 @@ function test_tables()
   end
 
   @testset "alpha results in markdown format" begin
+    @setup_data
     header = Dict(:status => "flag", :f => "f(x)", :t => "time")
     fmts = Dict(:t => "%.2f")
     io = IOBuffer()
@@ -31,6 +36,7 @@ function test_tables()
   end
 
   @testset "alpha results in unicode format" begin
+    @setup_data
     header = Dict(:status => "flag", :f => "f(x)", :t => "time")
     fmts = Dict(:t => "%.2f")
     io = IOBuffer()
@@ -39,6 +45,7 @@ function test_tables()
   end
 
   @testset "Show all table output for joined solver" begin
+    @setup_data
     df = join(
       stats,
       [:status, :f, :t],
@@ -50,18 +57,21 @@ function test_tables()
   end
 
   @testset "joined results in latex format" begin
+    @setup_data
     io = IOBuffer()
     pretty_latex_stats(io, df)
     @test all(chomp.(split(joined_tex)) .== chomp.(split(String(take!(io)))))
   end
 
   @testset "joined results in markdown format" begin
+    @setup_data
     io = IOBuffer()
     pretty_stats(io, df, tf = tf_markdown)
     @test all(chomp.(split(joined_md)) .== chomp.(split(String(take!(io)))))
   end
 
   @testset "missing values" begin
+    @setup_data
     df = DataFrame(
       A = [1.0, missing, 3.0],
       B = [missing, 1, 3],
