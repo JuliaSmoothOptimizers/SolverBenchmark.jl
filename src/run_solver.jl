@@ -1,4 +1,5 @@
 export solve_problems
+using Base.Threads
 
 """
     solve_problems(solver, solver_name, problems; kwargs...)
@@ -13,6 +14,7 @@ Apply a solver to a set of problems.
   CUTEst problems).
 
 #### Keyword arguments
+* `use_threads::Bool`: whether to use threads (default: `true`);
 * `solver_logger::AbstractLogger`: logger wrapping the solver call (default: `NullLogger`);
 * `reset_problem::Bool`: reset the problem's counters before solving (default: `true`);
 * `skipif::Function`: function to be applied to a problem and return whether to skip it
@@ -31,6 +33,7 @@ function solve_problems(
   solver,
   solver_name::TName,
   problems;
+  use_threads::Bool = true,
   solver_logger::AbstractLogger = NullLogger(),
   reset_problem::Bool = true,
   skipif::Function = x -> false,
@@ -46,13 +49,16 @@ function solve_problems(
     :dual_feas,
     :primal_feas,
   ],
-  info_hdr_override::Dict{Symbol, String} = Dict{Symbol, String}(:solver_name => "Solver"),
+  info_hdr_override::Dict{Symbol, String} = Dict(:solver_name => "Solver"),
   prune::Bool = true,
   kwargs...,
 ) where {TName}
+
+  # Collect information about counters
   f_counters = collect(fieldnames(Counters))
   fnls_counters = collect(fieldnames(NLSCounters))[2:end] # Excludes :counters
   ncounters = length(f_counters) + length(fnls_counters)
+
   types = [
     TName
     Int
@@ -88,27 +94,49 @@ function solve_problems(
   ]
   stats = DataFrame(names .=> [T[] for T in types])
 
+  # Thread-safe mechanisms
+  stats_lock = ReentrantLock()  # Lock for modifying shared data structures
+  first_problem = Atomic{Bool}(true)  # Atomic for safe interaction
+  # specific = Atomic{Vector{Symbol}}([])  # Use atomic for thread-safe updates
   specific = Symbol[]
+  nb_unsuccessful_since_start = Atomic{Int}(0)
 
+  # Prepare DataFrame columns for logging
   col_idx = indexin(colstats, names)
-
-  first_problem = true
-  nb_unsuccessful_since_start = 0
   @info log_header(colstats, types[col_idx], hdr_override = info_hdr_override)
 
-  for (id, problem) in enumerate(problems)
+  # Convert problems to an indexable vector
+  problem_list = collect(problems)
+  num_problems = length(problem_list)
+
+  # Function to safely push data to the DataFrame
+  function safe_push!(data_entry)
+    lock(stats_lock) do
+      push!(stats, data_entry)
+    end
+  end
+
+  # Function to process a single problem
+  function process_problem(idx)
+    problem = problem_list[idx]
+
+    # Reset the problem, if requested
     if reset_problem
       reset!(problem)
     end
+
+    # Problem metadata
     nequ = problem isa AbstractNLSModel ? problem.nls_meta.nequ : 0
-    problem_info = [id; problem.meta.name; problem.meta.nvar; problem.meta.ncon; nequ]
+    problem_info = [idx; problem.meta.name; problem.meta.nvar; problem.meta.ncon; nequ]
+
+    # Determine if the problem should be skipped
     skipthis = skipif(problem)
+    # Check if this problem should be skipped
     if skipthis
-      if first_problem && !prune
-        nb_unsuccessful_since_start += 1
+      if first_problem[] && !prune
+        atomic_add!(nb_unsuccessful_since_start, 1)
       end
-      prune || push!(
-        stats,
+      prune || safe_push!(
         [
           solver_name
           problem_info
@@ -124,24 +152,31 @@ function solve_problems(
         ],
       )
       finalize(problem)
+      return
     else
       try
         s = with_logger(solver_logger) do
           solver(problem; kwargs...)
         end
-        if first_problem
-          for (k, v) in s.solver_specific
-            if !(typeof(v) <: AbstractVector)
-              insertcols!(
-                stats,
-                ncol(stats) + 1,
-                k => Vector{Union{typeof(v), Missing}}(undef, nb_unsuccessful_since_start),
-              )
-              push!(specific, k)
+
+        # Handle first problem (thread-safe updates)
+        if first_problem[]
+          first_problem[] = false
+          lock(stats_lock) do
+            for (k, v) in s.solver_specific
+              if !(typeof(v) <: AbstractVector)
+                insertcols!(
+                  stats,
+                  ncol(stats) + 1,
+                  k => Vector{Union{typeof(v), Missing}}(undef, nb_unsuccessful_since_start[]),
+                )
+                push!(specific, k)
+              end
             end
           end
-          first_problem = false
         end
+
+        # Collect counters
         counters_list =
           problem isa AbstractNLSModel ?
           [getfield(problem.counters.counters, f) for f in f_counters] :
@@ -149,8 +184,9 @@ function solve_problems(
         nls_counters_list =
           problem isa AbstractNLSModel ? [getfield(problem.counters, f) for f in fnls_counters] :
           zeros(Int, length(fnls_counters))
-        push!(
-          stats,
+
+        # Add the s to `stats`
+        safe_push!(
           [
             solver_name
             problem_info
@@ -166,13 +202,15 @@ function solve_problems(
             [s.solver_specific[k] for k in specific]
           ],
         )
+
       catch e
-        @error "caught exception" e
-        if first_problem
-          nb_unsuccessful_since_start += 1
+        @error "Caught exception for problem $idx: $e"
+
+        if first_problem[]
+          atomic_add!(nb_unsuccessful_since_start, 1)
         end
-        push!(
-          stats,
+
+        safe_push!(
           [
             solver_name
             problem_info
@@ -191,7 +229,19 @@ function solve_problems(
         finalize(problem)
       end
     end
-    (skipthis && prune) || @info log_row(stats[end, col_idx])
+    # (skipthis && prune) || @info log_row(stats[end, col_idx])
   end
+
+  # Multithreaded or single-threaded execution
+  if use_threads
+    Threads.@threads for idx = 1:num_problems
+      process_problem(idx)
+    end
+  else
+    for idx = 1:num_problems
+      process_problem(idx)
+    end
+  end
+
   return stats
 end
