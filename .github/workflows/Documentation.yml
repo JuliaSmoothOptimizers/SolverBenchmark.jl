@@ -22,8 +22,8 @@ jobs:
           DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
           GKSwstype: "100" #https://discourse.julialang.org/t/generation-of-documentation-fails-qt-qpa-xcb-could-not-connect-to-display/60988
         run: |
-          wget -q https://github.com/rstudio/tinytex-releases/releases/download/v2024.04/TinyTeX-1-v2024.04.tar.gz
-          tar zxf TinyTeX-1-v2024.04.tar.gz
+          wget -q https://github.com/rstudio/tinytex-releases/releases/download/v2025.03.10/TinyTeX-1-v2025.03.10.tar.gz
+          tar zxf TinyTeX-1-v2025.03.10.tar.gz
           export PATH=$PWD/.TinyTeX/bin/x86_64-linux:$PATH
           sudo apt-get install -y pdf2svg
           tlmgr update --self
