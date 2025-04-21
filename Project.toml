@@ -43,7 +43,6 @@ PkgBenchmark = "^0.2.0"
 Plots = "1.0, 1.1"
 PrettyTables = "2.0, 2.1, 2.2, 2.3"
 SolverCore = "0.3"
-SolverTest = "0.3.16"
 UnicodePlots = "3.1"
 julia = "^1.6.0"
 
@@ -58,10 +57,9 @@ PGFPlotsX = "8314cec4-20b6-5062-9cdb-752b83310925"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
-SolverTest = "4343dc35-3317-4c6e-8877-f0cc8502c90e"
 SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 UnicodePlots = "b8865327-cd53-5732-bb35-84acbb429228"
 
 [targets]
-test = ["ADNLPModels", "BenchmarkProfiles", "LibGit2", "LinearAlgebra", "NLPModels", "OrderedCollections", "Test", "Plots", "Random", "PGFPlotsX", "Printf", "UnicodePlots", "SolverTest", "SparseArrays"]
+test = ["ADNLPModels", "BenchmarkProfiles", "LibGit2", "LinearAlgebra", "NLPModels", "OrderedCollections", "Test", "Plots", "Random", "PGFPlotsX", "Printf", "UnicodePlots", "SparseArrays"]
