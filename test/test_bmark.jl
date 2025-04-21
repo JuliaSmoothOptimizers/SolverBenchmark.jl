@@ -1,9 +1,7 @@
 using DataFrames
 using Logging
 using NLPModels, ADNLPModels
-using SolverCore, SolverTest
-
-import SolverTest.dummy
+using SolverCore
 
 mutable struct CallableSolver end
 
@@ -33,14 +31,14 @@ function test_bmark()
       ),
     ]
     callable = CallableSolver()
-    stats = solve_problems(SolverTest.dummy, "dummy", problems)
+    stats = solve_problems(dummy, "dummy", problems)
     @test stats isa DataFrame
-    stats = solve_problems(SolverTest.dummy, "dummy", problems, reset_problem = false)
-    stats = solve_problems(SolverTest.dummy, "dummy", problems, reset_problem = true)
+    stats = solve_problems(dummy, "dummy", problems, reset_problem = false)
+    stats = solve_problems(dummy, "dummy", problems, reset_problem = true)
 
     solve_problems(callable, "callable", problems)
 
-    solvers = Dict(:dummy => SolverTest.dummy, :callable => callable)
+    solvers = Dict(:dummy => dummy, :callable => callable)
     stats = bmark_solvers(solvers, problems)
     @test stats isa Dict{Symbol, DataFrame}
     for k in keys(solvers)
@@ -73,12 +71,12 @@ function test_bmark()
     )
     with_logger(ConsoleLogger()) do
       @info "Testing simple logger on `solve_problems`"
-      solve_problems(SolverTest.dummy, "dummy", nlps)
+      solve_problems(dummy, "dummy", nlps)
       NLPModels.reset!.(nlps)
 
       @info "Testing logger with specific columns on `solve_problems`"
       solve_problems(
-        SolverTest.dummy,
+        dummy,
         "dummy",
         nlps,
         colstats = [:name, :nvar, :elapsed_time, :objective, :dual_feas],
@@ -87,7 +85,7 @@ function test_bmark()
 
       @info "Testing logger with hdr_override on `solve_problems`"
       hdr_override = Dict(:dual_feas => "‖∇L(x)‖", :primal_feas => "‖c(x)‖")
-      solve_problems(SolverTest.dummy, "dummy", nlps, info_hdr_override = hdr_override)
+      solve_problems(dummy, "dummy", nlps, info_hdr_override = hdr_override)
       NLPModels.reset!.(nlps)
     end
   end
@@ -115,7 +113,7 @@ function test_bmark()
 
     solvers = Dict(
       :dummy_solver_specific =>
-        nlp -> SolverTest.dummy(
+        nlp -> dummy(
           nlp,
           callback = (nlp, solver, stats) -> set_solver_specific!(stats, :foo, 1),
         ),

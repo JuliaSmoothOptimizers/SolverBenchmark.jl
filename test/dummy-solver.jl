@@ -15,31 +15,6 @@ mutable struct DummySolver{S} <: AbstractOptimizationSolver
   Δxy::S   # search direction
 end
 
-function hess_dense(nlp)
-  # Get the number of variables
-  n = NLPModels.get_nvar(nlp)
-
-  # Get the structure and nonzero values of the lower triangular Hessian
-  row_idx, col_idx = hess_structure(nlp)
-  values = hess_coord(nlp)
-
-  # Initialize dense Hessian
-  H = zeros(n, n)
-
-  # Fill lower triangle and mirror to upper triangle
-  for k in eachindex(values)
-      i = row_idx[k]
-      j = col_idx[k]
-      v = values[k]
-      H[i, j] = v
-      if i != j
-          H[j, i] = v
-      end
-  end
-
-  return H
-end
-
 function DummySolver(nlp::AbstractNLPModel{T, S}) where {T, S <: AbstractVector{T}}
   nvar, ncon = nlp.meta.nvar, nlp.meta.ncon
   x = similar(nlp.meta.x0)
