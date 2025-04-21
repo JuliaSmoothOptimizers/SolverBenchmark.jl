@@ -17,6 +17,8 @@ using Plots
 # this package
 using SolverBenchmark
 
+include("dummy-solver.jl")
+
 include("data.jl")
 include("tables.jl")
 include("profiles.jl")

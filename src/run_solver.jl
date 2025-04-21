@@ -98,7 +98,7 @@ function solve_problems(
 
   for (id, problem) in enumerate(problems)
     if reset_problem
-      reset!(problem)
+      NLPModels.reset!(problem)
     end
     nequ = problem isa AbstractNLSModel ? problem.nls_meta.nequ : 0
     problem_info = [id; problem.meta.name; problem.meta.nvar; problem.meta.ncon; nequ]
