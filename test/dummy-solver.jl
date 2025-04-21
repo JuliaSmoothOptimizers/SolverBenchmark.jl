@@ -28,11 +28,7 @@ function DummySolver(nlp::AbstractNLPModel{T, S}) where {T, S <: AbstractVector{
   DummySolver{S}(x, gx, y, rhs, jval, hval, wval, Δxy)
 end
 
-function dummy(
-  nlp::AbstractNLPModel{T, S},
-  args...;
-  kwargs...,
-) where {T, S <: AbstractVector{T}}
+function dummy(nlp::AbstractNLPModel{T, S}, args...; kwargs...) where {T, S <: AbstractVector{T}}
   solver = DummySolver(nlp)
   stats = GenericExecutionStats(nlp)
   solve!(solver, nlp, stats, args...; kwargs...)

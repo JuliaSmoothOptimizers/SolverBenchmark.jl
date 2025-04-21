@@ -113,10 +113,8 @@ function test_bmark()
 
     solvers = Dict(
       :dummy_solver_specific =>
-        nlp -> dummy(
-          nlp,
-          callback = (nlp, solver, stats) -> set_solver_specific!(stats, :foo, 1),
-        ),
+        nlp ->
+          dummy(nlp, callback = (nlp, solver, stats) -> set_solver_specific!(stats, :foo, 1)),
     )
     stats = bmark_solvers(solvers, problems)
 
