@@ -74,7 +74,7 @@ function test_bmark()
     with_logger(ConsoleLogger()) do
       @info "Testing simple logger on `solve_problems`"
       solve_problems(SolverTest.dummy, "dummy", nlps)
-      reset!.(nlps)
+      NLPModels.reset!.(nlps)
 
       @info "Testing logger with specific columns on `solve_problems`"
       solve_problems(
@@ -83,12 +83,12 @@ function test_bmark()
         nlps,
         colstats = [:name, :nvar, :elapsed_time, :objective, :dual_feas],
       )
-      reset!.(nlps)
+      NLPModels.reset!.(nlps)
 
       @info "Testing logger with hdr_override on `solve_problems`"
       hdr_override = Dict(:dual_feas => "‖∇L(x)‖", :primal_feas => "‖c(x)‖")
       solve_problems(SolverTest.dummy, "dummy", nlps, info_hdr_override = hdr_override)
-      reset!.(nlps)
+      NLPModels.reset!.(nlps)
     end
   end
 
