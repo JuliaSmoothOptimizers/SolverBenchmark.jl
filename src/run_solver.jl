@@ -24,6 +24,24 @@ benchmark (default: `[:name, :nvar, :ncon, :status, :elapsed_time, :objective, :
 * `prune`: do not include skipped problems in the final statistics (default: `true`);
 * any other keyword argument to be passed to the solver.
 
+#### Solver-specific statistics
+* Solvers can attach solver-specific information to the returned execution
+  statistics object (the `s` returned by the solver). Fields contained in
+  `s.solver_specific` that are scalar (i.e. not `AbstractVector`) are
+  automatically appended as extra columns to the returned `DataFrame`.
+* Columns for solver-specific keys are created when the first successful
+  solver run returns such keys. If earlier problems were skipped or raised
+  exceptions, those earlier rows will contain `missing` for these columns.
+* Vector-valued entries in `s.solver_specific` are not added as individual
+  columns (they are ignored by `solve_problems` when creating columns).
+* When a problem is skipped or an exception occurs, the corresponding
+  solver-specific columns are filled with `missing` for that row.
+* To set solver-specific values from inside a solver you can use the
+  solver's API / callbacks (see tests for examples where a callback calls
+  `set_solver_specific!(stats, :key, value)`) — the key will appear as a
+  column in the final statistics (if scalar) for all subsequently processed
+  problems.
+
 #### Return value
 * a `DataFrame` where each row is a problem, minus the skipped ones if `prune` is true.
 """
