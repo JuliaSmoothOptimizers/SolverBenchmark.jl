@@ -28,7 +28,6 @@ benchmark (default: `[:name, :nvar, :ncon, :status, :elapsed_time, :objective, :
 * `prune`: do not include skipped problems in the final statistics (default: `true`);
 * any other keyword argument to be passed to the solver.
 
-
 #### Return value
 * a `DataFrame` where each row is a problem, minus the skipped ones if `prune` is true.
 """
