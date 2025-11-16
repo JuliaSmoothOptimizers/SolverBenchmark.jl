@@ -18,7 +18,7 @@ Apply a solver to a set of problems.
 * `skipif::Function`: function to be applied to a problem and return whether to skip it
   (default: `x->false`);
 * `colstats::Vector{Symbol}`: summary statistics for the logger to output during the
-benchmark (default: `[:name, :nvar, :ncon, :status, :elapsed_time, :objective, :dual_feas, :primal_feas]`). Solver's `solver_specific` scalar entries are appended as extra columns.
+benchmark (default: `[:name, :nvar, :ncon, :status, :elapsed_time, :objective, :dual_feas, :primal_feas]`), solver's `solver_specific` scalar entries are appended as extra columns;
 * `info_hdr_override::Dict{Symbol,String}`: header overrides for the summary statistics
   (default: use default headers);
 * `prune`: do not include skipped problems in the final statistics (default: `true`);
