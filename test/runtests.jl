@@ -20,7 +20,7 @@ using SolverBenchmark
 include("dummy-solver.jl")
 
 include("data.jl")
-include("tables.jl")
+include("test-tables.jl")
 include("profiles.jl")
 include("pkgbmark.jl")
 include("test_bmark.jl")
