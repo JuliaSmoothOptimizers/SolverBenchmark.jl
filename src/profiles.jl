@@ -78,7 +78,7 @@ function profile_solvers(
   width::Int = 400,
   height::Int = 400,
   b::BenchmarkProfiles.AbstractBackend = PlotsBackend(),
-  bp_kwargs::Dict=Dict(),
+  bp_kwargs::Dict = Dict(),
   plot_kwargs::Dict = Dict(),
   kwargs...,
 )
@@ -131,11 +131,25 @@ function profile_solvers(
         Ps = [hcat([Float64.(cost(df)) for df in dfs]...) for cost in costs]
 
         clrs = [colors[i], colors[j]]
-        p = BenchmarkProfiles.performance_profile(b, Ps[1], string.(pair); bp_kwargs..., palette = clrs, legend = :bottomright)
+        p = BenchmarkProfiles.performance_profile(
+          b,
+          Ps[1],
+          string.(pair);
+          bp_kwargs...,
+          palette = clrs,
+          legend = :bottomright,
+        )
         ipairs < npairs && xlabel!(p, "")
         push!(ps, p)
         for k = 2:ncosts
-          p = BenchmarkProfiles.performance_profile(b, Ps[k], string.(pair); bp_kwargs..., palette = clrs, legend = false)
+          p = BenchmarkProfiles.performance_profile(
+            b,
+            Ps[k],
+            string.(pair);
+            bp_kwargs...,
+            palette = clrs,
+            legend = false,
+          )
           ipairs < npairs && xlabel!(p, "")
           ylabel!(p, "")
           push!(ps, p)
