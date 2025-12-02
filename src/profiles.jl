@@ -27,12 +27,13 @@ function performance_profile(
   cost::Function,
   args...;
   b::BenchmarkProfiles.AbstractBackend = PlotsBackend(),
+  bp_kwargs::Dict=Dict(),
   kwargs...,
 )
   solvers = keys(stats)
   dfs = (stats[s] for s in solvers)
   P = hcat([cost(df) for df in dfs]...)
-  performance_profile(b, P, string.(solvers), args...; kwargs...)
+  performance_profile(b, P, string.(solvers), args...; bp_kwargs..., kwargs...)
 end
 
 """
@@ -69,6 +70,8 @@ function profile_solvers(
   width::Int = 400,
   height::Int = 400,
   b::BenchmarkProfiles.AbstractBackend = PlotsBackend(),
+  bp_kwargs::Dict=Dict(),
+  plot_kwargs::Dict=Dict(),
   kwargs...,
 )
   solvers = collect(keys(stats))
@@ -90,6 +93,7 @@ function profile_solvers(
       palette = colors,
       title = costnames[1],
       legend = :bottomright,
+      bp_kwargs...,
     ),
   ]
   nsolvers > 2 && xlabel!(ps[1], "")
@@ -101,6 +105,7 @@ function profile_solvers(
       palette = colors,
       title = costnames[k],
       legend = false,
+      bp_kwargs...,
     )
     nsolvers > 2 && xlabel!(p, "")
     ylabel!(p, "")
@@ -118,11 +123,11 @@ function profile_solvers(
         Ps = [hcat([Float64.(cost(df)) for df in dfs]...) for cost in costs]
 
         clrs = [colors[i], colors[j]]
-        p = performance_profile(b, Ps[1], string.(pair), palette = clrs, legend = :bottomright)
+        p = performance_profile(b, Ps[1], string.(pair), palette = clrs, legend = :bottomright, bp_kwargs...)
         ipairs < npairs && xlabel!(p, "")
         push!(ps, p)
         for k = 2:ncosts
-          p = performance_profile(b, Ps[k], string.(pair), palette = clrs, legend = false)
+          p = performance_profile(b, Ps[k], string.(pair), palette = clrs, legend = false, bp_kwargs...)
           ipairs < npairs && xlabel!(p, "")
           ylabel!(p, "")
           push!(ps, p)
@@ -134,6 +139,7 @@ function profile_solvers(
     ps...,
     layout = (1 + ipairs, ncosts),
     size = (ncosts * width, (1 + ipairs) * height);
+    plot_kwargs...,
     kwargs...,
   )
 end
