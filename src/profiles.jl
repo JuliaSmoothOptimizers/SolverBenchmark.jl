@@ -32,7 +32,7 @@ function performance_profile(
   cost::Function,
   args...;
   b::BenchmarkProfiles.AbstractBackend = PlotsBackend(),
-  bp_kwargs::Dict=Dict(),
+  bp_kwargs::Dict = Dict(),
   kwargs...,
 )
   solvers = keys(stats)
@@ -79,7 +79,7 @@ function profile_solvers(
   height::Int = 400,
   b::BenchmarkProfiles.AbstractBackend = PlotsBackend(),
   bp_kwargs::Dict=Dict(),
-  plot_kwargs::Dict=Dict(),
+  plot_kwargs::Dict = Dict(),
   kwargs...,
 )
   solvers = collect(keys(stats))
