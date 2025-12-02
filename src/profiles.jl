@@ -38,7 +38,7 @@ function performance_profile(
   solvers = keys(stats)
   dfs = (stats[s] for s in solvers)
   P = hcat([cost(df) for df in dfs]...)
-  performance_profile(b, P, string.(solvers), args...; bp_kwargs..., kwargs...)
+  BenchmarkProfiles.performance_profile(b, P, string.(solvers); bp_kwargs..., kwargs...)
 end
 
 """
@@ -94,26 +94,26 @@ function profile_solvers(
 
   # profiles with all solvers
   ps = [
-    performance_profile(
+    BenchmarkProfiles.performance_profile(
       b,
       Ps[1],
-      string.(solvers),
+      string.(solvers);
+      bp_kwargs...,
       palette = colors,
       title = costnames[1],
       legend = :bottomright,
-      bp_kwargs...,
     ),
   ]
   nsolvers > 2 && xlabel!(ps[1], "")
   for k = 2:ncosts
-    p = performance_profile(
+    p = BenchmarkProfiles.performance_profile(
       b,
       Ps[k],
-      string.(solvers),
+      string.(solvers);
+      bp_kwargs...,
       palette = colors,
       title = costnames[k],
       legend = false,
-      bp_kwargs...,
     )
     nsolvers > 2 && xlabel!(p, "")
     ylabel!(p, "")
@@ -131,11 +131,11 @@ function profile_solvers(
         Ps = [hcat([Float64.(cost(df)) for df in dfs]...) for cost in costs]
 
         clrs = [colors[i], colors[j]]
-        p = performance_profile(b, Ps[1], string.(pair), palette = clrs, legend = :bottomright, bp_kwargs...)
+        p = BenchmarkProfiles.performance_profile(b, Ps[1], string.(pair); bp_kwargs..., palette = clrs, legend = :bottomright)
         ipairs < npairs && xlabel!(p, "")
         push!(ps, p)
         for k = 2:ncosts
-          p = performance_profile(b, Ps[k], string.(pair), palette = clrs, legend = false, bp_kwargs...)
+          p = BenchmarkProfiles.performance_profile(b, Ps[k], string.(pair); bp_kwargs..., palette = clrs, legend = false)
           ipairs < npairs && xlabel!(p, "")
           ylabel!(p, "")
           push!(ps, p)
