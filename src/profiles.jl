@@ -4,16 +4,21 @@ using BenchmarkProfiles, Plots
 export performance_profile, profile_solvers
 
 """
-    performance_profile(stats, cost, args...; b = PlotsBackend(), kwargs...)
+    performance_profile(stats, cost, args...; b = PlotsBackend(), bp_kwargs = Dict(), kwargs...)
 
 Produce a performance profile comparing solvers in `stats` using the `cost` function.
 
 Inputs:
 - `stats::AbstractDict{Symbol,DataFrame}`: pairs of `:solver => df`;
-- `cost::Function`: cost function applyed to each `df`. Should return a vector with the cost of solving the problem at each row;
+- `cost::Function`: cost function applied to each `df`. Should return a vector with the cost of solving the problem at each row;
   - 0 cost is not allowed;
-  - If the solver did not solve the problem, return Inf or a negative number.
+  - If the solver did not solve the problem, return `Inf` or a negative number.
 - `b::BenchmarkProfiles.AbstractBackend` : backend used for the plot.
+
+Keyword arguments:
+- `bp_kwargs::Dict` : a `Dict` of keyword arguments forwarded to `BenchmarkProfiles.performance_profile` (backend-specific options).
+  Example: `bp_kwargs = Dict(:logscale => false)` to disable log-scaling when supported by the backend.
+- `kwargs...` : additional keyword arguments forwarded to the plotting routines used by the backend.
 
 If several profiles will be produced with variants of the same solvers, `stats` may be an `OrderedDict`, as defined in the
 OrderedCollections.jl package.
@@ -37,15 +42,15 @@ function performance_profile(
 end
 
 """
-    p = profile_solvers(stats, costs, costnames;
-                        width = 400, height = 400,
-                        b = PlotsBackend(), kwargs...)
+  p = profile_solvers(stats, costs, costnames;
+            width = 400, height = 400,
+            b = PlotsBackend(), bp_kwargs = Dict(), plot_kwargs = Dict(), kwargs...)
 
 Produce performance profiles comparing `solvers` based on the data in `stats`.
 
 Inputs:
 - `stats::AbstractDict{Symbol,DataFrame}`: a dictionary of `DataFrame`s containing the
-    benchmark results per solver (e.g., produced by `bmark_results_to_dataframes()`)
+  benchmark results per solver (e.g., produced by `bmark_results_to_dataframes()`)
 - `costs::Vector{Function}`: a vector of functions specifying the measures to use in the profiles
 - `costnames::Vector{String}`: names to be used as titles of the profiles.
 
@@ -53,8 +58,11 @@ Keyword inputs:
 - `width::Int`: Width of each individual plot (Default: 400)
 - `height::Int`: Height of each individual plot (Default: 400)
 - `b::BenchmarkProfiles.AbstractBackend` : backend used for the plot.
+- `bp_kwargs::Dict` : a `Dict` of keyword arguments forwarded to the backend `performance_profile` calls
+  (see `BenchmarkProfiles.performance_profile` — backend-specific options such as `:logscale`).
+- `plot_kwargs::Dict` : a `Dict` of keyword arguments forwarded to the final `plot` call that assembles the profiles.
 
-Additional `kwargs` are passed to the `plot` call.
+Additional `kwargs` are passed to the `plot` call for backwards compatibility.
 
 Output:
 A Plots.jl plot representing a set of performance profiles comparing the solvers.
