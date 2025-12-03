@@ -4,16 +4,21 @@ using BenchmarkProfiles, Plots
 export performance_profile, profile_solvers
 
 """
-    performance_profile(stats, cost, args...; b = PlotsBackend(), kwargs...)
+    performance_profile(stats, cost, args...; b = PlotsBackend(), bp_kwargs = Dict(), kwargs...)
 
 Produce a performance profile comparing solvers in `stats` using the `cost` function.
 
 Inputs:
 - `stats::AbstractDict{Symbol,DataFrame}`: pairs of `:solver => df`;
-- `cost::Function`: cost function applyed to each `df`. Should return a vector with the cost of solving the problem at each row;
+- `cost::Function`: cost function applied to each `df`. Should return a vector with the cost of solving the problem at each row;
   - 0 cost is not allowed;
-  - If the solver did not solve the problem, return Inf or a negative number.
+  - If the solver did not solve the problem, return `Inf` or a negative number.
 - `b::BenchmarkProfiles.AbstractBackend` : backend used for the plot.
+
+Keyword arguments:
+- `bp_kwargs::Dict` : a `Dict` of keyword arguments forwarded to `BenchmarkProfiles.performance_profile` (backend-specific options).
+  Example: `bp_kwargs = Dict(:logscale => false)` to disable log-scaling when supported by the backend.
+- `kwargs...` : additional keyword arguments forwarded to the plotting routines used by the backend.
 
 If several profiles will be produced with variants of the same solvers, `stats` may be an `OrderedDict`, as defined in the
 OrderedCollections.jl package.
@@ -27,18 +32,19 @@ function performance_profile(
   cost::Function,
   args...;
   b::BenchmarkProfiles.AbstractBackend = PlotsBackend(),
+  bp_kwargs::Dict = Dict(),
   kwargs...,
 )
   solvers = keys(stats)
   dfs = (stats[s] for s in solvers)
   P = hcat([cost(df) for df in dfs]...)
-  performance_profile(b, P, string.(solvers), args...; kwargs...)
+  BenchmarkProfiles.performance_profile(b, P, string.(solvers); bp_kwargs..., kwargs...)
 end
 
 """
     p = profile_solvers(stats, costs, costnames;
                         width = 400, height = 400,
-                        b = PlotsBackend(), kwargs...)
+                        b = PlotsBackend(), bp_kwargs = Dict(), plot_kwargs = Dict(), kwargs...)
 
 Produce performance profiles comparing `solvers` based on the data in `stats`.
 
@@ -52,6 +58,8 @@ Keyword inputs:
 - `width::Int`: Width of each individual plot (Default: 400)
 - `height::Int`: Height of each individual plot (Default: 400)
 - `b::BenchmarkProfiles.AbstractBackend` : backend used for the plot.
+- `bp_kwargs::Dict` : a `Dict` of keyword arguments forwarded to the backend `performance_profile` calls.
+- `plot_kwargs::Dict` : a `Dict` of keyword arguments forwarded to the final `plot` call that assembles the profiles.
 
 Additional `kwargs` are passed to the `plot` call.
 
@@ -69,6 +77,8 @@ function profile_solvers(
   width::Int = 400,
   height::Int = 400,
   b::BenchmarkProfiles.AbstractBackend = PlotsBackend(),
+  bp_kwargs::Dict = Dict(),
+  plot_kwargs::Dict = Dict(),
   kwargs...,
 )
   solvers = collect(keys(stats))
@@ -83,10 +93,11 @@ function profile_solvers(
 
   # profiles with all solvers
   ps = [
-    performance_profile(
+    BenchmarkProfiles.performance_profile(
       b,
       Ps[1],
-      string.(solvers),
+      string.(solvers);
+      bp_kwargs...,
       palette = colors,
       title = costnames[1],
       legend = :bottomright,
@@ -94,10 +105,11 @@ function profile_solvers(
   ]
   nsolvers > 2 && xlabel!(ps[1], "")
   for k = 2:ncosts
-    p = performance_profile(
+    p = BenchmarkProfiles.performance_profile(
       b,
       Ps[k],
-      string.(solvers),
+      string.(solvers);
+      bp_kwargs...,
       palette = colors,
       title = costnames[k],
       legend = false,
@@ -118,11 +130,25 @@ function profile_solvers(
         Ps = [hcat([Float64.(cost(df)) for df in dfs]...) for cost in costs]
 
         clrs = [colors[i], colors[j]]
-        p = performance_profile(b, Ps[1], string.(pair), palette = clrs, legend = :bottomright)
+        p = BenchmarkProfiles.performance_profile(
+          b,
+          Ps[1],
+          string.(pair);
+          bp_kwargs...,
+          palette = clrs,
+          legend = :bottomright,
+        )
         ipairs < npairs && xlabel!(p, "")
         push!(ps, p)
         for k = 2:ncosts
-          p = performance_profile(b, Ps[k], string.(pair), palette = clrs, legend = false)
+          p = BenchmarkProfiles.performance_profile(
+            b,
+            Ps[k],
+            string.(pair);
+            bp_kwargs...,
+            palette = clrs,
+            legend = false,
+          )
           ipairs < npairs && xlabel!(p, "")
           ylabel!(p, "")
           push!(ps, p)
@@ -134,6 +160,7 @@ function profile_solvers(
     ps...,
     layout = (1 + ipairs, ncosts),
     size = (ncosts * width, (1 + ipairs) * height);
+    plot_kwargs...,
     kwargs...,
   )
 end
