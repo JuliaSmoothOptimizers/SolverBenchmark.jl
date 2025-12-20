@@ -9,17 +9,6 @@ function test_pkgbmark()
      get(ENV, "GITHUB_REPOSITORY", "") != "JuliaSmoothOptimizers/SolverBenchmark.jl"
     return
   end
-  # Skip benchmarking tests if the repository has uncommitted changes.
-  # PkgBenchmark refuses to benchmark a specific commit when the working tree is dirty.
-  try
-    git_status = chomp(read(`git status --porcelain`, String))
-    if !isempty(git_status)
-      @info "Skipping package-benchmark tests because repository is dirty"
-      return
-    end
-  catch e
-    @warn "Could not determine git status; proceeding with pkgbmark tests: $e"
-  end
   results =
     PkgBenchmark.benchmarkpkg("SolverBenchmark", script = joinpath(@__DIR__, "bmark_suite.jl"))
 
