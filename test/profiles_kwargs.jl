@@ -26,7 +26,7 @@ function Plots.plot(ps::CapturedPlot...; kwargs...)
   return (plots = ps, plot_kwargs = kwargs)
 end
 
-@testset "profiles: bp_kwargs and plot_kwargs forwarding" begin
+@testset "profiles: bp_kwargs and kwargs forwarding" begin
   df1 = DataFrame(a = [1.0, 2.0])
   df2 = DataFrame(a = [2.0, 3.0])
   stats = Dict(:s1 => df1, :s2 => df2)
@@ -54,7 +54,7 @@ end
     costnames;
     b = CaptureBackend(),
     bp_kwargs = Dict(:logscale => true),
-    plot_kwargs = Dict(:title => "T"),
+    title = "T",
     legend = false,
   )
   @test isa(result2, NamedTuple)
@@ -67,7 +67,7 @@ end
     costnames;
     b = CaptureBackend(),
     bp_kwargs = Dict(:foo => 1),
-    plot_kwargs = Dict(:bar => 2),
+    bar = 2,
     extra = 3,
   )
   @test (:foo in keys(result3[:plots][1].kwargs)) && result3[:plots][1].kwargs[:foo] == 1
