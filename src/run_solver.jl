@@ -144,7 +144,7 @@ function solve_problems(
         end
         counters_list = [getfield(NLPModels, f)(problem) for f in f_counters]
         nls_counters_list =
-          problem isa AbstractNLSModel ? [getfield(NLPModels, f)(problem) for f in fnls_counters] :
+          problem isa AbstractNLSModel ? [getfield(problem.counters, f) for f in fnls_counters] :
           zeros(Int, length(fnls_counters))
         push!(
           stats,
