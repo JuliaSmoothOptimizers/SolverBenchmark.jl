@@ -12,6 +12,8 @@ using PrettyTables
 using NLPModels
 using SolverCore
 
+using Distributed
+
 # reexport PrettyTable table formats for convenience
 export unicode,
   ascii_dots,
