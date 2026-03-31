@@ -87,6 +87,7 @@ function solve_problems(
     :extrainfo
   ]
   stats = DataFrame(names .=> [T[] for T in types])
+  stats_lock = ReentrantLock()
 
   specific = Symbol[]
 
@@ -96,18 +97,95 @@ function solve_problems(
   nb_unsuccessful_since_start = 0
   @info log_header(colstats, types[col_idx], hdr_override = info_hdr_override)
 
+  # Make a first serial run until first_problem is false
+  final_id = 0
   for (id, problem) in enumerate(problems)
-    if reset_problem
-      NLPModels.reset!(problem)
+    first_problem = _run_problem(
+      id,
+      problem,
+      stats,
+      solver,
+      solver_name,
+      solver_logger,
+      skipif,
+      stats_lock,
+      first_problem,
+      nb_unsuccessful_since_start,
+      specific,
+      prune,
+      reset_problem,
+      ncounters,
+      f_counters,
+      fnls_counters,
+      col_idx;
+      kwargs...,
+    )
+    final_id = id
+    !first_problem && break
+  end
+
+  # Start parallel run
+  Threads.@sync for (id, problem) in enumerate(problems)
+    Threads.@spawn begin
+      id > final_id && 
+        _run_problem(
+          id,
+          problem,
+          stats,
+          solver,
+          solver_name,
+          solver_logger,
+          skipif,
+          stats_lock,
+          first_problem,
+          nb_unsuccessful_since_start,
+          specific,
+          prune,
+          reset_problem,
+          ncounters,
+          f_counters,
+          fnls_counters,
+          col_idx;
+          kwargs...,
+        )
     end
-    nequ = problem isa AbstractNLSModel ? problem.nls_meta.nequ : 0
-    problem_info = [id; problem.meta.name; problem.meta.nvar; problem.meta.ncon; nequ]
-    skipthis = skipif(problem)
-    if skipthis
-      if first_problem && !prune
-        nb_unsuccessful_since_start += 1
-      end
-      prune || push!(
+  end
+  return stats
+end
+
+function _run_problem(
+  id::Int,
+  problem,
+  stats::DataFrame,
+  solver, 
+  solver_name::Symbol,
+  solver_logger::AbstractLogger,
+  skipif::Function,
+  stats_lock::ReentrantLock,
+  first_problem::Bool,
+  nb_unsuccessful_since_start::Int,
+  specific::Vector{Symbol},
+  prune::Bool,
+  reset_problem::Bool,
+  ncounters::Int,
+  f_counters,
+  fnls_counters,
+  col_idx::AbstractVector;
+  kwargs...
+)
+  if reset_problem
+    NLPModels.reset!(problem)
+  end
+  nequ = problem isa AbstractNLSModel ? problem.nls_meta.nequ : 0
+  problem_info = [id; problem.meta.name; problem.meta.nvar; problem.meta.ncon; nequ]
+  skipthis = skipif(problem)
+
+  if skipthis
+    if first_problem && !prune
+      nb_unsuccessful_since_start += 1
+    end
+    prune || lock(stats_lock) do 
+      push!(
         stats,
         [
           solver_name
@@ -123,54 +201,62 @@ function solve_problems(
           fill(missing, length(specific))
         ],
       )
-      finalize(problem)
-    else
-      try
-        s = with_logger(solver_logger) do
-          solver(problem; kwargs...)
-        end
-        if first_problem
-          for (k, v) in s.solver_specific
-            if !(typeof(v) <: AbstractVector)
-              insertcols!(
-                stats,
-                ncol(stats) + 1,
-                k => Vector{Union{typeof(v), Missing}}(undef, nb_unsuccessful_since_start),
-              )
-              push!(specific, k)
-            end
+      @info log_row(stats[end, col_idx])
+    end
+    finalize(problem)
+  else
+    try
+      s = with_logger(solver_logger) do
+        solver(problem; kwargs...)
+      end
+      if first_problem
+        for (k, v) in s.solver_specific
+          if !(typeof(v) <: AbstractVector)
+            insertcols!(
+              stats,
+              ncol(stats) + 1,
+              k => Vector{Union{typeof(v), Missing}}(undef, nb_unsuccessful_since_start),
+            )
+            push!(specific, k)
           end
-          first_problem = false
         end
-        counters_list =
+        first_problem = false
+      end
+      counters_list =
           problem isa AbstractNLSModel ?
           [getfield(problem.counters.counters, f) for f in f_counters] :
           [getfield(problem.counters, f) for f in f_counters]
         nls_counters_list =
           problem isa AbstractNLSModel ? [getfield(problem.counters, f) for f in fnls_counters] :
           zeros(Int, length(fnls_counters))
-        push!(
-          stats,
-          [
-            solver_name
-            problem_info
-            s.status
-            s.objective
-            s.elapsed_time
-            s.iter
-            s.dual_feas
-            s.primal_feas
-            counters_list
-            nls_counters_list
-            ""
-            [s.solver_specific[k] for k in specific]
-          ],
-        )
-      catch e
-        @error "caught exception" e
-        if first_problem
-          nb_unsuccessful_since_start += 1
+        
+        lock(stats_lock) do 
+          push!(
+            stats,
+            [
+              solver_name
+              problem_info
+              s.status
+              s.objective
+              s.elapsed_time
+              s.iter
+              s.dual_feas
+              s.primal_feas
+              counters_list
+              nls_counters_list
+              ""
+              [s.solver_specific[k] for k in specific]
+            ],
+          )
+          @info log_row(stats[end, col_idx])
         end
+    catch e
+      @error "caught exception" e
+      if first_problem
+        nb_unsuccessful_since_start += 1
+      end
+
+      lock(stats_lock) do 
         push!(
           stats,
           [
@@ -187,11 +273,11 @@ function solve_problems(
             fill(missing, length(specific))
           ],
         )
-      finally
-        finalize(problem)
+        @info log_row(stats[end, col_idx])
       end
+    finally
+      finalize(problem)
     end
-    (skipthis && prune) || @info log_row(stats[end, col_idx])
   end
-  return stats
+  return first_problem
 end
