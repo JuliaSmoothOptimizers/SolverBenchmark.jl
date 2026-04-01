@@ -101,7 +101,7 @@ function solve_problems(
       NLPModels.reset!(problem)
     end
     nequ = problem isa AbstractNLSModel ? problem.nls_meta.nequ : 0
-    problem_info = [id; problem.meta.name; problem.meta.nvar; problem.meta.ncon; nequ]
+    problem_info = [id; get_name(problem); get_nvar(problem); get_ncon(problem); nequ]
     skipthis = skipif(problem)
     if skipthis
       if first_problem && !prune
@@ -142,10 +142,7 @@ function solve_problems(
           end
           first_problem = false
         end
-        counters_list =
-          problem isa AbstractNLSModel ?
-          [getfield(problem.counters.counters, f) for f in f_counters] :
-          [getfield(problem.counters, f) for f in f_counters]
+        counters_list = [getfield(NLPModels, f)(problem) for f in f_counters]
         nls_counters_list =
           problem isa AbstractNLSModel ? [getfield(problem.counters, f) for f in fnls_counters] :
           zeros(Int, length(fnls_counters))
