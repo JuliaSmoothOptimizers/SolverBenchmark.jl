@@ -54,7 +54,7 @@ Keyword inputs:
 - `width::Int`: Width of each individual plot (Default: 400)
 - `height::Int`: Height of each individual plot (Default: 400)
 - `b::BenchmarkProfiles.AbstractBackend` : backend used for the plot.
-- `bp_kwargs::Dict` : a `Dict` of keyword arguments forwarded to the backend `performance_profile` calls.
+- `bp_kwargs::Dict` : a `Dict` of keyword arguments forwarded to the `performance_profile` backend calls.
 
 Additional `kwargs` are passed to the final `plot` call that assembles the profiles.
 The set contains performance profiles comparing all the solvers together on the
@@ -88,10 +88,10 @@ function profile_solvers(
       b,
       Ps[1],
       string.(solvers);
-      bp_kwargs...,
       palette = colors,
       title = costnames[1],
       legend = :bottomright,
+      bp_kwargs...,
     ),
   ]
   nsolvers > 2 && xlabel!(ps[1], "")
@@ -100,10 +100,10 @@ function profile_solvers(
       b,
       Ps[k],
       string.(solvers);
-      bp_kwargs...,
       palette = colors,
       title = costnames[k],
       legend = false,
+      bp_kwargs...,
     )
     nsolvers > 2 && xlabel!(p, "")
     ylabel!(p, "")
@@ -125,9 +125,9 @@ function profile_solvers(
           b,
           Ps[1],
           string.(pair);
-          bp_kwargs...,
           palette = clrs,
           legend = :bottomright,
+          bp_kwargs...,
         )
         ipairs < npairs && xlabel!(p, "")
         push!(ps, p)
@@ -136,9 +136,9 @@ function profile_solvers(
             b,
             Ps[k],
             string.(pair);
-            bp_kwargs...,
             palette = clrs,
             legend = false,
+            bp_kwargs...,
           )
           ipairs < npairs && xlabel!(p, "")
           ylabel!(p, "")
