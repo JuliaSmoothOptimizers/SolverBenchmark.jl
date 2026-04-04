@@ -10,6 +10,7 @@ function test_profiles()
     b = SolverBenchmark.BenchmarkProfiles.UnicodePlotsBackend(),
   )
   p = profile_solvers(stats, [df -> df.t, df -> df.iter], ["Time", "Iterations"])
+  p = profile_solvers(stats, [df -> df.t, df -> df.iter], ["Time", "Iterations"], rotate = true)
   if !Sys.isfreebsd()
     pgfplotsx()
     p = performance_profile(
