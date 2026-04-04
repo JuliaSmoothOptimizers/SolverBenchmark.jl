@@ -37,8 +37,8 @@ end
 
 """
     p = profile_solvers(stats, costs, costnames;
-              width = 400, height = 400, rotate = false,
-              b = PlotsBackend(), kwargs...)
+                        width = 400, height = 400, rotate = false,
+                        b = PlotsBackend(), kwargs...)
 
 Produce performance profiles comparing `solvers` based on the data in `stats`.
 
