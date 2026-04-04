@@ -10,9 +10,9 @@ function test_profiles()
     b = SolverBenchmark.BenchmarkProfiles.UnicodePlotsBackend(),
   )
   p = profile_solvers(stats, [df -> df.t, df -> df.iter], ["Time", "Iterations"])
-  @test p.layout == Plots.GridLayout(4, 2)
+  @test size(p.layout.grid) == (4, 2)
   p = profile_solvers(stats, [df -> df.t, df -> df.iter], ["Time", "Iterations"], rotate = true)
-  @test p.layout == Plots.GridLayout(2, 4)
+  @test size(p.layout.grid) == (2, 4)
   if !Sys.isfreebsd()
     pgfplotsx()
     p = performance_profile(
