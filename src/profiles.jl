@@ -51,7 +51,7 @@ Inputs:
 Keyword inputs:
 - `width::Int`: Width of each individual plot (Default: 400)
 - `height::Int`: Height of each individual plot (Default: 400)
-- `rotate::Bool`: If `true`, rotates the profile wall so costs are stacked vertically.
+- `rotate::Bool`: If `true`, rotates the profile wall so costs are stacked vertically (Default: false).
 - `b::BenchmarkProfiles.AbstractBackend` : backend used for the plot.
 
 Additional `kwargs` are passed to the `plot` call.
