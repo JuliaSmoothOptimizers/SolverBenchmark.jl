@@ -8,8 +8,15 @@ problems = (AmplModel(joinpath(@__DIR__, "ampl", p)) for p in problem_names)
 # define solvers
 solvers = Dict(
   :ipopt => nlp -> ipopt(nlp, tol = 1.0e-5, max_cpu_time = 10.0, print_level = 0, sb = "no"),
-  :ipopt_lm => nlp -> ipopt(nlp, tol = 1.0e-5, max_cpu_time = 10.0, print_level = 0, sb = "no",
-                            hessian_approximation = "limited-memory"),
+  :ipopt_lm =>
+    nlp -> ipopt(
+      nlp,
+      tol = 1.0e-5,
+      max_cpu_time = 10.0,
+      print_level = 0,
+      sb = "no",
+      hessian_approximation = "limited-memory",
+    ),
 )
 
 # solve problems, but skip one of our choice
