@@ -48,6 +48,10 @@ function join(
 
   s = first(stats)[1]
   df = stats[s][:, invariant_cols]
+  # Apply hdr_override to invariant columns
+  inv_col_names = [haskey(hdr_override, c) ? hdr_override[c] : String(c) for c in invariant_cols]
+  rename!(df, Dict(c => Symbol(n) for (c, n) in zip(invariant_cols, inv_col_names)))
+  invariant_cols = [Symbol(n) for n in inv_col_names]
 
   rename_f(c, s) = begin
     symbol_c = Symbol(c)
