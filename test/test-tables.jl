@@ -42,9 +42,10 @@ cols = [:status, :name, :f, :t, :iter]
       stats,
       [:status, :f, :t],
       invariant_cols = [:name],
-      hdr_override = Dict(:status => "flag"),
+      hdr_override = Dict(:status => "flag", :name => "Name"),
     )
 
+    @test :Name in propertynames(df_joined)
     println(df_joined)
   end
 
