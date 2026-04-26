@@ -42,10 +42,30 @@ cols = [:status, :name, :f, :t, :iter]
       stats,
       [:status, :f, :t],
       invariant_cols = [:name],
+      hdr_override = Dict(:status => "flag", :name => "Name"),
+    )
+
+    @test :Name in propertynames(df_joined)
+    println(df_joined)
+  end
+
+  @testset "join ignores id header override" begin
+    df_joined = join(
+      stats,
+      [:status, :f, :t],
+      invariant_cols = [:name],
+      hdr_override = Dict(:id => "identifier", :status => "flag"),
+    )
+    df_expected = join(
+      stats,
+      [:status, :f, :t],
+      invariant_cols = [:name],
       hdr_override = Dict(:status => "flag"),
     )
 
-    println(df_joined)
+    @test :id in propertynames(df_joined)
+    @test :identifier ∉ propertynames(df_joined)
+    @test df_joined == df_expected
   end
 
   @testset "joined results in latex format" begin
