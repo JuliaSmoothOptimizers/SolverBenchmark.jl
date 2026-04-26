@@ -26,7 +26,6 @@ function join(
   invariant_cols::Array{Symbol, 1} = Symbol[],
   hdr_override::AbstractDict{Symbol, String} = Dict{Symbol, String}(),
 )
-  join_key = :id
   length(cols) == 0 && error("cols can't be empty")
   if !all(:id in propertynames(df) for (s, df) in stats)
     error("Missing column :id in some DataFrame")
@@ -34,23 +33,23 @@ function join(
     error("Not all DataFrames have all columns given by `cols`")
   end
 
-  if join_key in cols
-    deleteat!(cols, findall(cols .== join_key))
+  if :id in cols
+    deleteat!(cols, findall(cols .== :id))
   end
-  if join_key in invariant_cols
-    deleteat!(invariant_cols, findall(invariant_cols .== join_key))
+  if :id in invariant_cols
+    deleteat!(invariant_cols, findall(invariant_cols .== :id))
   end
-  invariant_cols = [join_key; invariant_cols]
+  invariant_cols = [:id; invariant_cols]
   cols = setdiff(cols, invariant_cols)
   if length(cols) == 0
     error("All columns are invariant")
   end
-  cols = [join_key; cols]
+  cols = [:id; cols]
 
   s = first(stats)[1]
   df = stats[s][:, invariant_cols]
-  # Apply hdr_override to invariant columns, but keep the join key stable.
-  inv_col_names = [c == join_key ? String(join_key) : (haskey(hdr_override, c) ? hdr_override[c] : String(c)) for c in invariant_cols]
+  # Apply hdr_override to invariant columns, but keep :id stable.
+  inv_col_names = [c == :id ? "id" : (haskey(hdr_override, c) ? hdr_override[c] : String(c)) for c in invariant_cols]
   rename!(df, Dict(c => Symbol(n) for (c, n) in zip(invariant_cols, inv_col_names)))
   invariant_cols = [Symbol(n) for n in inv_col_names]
 
