@@ -52,6 +52,7 @@ Keyword inputs:
 - `width::Int`: Width of each individual plot (Default: 400)
 - `height::Int`: Height of each individual plot (Default: 400)
 - `rotate::Bool`: If `true`, rotates the profile wall so costs are stacked vertically (Default: false).
+- When `rotate = true`, each row title is annotated as `(row k)` to make the cost-to-row mapping explicit.
 - `b::BenchmarkProfiles.AbstractBackend` : backend used for the plot.
 
 Additional `kwargs` are passed to the `plot` call.
@@ -82,6 +83,7 @@ function profile_solvers(
   ncosts = length(costs)
   npairs = div(nsolvers * (nsolvers - 1), 2)
   colors = get_color_palette(:auto, nsolvers)
+  row_title = k -> (rotate ? string(costnames[k], " (row ", k, ")") : costnames[k])
 
   # profiles with all solvers
   ps = [
@@ -90,7 +92,7 @@ function profile_solvers(
       Ps[1],
       string.(solvers),
       palette = colors,
-      title = costnames[1],
+      title = row_title(1),
       legend = :bottomright,
     ),
   ]
@@ -101,7 +103,7 @@ function profile_solvers(
       Ps[k],
       string.(solvers),
       palette = colors,
-      title = costnames[k],
+      title = row_title(k),
       legend = false,
     )
     nsolvers > 2 && xlabel!(p, "")
@@ -132,6 +134,14 @@ function profile_solvers(
       end
     end
   end
+  if rotate
+    nsolver_groups = 1 + ipairs
+    # `ps` is built row-major with solver groups first and costs second.
+    # For rotated layout we want rows to represent costs, so we reorder by cost first.
+    idx = [((group - 1) * ncosts + cost) for cost = 1:ncosts for group = 1:nsolver_groups]
+    ps = ps[idx]
+  end
+
   nrows, ncols = rotate ? (ncosts, 1 + ipairs) : (1 + ipairs, ncosts)
   pwidth, pheight = rotate ? ((1 + ipairs) * width, ncosts * height) : (ncosts * width, (1 + ipairs) * height)
 
