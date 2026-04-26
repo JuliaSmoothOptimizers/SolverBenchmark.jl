@@ -37,7 +37,7 @@ end
 
 """
     p = profile_solvers(stats, costs, costnames;
-                        width = 400, height = 400,
+                        width = 400, height = 400, rotate = false,
                         b = PlotsBackend(), kwargs...)
 
 Produce performance profiles comparing `solvers` based on the data in `stats`.
@@ -51,6 +51,9 @@ Inputs:
 Keyword inputs:
 - `width::Int`: Width of each individual plot (Default: 400)
 - `height::Int`: Height of each individual plot (Default: 400)
+- `rotate::Bool`: If `true`, rotates the profile wall so costs are stacked vertically (Default: false).
+- When `rotate = true`, the cost names are shown as left-aligned row titles on the leftmost plots,
+  the y-axis guide appears only on those plots, and the x-axis guide appears only on the bottom row.
 - `b::BenchmarkProfiles.AbstractBackend` : backend used for the plot.
 
 Additional `kwargs` are passed to the `plot` call.
@@ -68,6 +71,7 @@ function profile_solvers(
   costnames::Vector{String};
   width::Int = 400,
   height::Int = 400,
+  rotate::Bool = false,
   b::BenchmarkProfiles.AbstractBackend = PlotsBackend(),
   kwargs...,
 )
@@ -80,6 +84,9 @@ function profile_solvers(
   ncosts = length(costs)
   npairs = div(nsolvers * (nsolvers - 1), 2)
   colors = get_color_palette(:auto, nsolvers)
+  row_title = k -> (rotate ? string(costnames[k], " (row ", k, ")") : costnames[k])
+  xguide = "Within this factor of the best"
+  yguide = "Proportion of problems"
 
   # profiles with all solvers
   ps = [
@@ -88,7 +95,7 @@ function profile_solvers(
       Ps[1],
       string.(solvers),
       palette = colors,
-      title = costnames[1],
+      title = row_title(1),
       legend = :bottomright,
     ),
   ]
@@ -99,7 +106,7 @@ function profile_solvers(
       Ps[k],
       string.(solvers),
       palette = colors,
-      title = costnames[k],
+      title = row_title(k),
       legend = false,
     )
     nsolvers > 2 && xlabel!(p, "")
@@ -130,10 +137,36 @@ function profile_solvers(
       end
     end
   end
-  plot(
-    ps...,
-    layout = (1 + ipairs, ncosts),
-    size = (ncosts * width, (1 + ipairs) * height);
-    kwargs...,
-  )
+  if rotate
+    nsolver_groups = 1 + ipairs
+    # `ps` is built row-major with solver groups first and costs second.
+    # For rotated layout we want rows to represent costs, so we reorder by cost first.
+    idx = [((group - 1) * ncosts + cost) for cost = 1:ncosts for group = 1:nsolver_groups]
+    ps = ps[idx]
+
+    for row = 1:ncosts
+      for col = 1:nsolver_groups
+        p = ps[(row - 1) * nsolver_groups + col]
+        if col == 1
+          plot!(p, title = costnames[row], titlelocation = :left)
+          ylabel!(p, yguide)
+          plot!(p, left_margin = 8Plots.mm)
+        else
+          plot!(p, title = "")
+          ylabel!(p, "")
+        end
+        if row == ncosts
+          xlabel!(p, xguide)
+          plot!(p, bottom_margin = 8Plots.mm)
+        else
+          xlabel!(p, "")
+        end
+      end
+    end
+  end
+
+  nrows, ncols = rotate ? (ncosts, 1 + ipairs) : (1 + ipairs, ncosts)
+  pwidth, pheight = rotate ? ((1 + ipairs) * width, ncosts * height) : (ncosts * width, (1 + ipairs) * height)
+
+  plot(ps..., layout = (nrows, ncols), size = (pwidth, pheight); kwargs...)
 end
