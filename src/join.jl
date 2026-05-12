@@ -33,6 +33,10 @@ function join(
     error("Not all DataFrames have all columns given by `cols`")
   end
 
+  # Work with local copies to avoid mutating caller-provided arrays
+  cols = copy(cols)
+  invariant_cols = copy(invariant_cols)
+
   if :id in cols
     deleteat!(cols, findall(cols .== :id))
   end
