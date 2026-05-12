@@ -46,6 +46,7 @@ cols = [:status, :name, :f, :t, :iter]
     )
 
     @test :Name in propertynames(df_joined)
+    @test :name ∉ propertynames(df_joined)
     println(df_joined)
   end
 
