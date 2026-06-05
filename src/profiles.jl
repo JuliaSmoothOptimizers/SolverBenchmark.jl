@@ -166,7 +166,8 @@ function profile_solvers(
   end
 
   nrows, ncols = rotate ? (ncosts, 1 + ipairs) : (1 + ipairs, ncosts)
-  pwidth, pheight = rotate ? ((1 + ipairs) * width, ncosts * height) : (ncosts * width, (1 + ipairs) * height)
+  pwidth, pheight =
+    rotate ? ((1 + ipairs) * width, ncosts * height) : (ncosts * width, (1 + ipairs) * height)
 
   plot(ps..., layout = (nrows, ncols), size = (pwidth, pheight); kwargs...)
 end

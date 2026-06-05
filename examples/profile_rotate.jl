@@ -18,9 +18,11 @@ status_beta = [i % 13 == 0 ? :exception : :first_order for i in ids]
 status_gamma = [i % 17 == 0 ? :exception : :first_order for i in ids]
 
 stats = Dict(
-  :alpha => DataFrame(id = ids, name = names, status = status_alpha, t = t_alpha, iter = iter_alpha),
+  :alpha =>
+    DataFrame(id = ids, name = names, status = status_alpha, t = t_alpha, iter = iter_alpha),
   :beta => DataFrame(id = ids, name = names, status = status_beta, t = t_beta, iter = iter_beta),
-  :gamma => DataFrame(id = ids, name = names, status = status_gamma, t = t_gamma, iter = iter_gamma),
+  :gamma =>
+    DataFrame(id = ids, name = names, status = status_gamma, t = t_gamma, iter = iter_gamma),
 )
 
 costs = [
