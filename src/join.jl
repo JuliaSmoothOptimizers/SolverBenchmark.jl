@@ -33,11 +33,15 @@ function join(
     error("Not all DataFrames have all columns given by `cols`")
   end
 
+  # Work with local copies to avoid mutating caller-provided arrays
+  cols = copy(cols)
+  invariant_cols = copy(invariant_cols)
+
   if :id in cols
     deleteat!(cols, findall(cols .== :id))
   end
   if :id in invariant_cols
-    deleteat!(cols, findall(cols .== :id))
+    deleteat!(invariant_cols, findall(invariant_cols .== :id))
   end
   invariant_cols = [:id; invariant_cols]
   cols = setdiff(cols, invariant_cols)
@@ -48,6 +52,10 @@ function join(
 
   s = first(stats)[1]
   df = stats[s][:, invariant_cols]
+  # Apply hdr_override to invariant columns, but keep :id stable.
+  inv_col_names = [c == :id ? "id" : (haskey(hdr_override, c) ? hdr_override[c] : String(c)) for c in invariant_cols]
+  rename!(df, Dict(c => Symbol(n) for (c, n) in zip(invariant_cols, inv_col_names)))
+  invariant_cols = [Symbol(n) for n in inv_col_names]
 
   rename_f(c, s) = begin
     symbol_c = Symbol(c)
