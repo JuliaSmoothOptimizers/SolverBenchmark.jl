@@ -296,7 +296,7 @@ function solve_problems_parallel(
   # Make a first serial run until first_problem is false
   final_id = 0
   for (id, problem) in enumerate(problems)
-    first_problem, nb_unsuccessful_since_start = _run_problem(
+    first_problem, nb_unsuccessful_since_start = _locked_run_problem(
       id,
       problem,
       stats,
@@ -327,7 +327,7 @@ function solve_problems_parallel(
   Threads.@sync for (offset, problem) in enumerate(rem_problems)
     id = final_id + offset
     Threads.@spawn begin
-      _run_problem(
+      _locked_run_problem(
         id,
         problem,
         stats,
@@ -353,7 +353,7 @@ function solve_problems_parallel(
 end
 
 # Run a problem and lock the stats DataFrame for parallel write.
-function locked_run_problem(
+function _locked_run_problem(
   id::Int,
   problem,
   stats::DataFrame,
