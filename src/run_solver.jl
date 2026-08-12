@@ -321,7 +321,7 @@ function solve_problems_parallel(
   end
 
   # Remaining problems to run in parallel
-  rem_problems = @view problems[final_id + 1:end]
+  rem_problems = Iterators.drop(problems, final_id)
 
   # Start parallel run
   Threads.@sync for (offset, problem) in enumerate(rem_problems)
