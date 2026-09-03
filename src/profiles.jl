@@ -15,6 +15,10 @@ Inputs:
   - If the solver did not solve the problem, return Inf or a negative number.
 - `b::BenchmarkProfiles.AbstractBackend` : backend used for the plot.
 
+Keyword arguments other than `b` (i.e., `kwargs...`) are forwarded to `BenchmarkProfiles.performance_profile`,
+so backend-specific options such as `logscale` can be passed directly. For example, `logscale = false` disables
+log-scaling of the x-axis when supported by the backend.
+
 If several profiles will be produced with variants of the same solvers, `stats` may be an `OrderedDict`, as defined in the
 OrderedCollections.jl package.
 
@@ -38,7 +42,7 @@ end
 """
     p = profile_solvers(stats, costs, costnames;
                         width = 400, height = 400, rotate = false,
-                        b = PlotsBackend(), kwargs...)
+                        b = PlotsBackend(), bp_kwargs = Dict{Symbol,Any}(), kwargs...)
 
 Produce performance profiles comparing `solvers` based on the data in `stats`.
 
@@ -55,8 +59,11 @@ Keyword inputs:
 - When `rotate = true`, the cost names are shown as left-aligned row titles on the leftmost plots,
   the y-axis guide appears only on those plots, and the x-axis guide appears only on the bottom row.
 - `b::BenchmarkProfiles.AbstractBackend` : backend used for the plot.
+- `bp_kwargs::AbstractDict{Symbol}` : keyword arguments forwarded to each `BenchmarkProfiles.performance_profile`
+  call (backend-specific options, e.g., `logscale = false`). Keys in `bp_kwargs` take precedence over the internal
+  defaults (`palette`, `title`, `legend`) set by `profile_solvers`, except that titles are adjusted afterward when `rotate = true`.
 
-Additional `kwargs` are passed to the `plot` call.
+Additional `kwargs` are passed to the final `plot` call that assembles the profiles.
 
 Output:
 A Plots.jl plot representing a set of performance profiles comparing the solvers.
@@ -73,6 +80,7 @@ function profile_solvers(
   height::Int = 400,
   rotate::Bool = false,
   b::BenchmarkProfiles.AbstractBackend = PlotsBackend(),
+  bp_kwargs::AbstractDict{Symbol} = Dict{Symbol, Any}(),
   kwargs...,
 )
   solvers = collect(keys(stats))
@@ -90,24 +98,26 @@ function profile_solvers(
 
   # profiles with all solvers
   ps = [
-    performance_profile(
+    BenchmarkProfiles.performance_profile(
       b,
       Ps[1],
-      string.(solvers),
-      palette = colors,
-      title = row_title(1),
-      legend = :bottomright,
+      string.(solvers);
+      merge(
+        Dict{Symbol, Any}(:palette => colors, :title => row_title(1), :legend => :bottomright),
+        bp_kwargs,
+      )...,
     ),
   ]
   nsolvers > 2 && xlabel!(ps[1], "")
   for k = 2:ncosts
-    p = performance_profile(
+    p = BenchmarkProfiles.performance_profile(
       b,
       Ps[k],
-      string.(solvers),
-      palette = colors,
-      title = row_title(k),
-      legend = false,
+      string.(solvers);
+      merge(
+        Dict{Symbol, Any}(:palette => colors, :title => row_title(k), :legend => false),
+        bp_kwargs,
+      )...,
     )
     nsolvers > 2 && xlabel!(p, "")
     ylabel!(p, "")
@@ -125,11 +135,21 @@ function profile_solvers(
         Ps = [hcat([Float64.(cost(df)) for df in dfs]...) for cost in costs]
 
         clrs = [colors[i], colors[j]]
-        p = performance_profile(b, Ps[1], string.(pair), palette = clrs, legend = :bottomright)
+        p = BenchmarkProfiles.performance_profile(
+          b,
+          Ps[1],
+          string.(pair);
+          merge(Dict{Symbol, Any}(:palette => clrs, :legend => :bottomright), bp_kwargs)...,
+        )
         ipairs < npairs && xlabel!(p, "")
         push!(ps, p)
         for k = 2:ncosts
-          p = performance_profile(b, Ps[k], string.(pair), palette = clrs, legend = false)
+          p = BenchmarkProfiles.performance_profile(
+            b,
+            Ps[k],
+            string.(pair);
+            merge(Dict{Symbol, Any}(:palette => clrs, :legend => false), bp_kwargs)...,
+          )
           ipairs < npairs && xlabel!(p, "")
           ylabel!(p, "")
           push!(ps, p)
