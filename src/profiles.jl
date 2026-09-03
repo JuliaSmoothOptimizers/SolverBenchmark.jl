@@ -61,7 +61,7 @@ Keyword inputs:
 - `b::BenchmarkProfiles.AbstractBackend` : backend used for the plot.
 - `bp_kwargs::AbstractDict{Symbol}` : keyword arguments forwarded to each `BenchmarkProfiles.performance_profile`
   call (backend-specific options, e.g., `logscale = false`). Keys in `bp_kwargs` take precedence over the internal
-  defaults (`palette`, `title`, `legend`) set by `profile_solvers`.
+  defaults (`palette`, `title`, `legend`) set by `profile_solvers`, except that titles are adjusted afterward when `rotate = true`.
 
 Additional `kwargs` are passed to the final `plot` call that assembles the profiles.
 
