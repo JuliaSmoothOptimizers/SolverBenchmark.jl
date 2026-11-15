@@ -7,7 +7,8 @@ on:
     types: [opened, synchronize, reopened]
 jobs:
   test:
-    name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}
+    name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{
+      github.event_name }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -40,7 +41,8 @@ jobs:
           cache-name: cache-artifacts
         with:
           path: ~/.julia/artifacts
-          key: ${{ runner.os }}-test-${{ env.cache-name }}-${{ hashFiles('**/Project.toml') }}
+          key: ${{ runner.os }}-test-${{ env.cache-name }}-${{
+            hashFiles('**/Project.toml') }}
           restore-keys: |
             ${{ runner.os }}-test-${{ env.cache-name }}-
             ${{ runner.os }}-test-
@@ -48,11 +50,13 @@ jobs:
       - uses: julia-actions/julia-buildpkg@v1
       - run: |
           brew install gfortran  # the compiler will be called gfortran-14 or similar
-          ln -s $(brew --prefix gcc)/bin/gfortran $(brew --prefix)/bin/  # ensure binary named "gfortran" is discoverable
         if: matrix.os == 'macOS-latest'
       - run: |
           julia --project=examples -e 'using Pkg; Pkg.instantiate(); include(joinpath("examples", "bmark_cutest.jl"))'
         if: matrix.os != 'windows-latest'
-      - run: julia --project=examples -e 'using Pkg; Pkg.instantiate(); include(joinpath("examples", "bmark_ampl.jl"))'
-      - run: julia --project=examples -e 'using Pkg; Pkg.instantiate(); include(joinpath("examples", "bmark_opt_problems.jl"))'
-      - run: julia --project=examples -e 'using Pkg; Pkg.instantiate(); include(joinpath("examples", "bmark_opt_problems_jump.jl"))'
+      - run: julia --project=examples -e 'using Pkg; Pkg.instantiate();
+          include(joinpath("examples", "bmark_ampl.jl"))'
+      - run: julia --project=examples -e 'using Pkg; Pkg.instantiate();
+          include(joinpath("examples", "bmark_opt_problems.jl"))'
+      - run: julia --project=examples -e 'using Pkg; Pkg.instantiate();
+          include(joinpath("examples", "bmark_opt_problems_jump.jl"))'
