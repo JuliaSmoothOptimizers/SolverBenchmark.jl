@@ -42,11 +42,7 @@ Format a string for output in a LaTeX table.
 Escapes underscores.
 """
 function safe_latex_AbstractString(s::AbstractString)
-  if occursin("_", s)
-    LaTeXString(replace(s, "_" => "\\_"))
-  else
-    LaTeXString(s)
-  end
+  LaTeXString(replace(s, "_" => "\\_", "#" => "\\#"))
 end
 
 """

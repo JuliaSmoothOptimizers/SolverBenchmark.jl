@@ -14,10 +14,10 @@ alpha_md = raw"""|        flag |    name |      f(x) |   time |   iter |
 
 alpha_tex = raw"""\begin{longtable}{rrrrr}
 \hline
-flag & name & \(f(x)\) & time & iter \\\hline
+flag & name & \(f(x)\) & time & \# iter \\\hline
 \endfirsthead
 \hline
-flag & name & \(f(x)\) & time & iter \\\hline
+flag & name & \(f(x)\) & time & \# iter \\\hline
 \endhead
 \hline
 \multicolumn{5}{r}{{\bfseries Continued on next page}}\\

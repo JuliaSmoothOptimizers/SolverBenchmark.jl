@@ -7,7 +7,7 @@ cols = [:status, :name, :f, :t, :iter]
 
 @testset "tables" begin
   @testset "alpha results in latex format" begin
-    header = Dict(:status => "flag", :f => "\\(f(x)\\)", :t => "time")
+    header = Dict(:status => "flag", :f => "\\(f(x)\\)", :t => "time", :iter => "# iter")
     io = IOBuffer()
     pretty_latex_stats(io, df[!, cols], hdr_override = header)
     @test all(chomp.(split(alpha_tex)) .== chomp.(split(String(take!(io)))))
